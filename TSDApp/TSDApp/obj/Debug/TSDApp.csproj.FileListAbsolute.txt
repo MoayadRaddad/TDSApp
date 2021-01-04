@@ -1,0 +1,12 @@
+C:\Users\Moayad\source\repos\TSDApp\TSDApp\bin\Debug\TSDApp.exe.config
+C:\Users\Moayad\source\repos\TSDApp\TSDApp\bin\Debug\TSDApp.exe
+C:\Users\Moayad\source\repos\TSDApp\TSDApp\bin\Debug\TSDApp.pdb
+C:\Users\Moayad\source\repos\TSDApp\TSDApp\obj\Debug\TSDApp.Forms.AddEditButton.resources
+C:\Users\Moayad\source\repos\TSDApp\TSDApp\obj\Debug\TSDApp.Fomrs.AddEditScreen.resources
+C:\Users\Moayad\source\repos\TSDApp\TSDApp\obj\Debug\TSDApp.TSD.resources
+C:\Users\Moayad\source\repos\TSDApp\TSDApp\obj\Debug\TSDApp.Properties.Resources.resources
+C:\Users\Moayad\source\repos\TSDApp\TSDApp\obj\Debug\TSDApp.csproj.GenerateResource.cache
+C:\Users\Moayad\source\repos\TSDApp\TSDApp\obj\Debug\TSDApp.csproj.CoreCompileInputs.cache
+C:\Users\Moayad\source\repos\TSDApp\TSDApp\obj\Debug\TSDApp.exe
+C:\Users\Moayad\source\repos\TSDApp\TSDApp\obj\Debug\TSDApp.pdb
+C:\Users\Moayad\source\repos\TSDApp\TSDApp\obj\Debug\TSDApp.csprojAssemblyReference.cache
