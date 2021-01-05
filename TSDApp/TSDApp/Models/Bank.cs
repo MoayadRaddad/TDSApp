@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace TSDApp.Models
 {
+    //Bank model
     public class Bank
     {
         public int id { get; set; }

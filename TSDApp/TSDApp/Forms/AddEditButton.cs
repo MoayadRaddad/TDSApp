@@ -12,42 +12,58 @@ using TSDApp.Fomrs;
 
 namespace TSDApp.Forms
 {
-    //start
     public partial class AddEditButton : Form
     {
+        //Variable to define selected screen id
         private int ScreenId;
+        //Object to know currently button
         private static Models.Button CurrentButton;
+        //Default constructor
         public AddEditButton()
         {
-            InitializeComponent();
+            try
+            {
+                InitializeComponent();
+            }
+            catch (Exception ex)
+            {
+                Models.SharingMethods.SaveExceptionToLogFile(ex);
+            }
         }
-        public AddEditButton(int id)
+        /*Parametarize constructor (if new button) :
+          Fill screenId to know the currently screen id*/
+        public AddEditButton(int pId)
         {
             try
             {
                 InitializeComponent();
-                ScreenId = id;
+                ScreenId = pId;
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString(),"Error");
+                Models.SharingMethods.SaveExceptionToLogFile(ex);
             }
         }
-        public AddEditButton(int screenId, int buttonId)
+        /*Parametarize constructor (if edit button) :
+          Fill screenId to know the currently screen id
+          Fill data for current button to this form*/
+        public AddEditButton(int pScreenId, int pButtonId)
         {
             try
             {
                 InitializeComponent();
-                ScreenId = screenId;
-                FillButtonData(buttonId);
+                ScreenId = pScreenId;
+                FillButtonData(pButtonId);
+                lblTitle.Text = "Edit Button";
+                btnSave.Text = "Edit";
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString(),"Error");
+                Models.SharingMethods.SaveExceptionToLogFile(ex);
             }
         }
-
-        private void FillButtonData(int buttonId)
+        //Function to fill data for the current button
+        private void FillButtonData(int pButtonId)
         {
             try
             {
@@ -58,7 +74,7 @@ namespace TSDApp.Forms
                     con.Open();
                     cmd.Connection = con;
                     cmd.CommandText = "SELECT * FROM tblButtons where id = @id";
-                    cmd.Parameters.Add("@id", SqlDbType.Int).Value = buttonId;
+                    cmd.Parameters.Add("@id", SqlDbType.Int).Value = pButtonId;
 
                     SqlDataReader reader = cmd.ExecuteReader();
                     if (reader.Read())
@@ -97,23 +113,32 @@ namespace TSDApp.Forms
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString(),"Error");
+                Models.SharingMethods.SaveExceptionToLogFile(ex);
             }
         }
-
         private void AddEditButton_Load(object sender, EventArgs e)
         {
-            if (CurrentButton == null)
+            try
             {
-                rbIssueTicket.Checked = true;
-                ddlIssueTicket.SelectedIndex = 0;
+                /*Check if CurrentButton is null :
+                  if CurrentButton is null then add button
+                  if CurrentButton is not null then edit button*/
+                if (CurrentButton == null)
+                {
+                    rbIssueTicket.Checked = true;
+                    ddlIssueTicket.SelectedIndex = 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                Models.SharingMethods.SaveExceptionToLogFile(ex);
             }
         }
-
         private void rbShowMessage_CheckedChanged(object sender, EventArgs e)
         {
             try
             {
+                //Show and hide component
                 if (rbShowMessage.Checked)
                 {
                     rbIssueTicket.Checked = false;
@@ -127,14 +152,14 @@ namespace TSDApp.Forms
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString(),"Error");
+                Models.SharingMethods.SaveExceptionToLogFile(ex);
             }
         }
-
         private void rbIssueTicket_CheckedChanged(object sender, EventArgs e)
         {
             try
             {
+                //Show and hide component
                 if (rbIssueTicket.Checked)
                 {
                     rbShowMessage.Checked = false;
@@ -148,10 +173,10 @@ namespace TSDApp.Forms
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString(),"Error");
+                Models.SharingMethods.SaveExceptionToLogFile(ex);
             }
         }
-
+        //Override OnFormClosing method to dispose current form and move to the previous form
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             try
@@ -163,10 +188,10 @@ namespace TSDApp.Forms
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString(),"Error");
+                Models.SharingMethods.SaveExceptionToLogFile(ex);
             }
         }
-
+        //Cancel button to dispose current form and move to the previous form
         private void btnCancel_Click(object sender, EventArgs e)
         {
             try
@@ -178,26 +203,32 @@ namespace TSDApp.Forms
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString(),"Error");
+                Models.SharingMethods.SaveExceptionToLogFile(ex);
             }
         }
-
+        //Save button to insert or update current button
         private void btnSave_Click(object sender, EventArgs e)
         {
             try
             {
+                //Check if EN name is filled or not
                 if (txtENName.Text != "")
                 {
+                    //Check if AR name is filled or not
                     if (txtARName.Text != "")
                     {
+                        //Check which radio button checked
                         if (rbIssueTicket.Checked)
                         {
+                            //Check if combobox selected
                             if (ddlIssueTicket.SelectedIndex != 0)
                             {
+                                //Check if it is new button to insert or edit button to update
                                 if (CurrentButton == null)
                                 {
+                                    //Call insertNewButton to insert new button and go to previous form
                                     insertNewButton(txtENName.Text, txtARName.Text, rbIssueTicket.Text, null, null, ddlIssueTicket.SelectedItem.ToString(), ScreenId);
-                                    MessageBox.Show("Button had been added to screen successfully", "Done");
+                                    MessageBox.Show("Button had been added to screen successfully", "Done", MessageBoxButtons.OK, MessageBoxIcon.Information);
                                     CurrentButton = null;
                                     this.Dispose();
                                     AddEditScreen addEditScreen = new AddEditScreen(TSD.CurrentBank.id, ScreenId);
@@ -205,8 +236,9 @@ namespace TSDApp.Forms
                                 }
                                 else
                                 {
+                                    //Call UpdateButton to update current button and go to previous form
                                     UpdateButton(txtENName.Text, txtARName.Text, rbIssueTicket.Text, null, null, ddlIssueTicket.SelectedItem.ToString(), ScreenId);
-                                    MessageBox.Show("Button had been updated", "Done");
+                                    MessageBox.Show("Button had been updated", "Done", MessageBoxButtons.OK, MessageBoxIcon.Information);
                                     CurrentButton = null;
                                     this.Dispose();
                                     AddEditScreen addEditScreen = new AddEditScreen(TSD.CurrentBank.id, ScreenId);
@@ -215,18 +247,22 @@ namespace TSDApp.Forms
                             }
                             else
                             {
-                                MessageBox.Show("Please select issue ticket", "Warning");
+                                MessageBox.Show("Please select issue ticket", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                             }
                         }
                         else
                         {
+                            //Check if AR message is filled or not
                             if (txtMessageEN.Text != "")
                             {
+                                //Check if AR message is filled or not
                                 if (txtMessageAR.Text != "")
                                 {
                                     if (CurrentButton == null)
                                     {
+                                        //Call insertNewButton to insert new button and go to previous form
                                         insertNewButton(txtENName.Text, txtARName.Text, rbShowMessage.Text, txtMessageEN.Text, txtMessageAR.Text, null, ScreenId);
+                                        MessageBox.Show("Button had been added to screen successfully", "Done", MessageBoxButtons.OK, MessageBoxIcon.Information);
                                         CurrentButton = null;
                                         this.Dispose();
                                         AddEditScreen addEditScreen = new AddEditScreen(TSD.CurrentBank.id, ScreenId);
@@ -234,7 +270,9 @@ namespace TSDApp.Forms
                                     }
                                     else
                                     {
+                                        //Call UpdateButton to update current button and go to previous form
                                         UpdateButton(txtENName.Text, txtARName.Text, rbShowMessage.Text, txtMessageEN.Text, txtMessageAR.Text, null, ScreenId);
+                                        MessageBox.Show("Button had been updated", "Done", MessageBoxButtons.OK, MessageBoxIcon.Information);
                                         CurrentButton = null;
                                         this.Dispose();
                                         AddEditScreen addEditScreen = new AddEditScreen(TSD.CurrentBank.id, ScreenId);
@@ -243,33 +281,33 @@ namespace TSDApp.Forms
                                 }
                                 else
                                 {
-                                    MessageBox.Show("Please fill AR Message", "Warning");
+                                    MessageBox.Show("Please fill AR Message", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                 }
 
                             }
                             else
                             {
-                                MessageBox.Show("Please fill EN Message", "Warning");
+                                MessageBox.Show("Please fill EN Message", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                             }
                         }
                     }
                     else
                     {
-                        MessageBox.Show("Please fill AR Name", "Warning");
+                        MessageBox.Show("Please fill AR Name", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
                 }
                 else
                 {
-                    MessageBox.Show("Please fill EN Name", "Warning");
+                    MessageBox.Show("Please fill EN Name", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString(),"Error");
+                Models.SharingMethods.SaveExceptionToLogFile(ex);
             }
         }
-
-        private void insertNewButton(string ENName, string ARName, string Type, string MessageEN, string MessageAR, string issueType, int ScreenId)
+        //Function to insert new button
+        private void insertNewButton(string pENName, string pARName, string pType, string pMessageEN, string pMessageAR, string pIssueType, int pScreenId)
         {
             try
             {
@@ -281,20 +319,20 @@ namespace TSDApp.Forms
                     con.Open();
                     cmd.Connection = con;
                     cmd.CommandText = "insert into tblButtons OUTPUT INSERTED.IDENTITYCOL  values (@ENName,@ARName,@Type,@MessageAR,@MessageEN,@issueType,@ScreenId)";
-                    cmd.Parameters.Add("@ENName", SqlDbType.NVarChar).Value = ENName;
-                    cmd.Parameters.Add("@ARName", SqlDbType.NVarChar).Value = ARName;
-                    if(Type == rbIssueTicket.Text)
+                    cmd.Parameters.Add("@ENName", SqlDbType.NVarChar).Value = pENName;
+                    cmd.Parameters.Add("@ARName", SqlDbType.NVarChar).Value = pARName;
+                    if(pType == rbIssueTicket.Text)
                     {
-                        cmd.Parameters.Add("@Type", SqlDbType.NVarChar).Value = Type;
+                        cmd.Parameters.Add("@Type", SqlDbType.NVarChar).Value = pType;
                         cmd.Parameters.Add("@MessageAR", SqlDbType.NVarChar).Value = DBNull.Value;
                         cmd.Parameters.Add("@MessageEN", SqlDbType.NVarChar).Value = DBNull.Value;
-                        cmd.Parameters.Add("@issueType", SqlDbType.NVarChar).Value = issueType;
+                        cmd.Parameters.Add("@issueType", SqlDbType.NVarChar).Value = pIssueType;
                     }
                     else
                     {
-                        cmd.Parameters.Add("@Type", SqlDbType.NVarChar).Value = Type;
-                        cmd.Parameters.Add("@MessageAR", SqlDbType.NVarChar).Value = MessageAR;
-                        cmd.Parameters.Add("@MessageEN", SqlDbType.NVarChar).Value = MessageEN;
+                        cmd.Parameters.Add("@Type", SqlDbType.NVarChar).Value = pType;
+                        cmd.Parameters.Add("@MessageAR", SqlDbType.NVarChar).Value = pMessageAR;
+                        cmd.Parameters.Add("@MessageEN", SqlDbType.NVarChar).Value = pMessageEN;
                         cmd.Parameters.Add("@issueType", SqlDbType.NVarChar).Value = DBNull.Value;
                     }
                     cmd.Parameters.Add("@ScreenId", SqlDbType.Int).Value = ScreenId;
@@ -304,11 +342,11 @@ namespace TSDApp.Forms
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString(),"Error");
+                Models.SharingMethods.SaveExceptionToLogFile(ex);
             }
         }
-
-        private void UpdateButton(string ENName, string ARName, string Type, string MessageEN, string MessageAR, string issueType, int ScreenId)
+        //Function to edit current button
+        private void UpdateButton(string pENName, string pARName, string pType, string pMessageEN, string pMessageAR, string pIssueType, int pScreenId)
         {
             try
             {
@@ -319,20 +357,20 @@ namespace TSDApp.Forms
                     con.Open();
                     cmd.Connection = con;
                     cmd.CommandText = "update tblButtons set ENName = @ENName,ARName = @ARName,Type = @Type,MessageAR = @MessageAR,MessageEN = @MessageEN,issueType = @issueType,ScreenId = @ScreenId where id = @id";
-                    cmd.Parameters.Add("@ENName", SqlDbType.NVarChar).Value = ENName;
-                    cmd.Parameters.Add("@ARName", SqlDbType.NVarChar).Value = ARName;
-                    if (Type == rbIssueTicket.Text)
+                    cmd.Parameters.Add("@ENName", SqlDbType.NVarChar).Value = pENName;
+                    cmd.Parameters.Add("@ARName", SqlDbType.NVarChar).Value = pARName;
+                    if (pType == rbIssueTicket.Text)
                     {
-                        cmd.Parameters.Add("@Type", SqlDbType.NVarChar).Value = Type;
+                        cmd.Parameters.Add("@Type", SqlDbType.NVarChar).Value = pType;
                         cmd.Parameters.Add("@MessageAR", SqlDbType.NVarChar).Value = DBNull.Value;
                         cmd.Parameters.Add("@MessageEN", SqlDbType.NVarChar).Value = DBNull.Value;
-                        cmd.Parameters.Add("@issueType", SqlDbType.NVarChar).Value = issueType;
+                        cmd.Parameters.Add("@issueType", SqlDbType.NVarChar).Value = pIssueType;
                     }
                     else
                     {
-                        cmd.Parameters.Add("@Type", SqlDbType.NVarChar).Value = Type;
-                        cmd.Parameters.Add("@MessageAR", SqlDbType.NVarChar).Value = MessageAR;
-                        cmd.Parameters.Add("@MessageEN", SqlDbType.NVarChar).Value = MessageEN;
+                        cmd.Parameters.Add("@Type", SqlDbType.NVarChar).Value = pType;
+                        cmd.Parameters.Add("@MessageAR", SqlDbType.NVarChar).Value = pMessageAR;
+                        cmd.Parameters.Add("@MessageEN", SqlDbType.NVarChar).Value = pMessageEN;
                         cmd.Parameters.Add("@issueType", SqlDbType.NVarChar).Value = DBNull.Value;
                     }
                     cmd.Parameters.Add("@ScreenId", SqlDbType.Int).Value = ScreenId;
@@ -343,7 +381,7 @@ namespace TSDApp.Forms
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString(),"Error");
+                Models.SharingMethods.SaveExceptionToLogFile(ex);
             }
         }
     }

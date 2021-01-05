@@ -53,9 +53,9 @@ namespace TSDApp.Forms
             this.lblTitle.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTitle.Location = new System.Drawing.Point(226, 22);
             this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(155, 25);
+            this.lblTitle.Size = new System.Drawing.Size(118, 25);
             this.lblTitle.TabIndex = 0;
-            this.lblTitle.Text = "Add/EditButton";
+            this.lblTitle.Text = "Add Button";
             // 
             // ddlIssueTicket
             // 
@@ -190,34 +190,40 @@ namespace TSDApp.Forms
             // 
             // btnCancel
             // 
-            this.btnCancel.BackgroundImage = global::TSDApp.Properties.Resources.left_arrow;
             this.btnCancel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.btnCancel.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnCancel.FlatAppearance.BorderSize = 0;
             this.btnCancel.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
             this.btnCancel.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.btnCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnCancel.Font = new System.Drawing.Font("Tahoma", 9.75F);
-            this.btnCancel.Location = new System.Drawing.Point(108, 296);
+            this.btnCancel.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnCancel.Image = global::TSDApp.Properties.Resources.left_arrow;
+            this.btnCancel.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnCancel.Location = new System.Drawing.Point(75, 296);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(35, 40);
+            this.btnCancel.Size = new System.Drawing.Size(94, 40);
             this.btnCancel.TabIndex = 21;
+            this.btnCancel.Text = "Back";
+            this.btnCancel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnCancel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // btnSave
             // 
-            this.btnSave.BackgroundImage = global::TSDApp.Properties.Resources.check;
             this.btnSave.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.btnSave.FlatAppearance.BorderSize = 0;
             this.btnSave.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
             this.btnSave.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.btnSave.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSave.Font = new System.Drawing.Font("Tahoma", 9.75F);
+            this.btnSave.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnSave.Image = global::TSDApp.Properties.Resources.check;
+            this.btnSave.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnSave.Location = new System.Drawing.Point(443, 296);
             this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(35, 40);
+            this.btnSave.Size = new System.Drawing.Size(94, 40);
             this.btnSave.TabIndex = 20;
+            this.btnSave.Text = "Add";
+            this.btnSave.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnSave.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 

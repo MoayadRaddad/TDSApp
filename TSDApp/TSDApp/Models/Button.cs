@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace TSDApp.Models
 {
+    //Button model
     public class Button
     {
         public int id { get; set; }

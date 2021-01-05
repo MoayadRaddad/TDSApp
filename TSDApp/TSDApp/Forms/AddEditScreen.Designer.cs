@@ -53,9 +53,9 @@ namespace TSDApp.Fomrs
             this.lblTitle.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTitle.Location = new System.Drawing.Point(306, 9);
             this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(164, 25);
+            this.lblTitle.Size = new System.Drawing.Size(120, 25);
             this.lblTitle.TabIndex = 0;
-            this.lblTitle.Text = "Add/Edit Screen";
+            this.lblTitle.Text = "Add Screen";
             // 
             // lblName
             // 
@@ -116,41 +116,45 @@ namespace TSDApp.Fomrs
             this.gvButtons.GridColor = System.Drawing.Color.White;
             this.gvButtons.Location = new System.Drawing.Point(15, 183);
             this.gvButtons.Name = "gvButtons";
-            this.gvButtons.Size = new System.Drawing.Size(725, 336);
+            this.gvButtons.Size = new System.Drawing.Size(725, 340);
             this.gvButtons.TabIndex = 8;
             // 
             // btnCancel
             // 
-            this.btnCancel.BackgroundImage = global::TSDApp.Properties.Resources.left_arrow;
             this.btnCancel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.btnCancel.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnCancel.FlatAppearance.BorderSize = 0;
             this.btnCancel.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
             this.btnCancel.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.btnCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnCancel.Font = new System.Drawing.Font("Tahoma", 9.75F);
+            this.btnCancel.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnCancel.Image = global::TSDApp.Properties.Resources.left_arrow;
+            this.btnCancel.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnCancel.Location = new System.Drawing.Point(15, 525);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(35, 40);
+            this.btnCancel.Size = new System.Drawing.Size(94, 40);
             this.btnCancel.TabIndex = 10;
+            this.btnCancel.Text = "Back";
+            this.btnCancel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnCancel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // btnSave
             // 
-            this.btnSave.BackgroundImage = global::TSDApp.Properties.Resources.check;
             this.btnSave.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.btnSave.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnSave.FlatAppearance.BorderSize = 0;
             this.btnSave.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
             this.btnSave.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.btnSave.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSave.Font = new System.Drawing.Font("Tahoma", 9.75F);
-            this.btnSave.Location = new System.Drawing.Point(705, 525);
+            this.btnSave.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnSave.Image = global::TSDApp.Properties.Resources.check;
+            this.btnSave.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnSave.Location = new System.Drawing.Point(631, 525);
             this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(35, 40);
+            this.btnSave.Size = new System.Drawing.Size(94, 40);
             this.btnSave.TabIndex = 9;
-            this.btnSave.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.btnSave.Text = "Add";
+            this.btnSave.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
@@ -212,7 +216,7 @@ namespace TSDApp.Fomrs
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblGVTitle.AutoSize = true;
             this.lblGVTitle.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblGVTitle.Location = new System.Drawing.Point(350, 141);
+            this.lblGVTitle.Location = new System.Drawing.Point(306, 141);
             this.lblGVTitle.Name = "lblGVTitle";
             this.lblGVTitle.Size = new System.Drawing.Size(83, 25);
             this.lblGVTitle.TabIndex = 11;
@@ -223,7 +227,7 @@ namespace TSDApp.Fomrs
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(752, 563);
+            this.ClientSize = new System.Drawing.Size(752, 567);
             this.Controls.Add(this.lblGVTitle);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnSave);
@@ -237,8 +241,8 @@ namespace TSDApp.Fomrs
             this.Controls.Add(this.lblName);
             this.Controls.Add(this.lblTitle);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
-            this.MaximumSize = new System.Drawing.Size(772, 606);
-            this.MinimumSize = new System.Drawing.Size(772, 606);
+            this.MaximumSize = new System.Drawing.Size(772, 610);
+            this.MinimumSize = new System.Drawing.Size(772, 610);
             this.Name = "AddEditScreen";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Add/Edit Screen";

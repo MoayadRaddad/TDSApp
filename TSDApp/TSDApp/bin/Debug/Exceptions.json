@@ -1,0 +1,11 @@
+{
+  "Date": "2021-01-05T16:24:21.0047831+02:00",
+  "Type": "System.IndexOutOfRangeException",
+  "Message": "Error",
+  "StackTrace": "   at TSDApp.TSD.LoadToolTips() in C:\\Users\\Moayad\\Documents\\GitHub\\TDSApp\\TSDApp\\TSDApp\\Forms\\TSD.cs:line 92"
+} {
+  "Date": "2021-01-05T16:24:57.1495846+02:00",
+  "Type": "System.IndexOutOfRangeException",
+  "Message": "Error",
+  "StackTrace": "   at TSDApp.TSD.LoadToolTips() in C:\\Users\\Moayad\\Documents\\GitHub\\TDSApp\\TSDApp\\TSDApp\\Forms\\TSD.cs:line 92"
+}

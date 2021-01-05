@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace TSDApp.Models
 {
+    //Screen model
     public class Screen
     {
         public int id { get; set; }

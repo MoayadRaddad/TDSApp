@@ -33,14 +33,14 @@ namespace TSDApp
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnEnter = new System.Windows.Forms.Button();
             this.txtBankName = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.lblInformation = new System.Windows.Forms.Label();
             this.MainPanel = new System.Windows.Forms.Panel();
+            this.lblGVTitle = new System.Windows.Forms.Label();
             this.btnDeleteScreen = new System.Windows.Forms.Button();
             this.btnEditScreen = new System.Windows.Forms.Button();
             this.gvScreens = new System.Windows.Forms.DataGridView();
             this.btnAddScreen = new System.Windows.Forms.Button();
             this.lblTitle = new System.Windows.Forms.Label();
-            this.lblGVTitle = new System.Windows.Forms.Label();
             this.BankNamePanel.SuspendLayout();
             this.MainPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gvScreens)).BeginInit();
@@ -51,11 +51,12 @@ namespace TSDApp
             this.BankNamePanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.BankNamePanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.BankNamePanel.Controls.Add(this.btnCancel);
             this.BankNamePanel.Controls.Add(this.btnEnter);
             this.BankNamePanel.Controls.Add(this.txtBankName);
-            this.BankNamePanel.Controls.Add(this.label1);
-            this.BankNamePanel.Location = new System.Drawing.Point(150, 100);
+            this.BankNamePanel.Controls.Add(this.lblInformation);
+            this.BankNamePanel.Location = new System.Drawing.Point(135, 110);
             this.BankNamePanel.Name = "BankNamePanel";
             this.BankNamePanel.Size = new System.Drawing.Size(496, 323);
             this.BankNamePanel.TabIndex = 0;
@@ -66,12 +67,14 @@ namespace TSDApp
             this.btnCancel.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(225)))), ((int)(((byte)(238)))), ((int)(((byte)(240)))));
             this.btnCancel.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(225)))), ((int)(((byte)(238)))), ((int)(((byte)(240)))));
             this.btnCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnCancel.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnCancel.Location = new System.Drawing.Point(136, 145);
+            this.btnCancel.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnCancel.Image = global::TSDApp.Properties.Resources.left_arrow;
+            this.btnCancel.Location = new System.Drawing.Point(136, 175);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(89, 23);
+            this.btnCancel.Size = new System.Drawing.Size(94, 40);
             this.btnCancel.TabIndex = 4;
             this.btnCancel.Text = "Exit";
+            this.btnCancel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
@@ -81,12 +84,15 @@ namespace TSDApp
             this.btnEnter.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(225)))), ((int)(((byte)(238)))), ((int)(((byte)(240)))));
             this.btnEnter.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(225)))), ((int)(((byte)(238)))), ((int)(((byte)(240)))));
             this.btnEnter.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnEnter.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnEnter.Location = new System.Drawing.Point(268, 145);
+            this.btnEnter.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnEnter.Image = global::TSDApp.Properties.Resources.check;
+            this.btnEnter.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnEnter.Location = new System.Drawing.Point(268, 175);
             this.btnEnter.Name = "btnEnter";
-            this.btnEnter.Size = new System.Drawing.Size(89, 23);
+            this.btnEnter.Size = new System.Drawing.Size(94, 40);
             this.btnEnter.TabIndex = 3;
             this.btnEnter.Text = "Confirm";
+            this.btnEnter.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnEnter.UseVisualStyleBackColor = true;
             this.btnEnter.Click += new System.EventHandler(this.btnEnter_Click);
             // 
@@ -94,20 +100,20 @@ namespace TSDApp
             // 
             this.txtBankName.BackColor = System.Drawing.Color.White;
             this.txtBankName.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtBankName.Location = new System.Drawing.Point(136, 96);
+            this.txtBankName.Location = new System.Drawing.Point(136, 126);
             this.txtBankName.Name = "txtBankName";
             this.txtBankName.Size = new System.Drawing.Size(221, 23);
             this.txtBankName.TabIndex = 1;
             // 
-            // label1
+            // lblInformation
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(131, 51);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(226, 25);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Enter the bank Name :";
+            this.lblInformation.AutoSize = true;
+            this.lblInformation.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblInformation.Location = new System.Drawing.Point(131, 81);
+            this.lblInformation.Name = "lblInformation";
+            this.lblInformation.Size = new System.Drawing.Size(226, 25);
+            this.lblInformation.TabIndex = 0;
+            this.lblInformation.Text = "Enter the bank Name :";
             // 
             // MainPanel
             // 
@@ -124,6 +130,16 @@ namespace TSDApp
             this.MainPanel.Name = "MainPanel";
             this.MainPanel.Size = new System.Drawing.Size(728, 539);
             this.MainPanel.TabIndex = 1;
+            // 
+            // lblGVTitle
+            // 
+            this.lblGVTitle.AutoSize = true;
+            this.lblGVTitle.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblGVTitle.Location = new System.Drawing.Point(269, 92);
+            this.lblGVTitle.Name = "lblGVTitle";
+            this.lblGVTitle.Size = new System.Drawing.Size(85, 25);
+            this.lblGVTitle.TabIndex = 5;
+            this.lblGVTitle.Text = "Screens";
             // 
             // btnDeleteScreen
             // 
@@ -199,16 +215,6 @@ namespace TSDApp
             this.lblTitle.TabIndex = 0;
             this.lblTitle.Text = "Title";
             // 
-            // lblGVTitle
-            // 
-            this.lblGVTitle.AutoSize = true;
-            this.lblGVTitle.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblGVTitle.Location = new System.Drawing.Point(343, 92);
-            this.lblGVTitle.Name = "lblGVTitle";
-            this.lblGVTitle.Size = new System.Drawing.Size(85, 25);
-            this.lblGVTitle.TabIndex = 5;
-            this.lblGVTitle.Text = "Screens";
-            // 
             // TSD
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -238,7 +244,7 @@ namespace TSDApp
         private System.Windows.Forms.Panel BankNamePanel;
         private System.Windows.Forms.Button btnEnter;
         private System.Windows.Forms.TextBox txtBankName;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblInformation;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Panel MainPanel;
         private System.Windows.Forms.Label lblTitle;
