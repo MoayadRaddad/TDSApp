@@ -10,31 +10,24 @@ using System.Windows.Forms;
 
 namespace TSDApp.Models
 {
-    //public class to share some usefull methods across forms
-    public class SharingMethods
+    /// <summary>
+    /// public class to share some usefull methods across forms
+    /// </summary>
+    public static class SharingMethods
     {
-        //public method get exception,handle it and save it to log file with json type
+        #region Usefull methods
+        /// <summary>
+        /// public method get exception,handle it and save it to log file with json type
+        /// </summary>
         public static void SaveExceptionToLogFile(Exception ex)
         {
-            string filePath = System.AppDomain.CurrentDomain.BaseDirectory + "Exceptions.json";
-            using (StreamWriter writer = File.AppendText(filePath))
-            {
-                while (ex != null)
-                {
-                    ApplicationException applicationException = new ApplicationException();
-                    applicationException.Date = DateTime.Now;
-                    applicationException.Type = ex.GetType().FullName;
-                    applicationException.Message = ex.Message;
-                    applicationException.StackTrace = ex.StackTrace;
-                    var JException = JsonConvert.SerializeObject(applicationException);
-                    writer.WriteLine(JException);
-                    MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    ex = ex.InnerException;
-                }
-            }
+            BusinessObjects.ExceptionsWriter.ExceptionsWriter.SaveExceptionToLogFile(ex);
+            MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
-        //public method get read connection string from file and get it
-        public static string SetConnectionString()
+        /// <summary>
+        /// public method get read connection string from file and get it
+        /// </summary>
+        public static void SetConnectionString()
         {
             try
             {
@@ -51,19 +44,39 @@ namespace TSDApp.Models
                             ConnectionString = reader.ReadLine();
                         }
                     }
-                    return ConnectionString;
+                    BusinessAccessLayer.ConnectionString.ConnectionString.SetConnectionString(ConnectionString);
                 }
                 else
                 {
                     MessageBox.Show("The File for connection sting is missing or not found", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return string.Empty;
                 }
             }
             catch (Exception ex)
             {
                 Models.SharingMethods.SaveExceptionToLogFile(ex);
-                return string.Empty;
             }
         }
+        /// <summary>
+        /// Set column width
+        /// </summary>
+        /// <param name="pGridView"></param>
+        /// <param name="pColumnNumber"></param>
+        public static void ChangeColumnWidth(DataGridView pGridView, int pColumnNumber)
+        {
+            try
+            {
+                DataGridViewColumn column = null;
+                for (int columnIndex = 0; columnIndex < pGridView.ColumnCount; columnIndex++)
+                {
+                    column = pGridView.Columns[columnIndex];
+                    column.Width = (pGridView.Width / pColumnNumber) - (44 / pColumnNumber);
+                }
+            }
+            catch (Exception ex)
+            {
+                Models.SharingMethods.SaveExceptionToLogFile(ex);
+            }
+        }
+        #endregion
     }
 }

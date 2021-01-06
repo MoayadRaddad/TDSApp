@@ -1,0 +1,12 @@
+C:\Users\Moayad\Documents\GitHub\TDSApp\TSDApp\TSD.DataAccessLayer\bin\Debug\netstandard2.0\TSD.DataAccessLayer.deps.json
+C:\Users\Moayad\Documents\GitHub\TDSApp\TSDApp\TSD.DataAccessLayer\bin\Debug\netstandard2.0\TSD.DataAccessLayer.dll
+C:\Users\Moayad\Documents\GitHub\TDSApp\TSDApp\TSD.DataAccessLayer\bin\Debug\netstandard2.0\TSD.DataAccessLayer.pdb
+C:\Users\Moayad\Documents\GitHub\TDSApp\TSDApp\TSD.DataAccessLayer\bin\Debug\netstandard2.0\BusinessObjects.dll
+C:\Users\Moayad\Documents\GitHub\TDSApp\TSDApp\TSD.DataAccessLayer\bin\Debug\netstandard2.0\BusinessObjects.pdb
+C:\Users\Moayad\Documents\GitHub\TDSApp\TSDApp\TSD.DataAccessLayer\obj\Debug\netstandard2.0\TSD.DataAccessLayer.csprojAssemblyReference.cache
+C:\Users\Moayad\Documents\GitHub\TDSApp\TSDApp\TSD.DataAccessLayer\obj\Debug\netstandard2.0\TSD.DataAccessLayer.AssemblyInfoInputs.cache
+C:\Users\Moayad\Documents\GitHub\TDSApp\TSDApp\TSD.DataAccessLayer\obj\Debug\netstandard2.0\TSD.DataAccessLayer.AssemblyInfo.cs
+C:\Users\Moayad\Documents\GitHub\TDSApp\TSDApp\TSD.DataAccessLayer\obj\Debug\netstandard2.0\TSD.DataAccessLayer.csproj.CoreCompileInputs.cache
+C:\Users\Moayad\Documents\GitHub\TDSApp\TSDApp\TSD.DataAccessLayer\obj\Debug\netstandard2.0\TSD.DataAccessLayer.csproj.CopyComplete
+C:\Users\Moayad\Documents\GitHub\TDSApp\TSDApp\TSD.DataAccessLayer\obj\Debug\netstandard2.0\TSD.DataAccessLayer.dll
+C:\Users\Moayad\Documents\GitHub\TDSApp\TSDApp\TSD.DataAccessLayer\obj\Debug\netstandard2.0\TSD.DataAccessLayer.pdb
