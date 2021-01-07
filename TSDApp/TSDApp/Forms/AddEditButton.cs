@@ -186,17 +186,9 @@ namespace TSDApp.Forms
         {
             try
             {
-                AddEditScreen addEditScreen = null;
+                AddEditScreen addEditScreen = new AddEditScreen();
                 CurrentButton = null;
                 this.Dispose();
-                if (CurrentScreen.id != 0)
-                {
-                    addEditScreen = new AddEditScreen(TSD.CurrentBank.id, CurrentScreen.id);
-                }
-                else
-                {
-                    addEditScreen = new AddEditScreen(TSD.CurrentBank.id);
-                }
                 addEditScreen.Show();
             }
             catch (Exception ex)
@@ -241,6 +233,7 @@ namespace TSDApp.Forms
                                         this.Dispose();
                                         AddEditScreen addEditScreen = new AddEditScreen(TSD.CurrentBank.id, CurrentScreen.id, CurrentButton, null);
                                         addEditScreen.Show();
+                                        CurrentButton = null;
                                     }
                                     else
                                     {
@@ -254,6 +247,7 @@ namespace TSDApp.Forms
                                         this.Dispose();
                                         AddEditScreen addEditScreen = new AddEditScreen(TSD.CurrentBank.id, CurrentScreen.id, CurrentButton, OldButton);
                                         addEditScreen.Show();
+                                        CurrentButton = null;
                                     }
                                 }
                                 else
@@ -286,6 +280,7 @@ namespace TSDApp.Forms
                                             this.Dispose();
                                             AddEditScreen addEditScreen = new AddEditScreen(TSD.CurrentBank.id, CurrentScreen.id, CurrentButton, null);
                                             addEditScreen.Show();
+                                            CurrentButton = null;
                                         }
                                         else
                                         {
@@ -298,6 +293,7 @@ namespace TSDApp.Forms
                                             this.Dispose();
                                             AddEditScreen addEditScreen = new AddEditScreen(TSD.CurrentBank.id, CurrentScreen.id, CurrentButton, OldButton);
                                             addEditScreen.Show();
+                                            CurrentButton = null;
                                         }
                                     }
                                     else

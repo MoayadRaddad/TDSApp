@@ -82,7 +82,7 @@ namespace TSDApp.Fomrs
                 {
                     FillScreens(pScreenId);
                 }
-                if (pNewButton.id == 0)
+                if (pOldButton == null)
                 {
                     LstButtons.Add(pNewButton);
                     IEnumrableLstButtons = Models.SharingMethods.GetIEnumrable(LstButtons);
