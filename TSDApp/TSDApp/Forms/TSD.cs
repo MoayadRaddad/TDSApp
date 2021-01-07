@@ -213,8 +213,12 @@ namespace TSDApp
                 {
                     if (gvScreens.SelectedRows.Count == 1)
                     {
-                        int screenId = (int)gvScreens.SelectedRows[0].Cells[0].Value;
-                        AddEditScreen addEditScreen = new AddEditScreen(CurrentBank.id, screenId);
+                        Models.Screen pScreen = new Models.Screen();
+                        pScreen.id = (int)gvScreens.SelectedRows[0].Cells[0].Value;
+                        pScreen.Name = (string)gvScreens.SelectedRows[0].Cells[1].Value;
+                        pScreen.isActive = (bool)gvScreens.SelectedRows[0].Cells[2].Value == true ? "True" : "False";
+                        pScreen.BankId = (int)gvScreens.SelectedRows[0].Cells[3].Value;
+                        AddEditScreen addEditScreen = new AddEditScreen(CurrentBank.id, pScreen);
                         this.Hide();
                         addEditScreen.Show();
                     }

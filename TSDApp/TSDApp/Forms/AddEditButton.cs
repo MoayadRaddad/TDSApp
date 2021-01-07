@@ -35,23 +35,6 @@ namespace TSDApp.Forms
             }
         }
         /// <summary>
-        /// Parametarize constructor (if new button)
-        /// </summary>
-        /// <param name="pScreenId"></param>
-        public AddEditButton(int pScreenId)
-        {
-            try
-            {
-                InitializeComponent();
-                CurrentScreen = new Models.Screen();
-                CurrentScreen.id = pScreenId;
-            }
-            catch (Exception ex)
-            {
-                Models.SharingMethods.SaveExceptionToLogFile(ex);
-            }
-        }
-        /// <summary>
         /// Parametarize constructor get screen object
         /// </summary>
         /// <param name="pScreen"></param>
@@ -74,14 +57,15 @@ namespace TSDApp.Forms
         /// </summary>
         /// <param name="pScreenId"></param>
         /// <param name="pButtonId"></param>
-        public AddEditButton(int pScreenId, int pButtonId)
+        public AddEditButton(Models.Screen pScreen, Models.Button pButton)
         {
             try
             {
                 InitializeComponent();
                 CurrentScreen = new Models.Screen();
-                CurrentScreen.id = pScreenId;
-                FillButtonData(pButtonId);
+                CurrentScreen = pScreen;
+                CurrentButton = pButton;
+                FillButtonData();
                 lblTitle.Text = "Edit Button";
                 btnSave.Text = "Edit";
             }
@@ -166,7 +150,7 @@ namespace TSDApp.Forms
                 this.Dispose();
                 if (CurrentScreen.id != 0)
                 {
-                    addEditScreen = new AddEditScreen(TSD.CurrentBank.id, CurrentScreen.id);
+                    addEditScreen = new AddEditScreen(TSD.CurrentBank.id, CurrentScreen, null, null);
                 }
                 else
                 {
@@ -186,9 +170,10 @@ namespace TSDApp.Forms
         {
             try
             {
-                AddEditScreen addEditScreen = new AddEditScreen();
+                AddEditScreen addEditScreen = null;
                 CurrentButton = null;
                 this.Dispose();
+                addEditScreen = new AddEditScreen(TSD.CurrentBank.id, CurrentScreen, null, null);
                 addEditScreen.Show();
             }
             catch (Exception ex)
@@ -203,124 +188,89 @@ namespace TSDApp.Forms
         {
             try
             {
-                if (BusinessAccessLayer.ConnectionString.ConnectionString.IsServerConnected())
+                //Check if EN name is filled or not
+                if (txtENName.Text != "")
                 {
-                    //Check if EN name is filled or not
-                    if (txtENName.Text != "")
+                    //Check if AR name is filled or not
+                    if (txtARName.Text != "")
                     {
-                        //Check if AR name is filled or not
-                        if (txtARName.Text != "")
+                        //Check which radio button checked
+                        if (rbIssueTicket.Checked)
                         {
-                            //Check which radio button checked
-                            if (rbIssueTicket.Checked)
+                            //Check if combobox selected
+                            if (ddlIssueTicket.SelectedIndex != 0)
                             {
-                                //Check if combobox selected
-                                if (ddlIssueTicket.SelectedIndex != 0)
+                                //Check if it is new button to insert or edit button to update
+                                if (CurrentButton == null)
                                 {
-                                    //Check if it is new button to insert or edit button to update
-                                    if (CurrentButton == null)
-                                    {
-                                        //if (CurrentScreen.id == 0)
-                                        //{
-                                        //    string pInsertScreenquery = "insert into tblScreens OUTPUT INSERTED.IDENTITYCOL  values (@Name,@isActive,@BankId)";
-                                        //    CurrentScreen = BusinessAccessLayer.Screen.Screen.InsertScreen(pInsertScreenquery, CurrentScreen);
-                                        //}
-                                        //CurrentButton = new Models.Button(0, txtENName.Text, txtARName.Text, rbIssueTicket.Text, null, null, ddlIssueTicket.SelectedItem.ToString(), CurrentScreen.id);
-                                        //string pInsertButton = "insert into tblButtons OUTPUT INSERTED.IDENTITYCOL  values (@ENName,@ARName,@Type,@MessageAR,@MessageEN,@issueType,@ScreenId)";
-                                        //BusinessAccessLayer.Button.Button.InsertButton(pInsertButton, CurrentButton);
-                                        //MessageBox.Show("Button had been added to screen successfully", "Done", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                        CurrentButton = new Models.Button(0, txtENName.Text, txtARName.Text, rbIssueTicket.Text, null, null, ddlIssueTicket.SelectedItem.ToString(), CurrentScreen.id);
-                                        this.Dispose();
-                                        AddEditScreen addEditScreen = new AddEditScreen(TSD.CurrentBank.id, CurrentScreen.id, CurrentButton, null);
-                                        addEditScreen.Show();
-                                        CurrentButton = null;
-                                    }
-                                    else
-                                    {
-                                        //Call UpdateButton to update current button and go to previous form
-                                        //CurrentButton = new Models.Button(CurrentButton.id, txtENName.Text, txtARName.Text, rbIssueTicket.Text, null, null, ddlIssueTicket.SelectedItem.ToString(), CurrentScreen.id);
-                                        //string pInsertButton = "update tblButtons set ENName = @ENName,ARName = @ARName,Type = @Type,MessageAR = @MessageAR,MessageEN = @MessageEN,issueType = @issueType,ScreenId = @ScreenId where id = @id";
-                                        //BusinessAccessLayer.Button.Button.UpdateButton(pInsertButton, CurrentButton);
-                                        //MessageBox.Show("Button had been updated", "Done", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                        Models.Button OldButton = CurrentButton;
-                                        CurrentButton = new Models.Button(CurrentButton.id, txtENName.Text, txtARName.Text, rbIssueTicket.Text, null, null, ddlIssueTicket.SelectedItem.ToString(), CurrentScreen.id);
-                                        this.Dispose();
-                                        AddEditScreen addEditScreen = new AddEditScreen(TSD.CurrentBank.id, CurrentScreen.id, CurrentButton, OldButton);
-                                        addEditScreen.Show();
-                                        CurrentButton = null;
-                                    }
+                                    CurrentButton = new Models.Button(0, txtENName.Text, txtARName.Text, rbIssueTicket.Text, null, null, ddlIssueTicket.SelectedItem.ToString(), CurrentScreen.id);
+                                    this.Dispose();
+                                    AddEditScreen addEditScreen = new AddEditScreen(TSD.CurrentBank.id, CurrentScreen, CurrentButton, null);
+                                    addEditScreen.Show();
+                                    CurrentButton = null;
                                 }
                                 else
                                 {
-                                    MessageBox.Show("Please select issue ticket", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                    Models.Button OldButton = CurrentButton;
+                                    CurrentButton = new Models.Button(CurrentButton.id, txtENName.Text, txtARName.Text, rbIssueTicket.Text, null, null, ddlIssueTicket.SelectedItem.ToString(), CurrentScreen.id, true);
+                                    this.Dispose();
+                                    AddEditScreen addEditScreen = new AddEditScreen(TSD.CurrentBank.id, CurrentScreen, CurrentButton, OldButton);
+                                    addEditScreen.Show();
+                                    CurrentButton = null;
                                 }
                             }
                             else
                             {
-                                //Check if AR message is filled or not
-                                if (txtMessageEN.Text != "")
-                                {
-                                    //Check if AR message is filled or not
-                                    if (txtMessageAR.Text != "")
-                                    {
-                                        //Check if it is new button to insert or edit button to update
-                                        if (CurrentButton == null)
-                                        {
-                                            //if (CurrentScreen.id == 0)
-                                            //{
-                                            //    string pInsertScreenquery = "insert into tblScreens OUTPUT INSERTED.IDENTITYCOL  values (@Name,@isActive,@BankId)";
-                                            //    CurrentScreen = BusinessAccessLayer.Screen.Screen.InsertScreen(pInsertScreenquery, CurrentScreen);
-                                            //}
-                                            ////Call insertNewButton to insert new button and go to previous form
-                                            //CurrentButton = new Models.Button(0, txtENName.Text, txtARName.Text, rbShowMessage.Text, txtMessageEN.Text, txtMessageAR.Text, null, CurrentScreen.id);
-                                            //string pInsertButton = "insert into tblButtons OUTPUT INSERTED.IDENTITYCOL  values (@ENName,@ARName,@Type,@MessageAR,@MessageEN,@issueType,@ScreenId)";
-                                            //BusinessAccessLayer.Button.Button.InsertButton(pInsertButton, CurrentButton);
-                                            //MessageBox.Show("Button had been added to screen successfully", "Done", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                            CurrentButton = new Models.Button(0, txtENName.Text, txtARName.Text, rbShowMessage.Text, txtMessageEN.Text, txtMessageAR.Text, null, CurrentScreen.id);
-                                            this.Dispose();
-                                            AddEditScreen addEditScreen = new AddEditScreen(TSD.CurrentBank.id, CurrentScreen.id, CurrentButton, null);
-                                            addEditScreen.Show();
-                                            CurrentButton = null;
-                                        }
-                                        else
-                                        {
-                                            //CurrentButton = new Models.Button(CurrentButton.id, txtENName.Text, txtARName.Text, rbShowMessage.Text, txtMessageEN.Text, txtMessageAR.Text, null, CurrentScreen.id);
-                                            //string pInsertButton = "update tblButtons set ENName = @ENName,ARName = @ARName,Type = @Type,MessageAR = @MessageAR,MessageEN = @MessageEN,issueType = @issueType,ScreenId = @ScreenId where id = @id";
-                                            //BusinessAccessLayer.Button.Button.UpdateButton(pInsertButton, CurrentButton);
-                                            //MessageBox.Show("Button had been updated", "Done", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                            Models.Button OldButton = CurrentButton;
-                                            CurrentButton = new Models.Button(CurrentButton.id, txtENName.Text, txtARName.Text, rbShowMessage.Text, txtMessageEN.Text, txtMessageAR.Text, null, CurrentScreen.id);
-                                            this.Dispose();
-                                            AddEditScreen addEditScreen = new AddEditScreen(TSD.CurrentBank.id, CurrentScreen.id, CurrentButton, OldButton);
-                                            addEditScreen.Show();
-                                            CurrentButton = null;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        MessageBox.Show("Please fill AR Message", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                                    }
-
-                                }
-                                else
-                                {
-                                    MessageBox.Show("Please fill EN Message", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                                }
+                                MessageBox.Show("Please select issue ticket", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                             }
                         }
                         else
                         {
-                            MessageBox.Show("Please fill AR Name", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            //Check if AR message is filled or not
+                            if (txtMessageEN.Text != "")
+                            {
+                                //Check if AR message is filled or not
+                                if (txtMessageAR.Text != "")
+                                {
+                                    //Check if it is new button to insert or edit button to update
+                                    if (CurrentButton == null)
+                                    {
+                                        CurrentButton = new Models.Button(0, txtENName.Text, txtARName.Text, rbShowMessage.Text, txtMessageEN.Text, txtMessageAR.Text, null, CurrentScreen.id);
+                                        this.Dispose();
+                                        AddEditScreen addEditScreen = new AddEditScreen(TSD.CurrentBank.id, CurrentScreen, CurrentButton, null);
+                                        addEditScreen.Show();
+                                        CurrentButton = null;
+                                    }
+                                    else
+                                    {
+                                        Models.Button OldButton = CurrentButton;
+                                        CurrentButton = new Models.Button(CurrentButton.id, txtENName.Text, txtARName.Text, rbShowMessage.Text, txtMessageEN.Text, txtMessageAR.Text, null, CurrentScreen.id, true);
+                                        this.Dispose();
+                                        AddEditScreen addEditScreen = new AddEditScreen(TSD.CurrentBank.id, CurrentScreen, CurrentButton, OldButton);
+                                        addEditScreen.Show();
+                                        CurrentButton = null;
+                                    }
+                                }
+                                else
+                                {
+                                    MessageBox.Show("Please fill AR Message", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                }
+
+                            }
+                            else
+                            {
+                                MessageBox.Show("Please fill EN Message", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            }
                         }
                     }
                     else
                     {
-                        MessageBox.Show("Please fill EN Name", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        MessageBox.Show("Please fill AR Name", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
                 }
                 else
                 {
-                    MessageBox.Show("Please check your connection to database", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Please fill EN Name", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
             catch (Exception ex)
@@ -335,45 +285,36 @@ namespace TSDApp.Forms
         /// Function to fill data for the current button
         /// </summary>
         /// <param name="pButtonId"></param>
-        private void FillButtonData(int pButtonId)
+        private void FillButtonData()
         {
             try
             {
-                if (BusinessAccessLayer.ConnectionString.ConnectionString.IsServerConnected())
+                txtENName.Text = CurrentButton.ENName;
+                txtARName.Text = CurrentButton.ARName;
+                txtMessageEN.Text = CurrentButton.MessageEN;
+                txtMessageAR.Text = CurrentButton.MessageAR;
+                if (CurrentButton.Type == rbIssueTicket.Text)
                 {
-                    string pSelectButtonById = "SELECT * FROM tblButtons where id = @id";
-                    CurrentButton = BusinessAccessLayer.Button.Button.SelectButtonById(pSelectButtonById, pButtonId);
-                    txtENName.Text = CurrentButton.ENName;
-                    txtARName.Text = CurrentButton.ARName;
-                    txtMessageEN.Text = CurrentButton.MessageEN;
-                    txtMessageAR.Text = CurrentButton.MessageAR;
-                    if (CurrentButton.Type == rbIssueTicket.Text)
+                    rbIssueTicket.Checked = true;
+                    lblMessageAR.Visible = false;
+                    txtMessageAR.Visible = false;
+                    lblMessageEN.Visible = false;
+                    txtMessageEN.Visible = false;
+                    if (CurrentButton.issueType == "withdraw")
                     {
-                        rbIssueTicket.Checked = true;
-                        lblMessageAR.Visible = false;
-                        txtMessageAR.Visible = false;
-                        lblMessageEN.Visible = false;
-                        txtMessageEN.Visible = false;
-                        if (CurrentButton.issueType == "withdraw")
-                        {
-                            ddlIssueTicket.SelectedIndex = 1;
-                        }
-                        else
-                        {
-                            ddlIssueTicket.SelectedIndex = 2;
-                        }
+                        ddlIssueTicket.SelectedIndex = 1;
                     }
                     else
                     {
-                        rbShowMessage.Checked = true;
-                        lblIssueTicket.Visible = false;
-                        ddlIssueTicket.Visible = false;
-                        ddlIssueTicket.SelectedIndex = 0;
+                        ddlIssueTicket.SelectedIndex = 2;
                     }
                 }
                 else
                 {
-                    MessageBox.Show("Please check your connection to database", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    rbShowMessage.Checked = true;
+                    lblIssueTicket.Visible = false;
+                    ddlIssueTicket.Visible = false;
+                    ddlIssueTicket.SelectedIndex = 0;
                 }
             }
             catch (Exception ex)

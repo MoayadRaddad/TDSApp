@@ -17,7 +17,7 @@ namespace TSDApp.Fomrs
         #region Variables
         private int BankId;
         private static Models.Screen CurrentScreen;
-        public static List<Models.Button> LstButtons;
+        public static List<Models.Button> LstButtons = new List<Models.Button>();
         public static IEnumerable<Models.Button> IEnumrableLstButtons;
         #endregion
 
@@ -58,13 +58,13 @@ namespace TSDApp.Fomrs
         /// </summary>
         /// <param name="pBankId"></param>
         /// <param name="pScreenId"></param>
-        public AddEditScreen(int pBankId, int pScreenId)
+        public AddEditScreen(int pBankId, Models.Screen pScreen)
         {
             try
             {
                 InitializeComponent();
                 BankId = pBankId;
-                FillScreens(pScreenId);
+                FillScreens(pScreen);
                 FillButtons();
             }
             catch (Exception ex)
@@ -72,22 +72,19 @@ namespace TSDApp.Fomrs
                 Models.SharingMethods.SaveExceptionToLogFile(ex);
             }
         }
-        public AddEditScreen(int pBankId, int pScreenId, Models.Button pNewButton, Models.Button pOldButton)
+        public AddEditScreen(int pBankId, Models.Screen pScreen, Models.Button pNewButton, Models.Button pOldButton)
         {
             try
             {
                 InitializeComponent();
                 BankId = pBankId;
-                if (pScreenId != 0)
-                {
-                    FillScreens(pScreenId);
-                }
-                if (pOldButton == null)
+                FillScreens(pScreen);
+                if (pOldButton == null && pNewButton != null)
                 {
                     LstButtons.Add(pNewButton);
                     IEnumrableLstButtons = Models.SharingMethods.GetIEnumrable(LstButtons);
                 }
-                else
+                else if (pNewButton != null)
                 {
                     LstButtons[LstButtons.FindIndex(x => x.id == pOldButton.id)] = pNewButton;
                     IEnumrableLstButtons = Models.SharingMethods.GetIEnumrable(LstButtons);
@@ -132,12 +129,49 @@ namespace TSDApp.Fomrs
                         {
                             if (gvButtons.RowCount > 0)
                             {
-                                CurrentScreen.Name = txtName.Text;
-                                CurrentScreen.isActive = ddlActive.SelectedItem.ToString();
-                                string pUpdateScreenquery = "update tblScreens set name = @Name,isActive = @isActive where id = @id";
-                                CurrentScreen = BusinessAccessLayer.Screen.Screen.UpdateScreen(pUpdateScreenquery, CurrentScreen);
-                                lblGVTitle.Text = CurrentScreen.Name;
-                                MessageBox.Show("Screen has been updated successfully", "Done", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                if (CurrentScreen.id == 0)
+                                {
+                                    string pInsertScreenquery = "insert into tblScreens OUTPUT INSERTED.IDENTITYCOL  values (@Name,@isActive,@BankId)";
+                                    CurrentScreen = BusinessAccessLayer.Screen.Screen.InsertScreen(pInsertScreenquery, CurrentScreen);
+                                }
+                                else
+                                {
+                                    CurrentScreen.Name = txtName.Text;
+                                    CurrentScreen.isActive = ddlActive.SelectedItem.ToString();
+                                    string pUpdateScreenquery = "update tblScreens set name = @Name,isActive = @isActive where id = @id";
+                                    CurrentScreen = BusinessAccessLayer.Screen.Screen.UpdateScreen(pUpdateScreenquery, CurrentScreen);
+                                    lblGVTitle.Text = CurrentScreen.Name;
+                                }
+                                foreach (Models.Button pbutton in LstButtons)
+                                {
+                                    //if (pbutton.Type == "Issue Ticket")
+                                    //{
+                                        if (pbutton.id == 0)
+                                        {
+                                            string pInsertButton = "insert into tblButtons OUTPUT INSERTED.IDENTITYCOL  values (@ENName,@ARName,@Type,@MessageAR,@MessageEN,@issueType,@ScreenId)";
+                                            BusinessAccessLayer.Button.Button.InsertButton(pInsertButton, pbutton);
+                                        }
+                                        else if (pbutton.Updated == true)
+                                        {
+                                            string pUpdateButton = "update tblButtons set ENName = @ENName,ARName = @ARName,Type = @Type,MessageAR = @MessageAR,MessageEN = @MessageEN,issueType = @issueType,ScreenId = @ScreenId where id = @id";
+                                            BusinessAccessLayer.Button.Button.UpdateButton(pUpdateButton, pbutton);
+                                        }
+                                    //}
+                                    //else
+                                    //{
+                                    //    if (pbutton.id == 0)
+                                    //    {
+                                    //        string pInsertButton = "insert into tblButtons OUTPUT INSERTED.IDENTITYCOL  values (@ENName,@ARName,@Type,@MessageAR,@MessageEN,@issueType,@ScreenId)";
+                                    //        BusinessAccessLayer.Button.Button.InsertButton(pInsertButton, pbutton);
+                                    //    }
+                                    //    else if (pbutton.Updated == true)
+                                    //    {
+                                    //        string pInsertButton = "update tblButtons set ENName = @ENName,ARName = @ARName,Type = @Type,MessageAR = @MessageAR,MessageEN = @MessageEN,issueType = @issueType,ScreenId = @ScreenId where id = @id";
+                                    //        BusinessAccessLayer.Button.Button.UpdateButton(pInsertButton, pbutton);
+                                    //    }
+                                    //}
+                                }
+                                MessageBox.Show("Button and screen had been saved successfully", "Done", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             }
                             else
                             {
@@ -257,21 +291,26 @@ namespace TSDApp.Fomrs
                 {
                     if (ddlActive.SelectedIndex != 0)
                     {
-                        AddEditButton addEditButton = null;
-                        if (CurrentScreen == null || CurrentScreen.id == 0)
+                        if (CurrentScreen == null)
                         {
+                            AddEditButton addEditButton = null;
                             CurrentScreen = new Models.Screen();
                             CurrentScreen.Name = txtName.Text;
                             CurrentScreen.isActive = ddlActive.SelectedItem.ToString();
                             CurrentScreen.BankId = BankId;
                             addEditButton = new AddEditButton(CurrentScreen);
+                            this.Hide();
+                            addEditButton.Show();
                         }
                         else
                         {
-                            addEditButton = new AddEditButton(CurrentScreen.id);
+                            AddEditButton addEditButton = null;
+                            CurrentScreen.Name = txtName.Text;
+                            CurrentScreen.isActive = ddlActive.SelectedItem.ToString();
+                            addEditButton = new AddEditButton(CurrentScreen);
+                            this.Hide();
+                            addEditButton.Show();
                         }
-                        this.Hide();
-                        addEditButton.Show();
                     }
                     else
                     {
@@ -300,7 +339,8 @@ namespace TSDApp.Fomrs
                     if (gvButtons.SelectedRows.Count == 1)
                     {
                         int buttonId = (int)gvButtons.SelectedRows[0].Cells[0].Value;
-                        AddEditButton addEditButton = new AddEditButton(CurrentScreen.id, buttonId);
+                        Models.Button CurrentButton = LstButtons.Where(x => x.id == buttonId).FirstOrDefault();
+                        AddEditButton addEditButton = new AddEditButton(CurrentScreen, CurrentButton);
                         this.Hide();
                         addEditButton.Show();
                     }
@@ -326,32 +366,24 @@ namespace TSDApp.Fomrs
         /// Function to fill textboxes with current screen data
         /// </summary>
         /// <param name="pScreenId"></param>
-        private void FillScreens(int pScreenId)
+        private void FillScreens(Models.Screen pScreen)
         {
             try
             {
-                if (BusinessAccessLayer.ConnectionString.ConnectionString.IsServerConnected())
+                CurrentScreen = pScreen;
+                txtName.Text = CurrentScreen.Name;
+                lblGVTitle.Text = CurrentScreen.Name + " - Buttons";
+                lblTitle.Text = "Edit Screen";
+                btnSave.Text = "Edit";
+                if (CurrentScreen.isActive.ToString() == "True")
                 {
-                    string pSelectScreenQuery = "SELECT id,name,isActive,BankId FROM tblScreens where id = @id";
-                    CurrentScreen = BusinessAccessLayer.Screen.Screen.SelectScreenbyId(pSelectScreenQuery, pScreenId);
-                    txtName.Text = CurrentScreen.Name;
-                    lblGVTitle.Text = CurrentScreen.Name + " - Buttons";
-                    lblTitle.Text = "Edit Screen";
-                    btnSave.Text = "Edit";
-                    if (CurrentScreen.isActive.ToString() == "Activated")
-                    {
-                        ddlActive.SelectedIndex = 1;
-                    }
-                    else
-                    {
-                        ddlActive.SelectedIndex = 2;
-                    }
-                    ddlActive.SelectedText = CurrentScreen.isActive.ToString();
+                    ddlActive.SelectedIndex = 1;
                 }
                 else
                 {
-                    MessageBox.Show("Please check your connection to database", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    ddlActive.SelectedIndex = 2;
                 }
+                ddlActive.SelectedText = CurrentScreen.isActive.ToString();
             }
             catch (Exception ex)
             {
@@ -425,6 +457,7 @@ namespace TSDApp.Fomrs
             this.gvButtons.Columns[6].Visible = false;
             this.gvButtons.Columns[7].Visible = false;
             this.gvButtons.Columns[8].Visible = false;
+            this.gvButtons.Columns[9].Visible = false;
             this.gvButtons.AllowUserToAddRows = false;
             this.gvButtons.AllowUserToResizeColumns = false;
             this.gvButtons.AllowUserToResizeRows = false;
