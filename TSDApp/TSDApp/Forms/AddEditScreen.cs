@@ -17,6 +17,8 @@ namespace TSDApp.Fomrs
         #region Variables
         private int BankId;
         private static Models.Screen CurrentScreen;
+        public static List<Models.Button> LstButtons;
+        public static IEnumerable<Models.Button> IEnumrableLstButtons;
         #endregion
 
         #region constructors
@@ -70,6 +72,34 @@ namespace TSDApp.Fomrs
                 Models.SharingMethods.SaveExceptionToLogFile(ex);
             }
         }
+        public AddEditScreen(int pBankId, int pScreenId, Models.Button pNewButton, Models.Button pOldButton)
+        {
+            try
+            {
+                InitializeComponent();
+                BankId = pBankId;
+                if (pScreenId != 0)
+                {
+                    FillScreens(pScreenId);
+                }
+                if (pNewButton.id == 0)
+                {
+                    LstButtons.Add(pNewButton);
+                    IEnumrableLstButtons = Models.SharingMethods.GetIEnumrable(LstButtons);
+                }
+                else
+                {
+                    LstButtons[LstButtons.FindIndex(x => x.id == pOldButton.id)] = pNewButton;
+                    IEnumrableLstButtons = Models.SharingMethods.GetIEnumrable(LstButtons);
+                }
+                gvButtons.DataSource = LstButtons.ToList();
+                SetdataGridViewDisplay();
+            }
+            catch (Exception ex)
+            {
+                Models.SharingMethods.SaveExceptionToLogFile(ex);
+            }
+        }
         #endregion
 
         #region Events
@@ -94,32 +124,39 @@ namespace TSDApp.Fomrs
         {
             try
             {
-                if (txtName.Text != "")
+                if (BusinessAccessLayer.ConnectionString.ConnectionString.IsServerConnected())
                 {
-                    if (ddlActive.SelectedIndex != 0)
+                    if (txtName.Text != "")
                     {
-                        if (gvButtons.RowCount > 0)
+                        if (ddlActive.SelectedIndex != 0)
                         {
-                            CurrentScreen.Name = txtName.Text;
-                            CurrentScreen.isActive = ddlActive.SelectedItem.ToString();
-                            string pUpdateScreenquery = "update tblScreens set name = @Name,isActive = @isActive where id = @id";
-                            CurrentScreen = BusinessAccessLayer.Screen.Screen.UpdateScreen(pUpdateScreenquery, CurrentScreen);
-                            lblGVTitle.Text = CurrentScreen.Name;
-                            MessageBox.Show("Screen has been updated successfully", "Done", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            if (gvButtons.RowCount > 0)
+                            {
+                                CurrentScreen.Name = txtName.Text;
+                                CurrentScreen.isActive = ddlActive.SelectedItem.ToString();
+                                string pUpdateScreenquery = "update tblScreens set name = @Name,isActive = @isActive where id = @id";
+                                CurrentScreen = BusinessAccessLayer.Screen.Screen.UpdateScreen(pUpdateScreenquery, CurrentScreen);
+                                lblGVTitle.Text = CurrentScreen.Name;
+                                MessageBox.Show("Screen has been updated successfully", "Done", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            }
+                            else
+                            {
+                                MessageBox.Show("Screen cannot be saved because there is no buttons added to this screen", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            }
                         }
                         else
                         {
-                            MessageBox.Show("Screen cannot be saved because there is no buttons added to this screen", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            MessageBox.Show("Please select active mode", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         }
                     }
                     else
                     {
-                        MessageBox.Show("Please select active mode", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        MessageBox.Show("Please fill screen Name", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
                 }
                 else
                 {
-                    MessageBox.Show("Please fill screen Name", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Please check your connection to database", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
             catch (Exception ex)
@@ -170,29 +207,38 @@ namespace TSDApp.Fomrs
         {
             try
             {
-                if (gvButtons.SelectedRows.Count > 0)
+                if (BusinessAccessLayer.ConnectionString.ConnectionString.IsServerConnected())
                 {
-                    DialogResult dialogResult = MessageBox.Show(@"Are you sure you want to delete selected button\s ?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                    if (dialogResult == DialogResult.Yes)
+                    if (gvButtons.SelectedRows.Count > 0)
                     {
-                        List<int> pButtonsIds = new List<int>();
-                        foreach (DataGridViewRow buttonRow in gvButtons.SelectedRows)
+                        DialogResult dialogResult = MessageBox.Show(@"Are you sure you want to delete selected button\s ?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                        if (dialogResult == DialogResult.Yes)
                         {
-                            pButtonsIds.Add((int)buttonRow.Cells["id"].Value);
+                            List<int> pButtonsIds = new List<int>();
+                            foreach (DataGridViewRow buttonRow in gvButtons.SelectedRows)
+                            {
+                                pButtonsIds.Add((int)buttonRow.Cells["id"].Value);
+                                LstButtons.Remove((LstButtons.Where(x => x.id == (int)buttonRow.Cells["id"].Value).FirstOrDefault()));
+                            }
+                            string pDeleteButtonByIdQuery = "delete from tblButtons where id = @id";
+                            BusinessAccessLayer.Button.Button.DeleteButtonsByIds(pDeleteButtonByIdQuery, pButtonsIds);
+                            IEnumrableLstButtons = Models.SharingMethods.GetIEnumrable(LstButtons);
+                            gvButtons.DataSource = IEnumrableLstButtons.ToList();
+                            MessageBox.Show(@"Button\s have been deleted successfully", "Done", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
-                        string pDeleteButtonByIdQuery = "delete from tblButtons where id = @id";
-                        BusinessAccessLayer.Button.Button.DeleteButtonsByIds(pDeleteButtonByIdQuery, pButtonsIds);
-                        FillButtons();
-                        MessageBox.Show(@"Button\s have been deleted successfully", "Done", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        else if (dialogResult == DialogResult.No)
+                        {
+                            MessageBox.Show(@"No button\s have been deleted", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        }
                     }
-                    else if (dialogResult == DialogResult.No)
+                    else
                     {
-                        MessageBox.Show(@"No button\s have been deleted", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        MessageBox.Show("Please select item to delete", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
                 }
                 else
                 {
-                    MessageBox.Show("Please select item to delete", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Please check your connection to database", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
             catch (Exception ex)
@@ -284,21 +330,28 @@ namespace TSDApp.Fomrs
         {
             try
             {
-                string pSelectScreenQuery = "SELECT id,name,isActive,BankId FROM tblScreens where id = @id";
-                CurrentScreen = BusinessAccessLayer.Screen.Screen.SelectScreenbyId(pSelectScreenQuery, pScreenId);
-                txtName.Text = CurrentScreen.Name;
-                lblGVTitle.Text = CurrentScreen.Name + " - Buttons";
-                lblTitle.Text = "Edit Screen";
-                btnSave.Text = "Edit";
-                if (CurrentScreen.isActive.ToString() == "Activated")
+                if (BusinessAccessLayer.ConnectionString.ConnectionString.IsServerConnected())
                 {
-                    ddlActive.SelectedIndex = 1;
+                    string pSelectScreenQuery = "SELECT id,name,isActive,BankId FROM tblScreens where id = @id";
+                    CurrentScreen = BusinessAccessLayer.Screen.Screen.SelectScreenbyId(pSelectScreenQuery, pScreenId);
+                    txtName.Text = CurrentScreen.Name;
+                    lblGVTitle.Text = CurrentScreen.Name + " - Buttons";
+                    lblTitle.Text = "Edit Screen";
+                    btnSave.Text = "Edit";
+                    if (CurrentScreen.isActive.ToString() == "Activated")
+                    {
+                        ddlActive.SelectedIndex = 1;
+                    }
+                    else
+                    {
+                        ddlActive.SelectedIndex = 2;
+                    }
+                    ddlActive.SelectedText = CurrentScreen.isActive.ToString();
                 }
                 else
                 {
-                    ddlActive.SelectedIndex = 2;
+                    MessageBox.Show("Please check your connection to database", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
-                ddlActive.SelectedText = CurrentScreen.isActive.ToString();
             }
             catch (Exception ex)
             {
@@ -312,17 +365,30 @@ namespace TSDApp.Fomrs
         {
             try
             {
-                string pSelectButtonsQuery = "SELECT id, ENName, ARName, Type, MessageAR, MessageEN, issueType, ScreenId FROM tblButtons where ScreenId = @ScreenId";
-                gvButtons.DataSource = BusinessAccessLayer.Button.Button.SelectButtonsbyScreenId(pSelectButtonsQuery, CurrentScreen.id);
-                TSDApp.Models.SharingMethods.ChangeColumnWidth(gvButtons, 3);
-                this.gvButtons.Columns[0].Visible = false;
-                this.gvButtons.Columns[4].Visible = false;
-                this.gvButtons.Columns[5].Visible = false;
-                this.gvButtons.Columns[6].Visible = false;
-                this.gvButtons.Columns[7].Visible = false;
-                this.gvButtons.AllowUserToAddRows = false;
-                this.gvButtons.AllowUserToResizeColumns = false;
-                this.gvButtons.AllowUserToResizeRows = false;
+                if (BusinessAccessLayer.ConnectionString.ConnectionString.IsServerConnected())
+                {
+                    LstButtons = new List<Models.Button>();
+                    string pSelectButtonsQuery = "SELECT id, ENName, ARName, Type, MessageAR, MessageEN, issueType, ScreenId FROM tblButtons where ScreenId = @ScreenId";
+                    var dataTable = BusinessAccessLayer.Button.Button.SelectButtonsbyScreenId(pSelectButtonsQuery, CurrentScreen.id);
+                    IEnumrableLstButtons = dataTable.AsEnumerable().Select(row => new Models.Button
+                    {
+                        id = row["id"] != null ? Convert.ToInt32(row["id"]) : 0,
+                        ENName = row["ENName"] != null ? Convert.ToString(row["ENName"]) : string.Empty,
+                        ARName = row["ARName"] != null ? Convert.ToString(row["ARName"]) : string.Empty,
+                        Type = row["Type"] != null ? Convert.ToString(row["Type"]) : string.Empty,
+                        MessageAR = row["MessageAR"] != null ? Convert.ToString(row["MessageAR"]) : string.Empty,
+                        MessageEN = row["MessageEN"] != null ? Convert.ToString(row["MessageEN"]) : string.Empty,
+                        issueType = row["issueType"] != null ? Convert.ToString(row["issueType"]) : string.Empty,
+                        ScreenId = row["ScreenId"] != null ? Convert.ToInt32(row["ScreenId"]) : 0
+                    });
+                    LstButtons = IEnumrableLstButtons.ToList();
+                    gvButtons.DataSource = IEnumrableLstButtons.ToList();
+                    SetdataGridViewDisplay();
+                }
+                else
+                {
+                    MessageBox.Show("Please check your connection to database", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
             }
             catch (Exception ex)
             {
@@ -349,6 +415,19 @@ namespace TSDApp.Fomrs
             {
                 Models.SharingMethods.SaveExceptionToLogFile(ex);
             }
+        }
+        private void SetdataGridViewDisplay()
+        {
+            TSDApp.Models.SharingMethods.ChangeColumnWidth(gvButtons, 3);
+            this.gvButtons.Columns[0].Visible = false;
+            this.gvButtons.Columns[4].Visible = false;
+            this.gvButtons.Columns[5].Visible = false;
+            this.gvButtons.Columns[6].Visible = false;
+            this.gvButtons.Columns[7].Visible = false;
+            this.gvButtons.Columns[8].Visible = false;
+            this.gvButtons.AllowUserToAddRows = false;
+            this.gvButtons.AllowUserToResizeColumns = false;
+            this.gvButtons.AllowUserToResizeRows = false;
         }
         #endregion
     }

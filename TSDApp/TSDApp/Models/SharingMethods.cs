@@ -77,6 +77,11 @@ namespace TSDApp.Models
                 Models.SharingMethods.SaveExceptionToLogFile(ex);
             }
         }
+        public static IEnumerable<T> GetIEnumrable<T>(List<T> pList)
+        {
+            List<T> ListT = pList;
+            return ListT;
+        }
         #endregion
     }
 }

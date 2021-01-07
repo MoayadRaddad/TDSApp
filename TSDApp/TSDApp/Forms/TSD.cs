@@ -107,17 +107,24 @@ namespace TSDApp
                     CurrentBank = new Models.Bank();
                     CurrentBank.Name = txtBankName.Text;
                     string pSelectBankquery = "SELECT id,Name FROM tblBanks WHERE Name = @Name";
-                    CurrentBank = BusinessAccessLayer.Bank.Bank.CheckBankExist(pSelectBankquery, CurrentBank);
-                    if (CurrentBank == null)
+                    if (BusinessAccessLayer.ConnectionString.ConnectionString.IsServerConnected())
                     {
-                        CurrentBank = new Models.Bank();
-                        CurrentBank.Name = txtBankName.Text;
-                        string pInsertBankquery = "insert into tblBanks OUTPUT INSERTED.IDENTITYCOL  values (@Name)";
-                        CurrentBank = BusinessAccessLayer.Bank.Bank.InsertBank(pInsertBankquery, CurrentBank);
+                        CurrentBank = BusinessAccessLayer.Bank.Bank.CheckBankExist(pSelectBankquery, CurrentBank);
+                        if (CurrentBank == null)
+                        {
+                            CurrentBank = new Models.Bank();
+                            CurrentBank.Name = txtBankName.Text;
+                            string pInsertBankquery = "insert into tblBanks OUTPUT INSERTED.IDENTITYCOL  values (@Name)";
+                            CurrentBank = BusinessAccessLayer.Bank.Bank.InsertBank(pInsertBankquery, CurrentBank);
+                        }
+                        FillScreens();
+                        BankNamePanel.Visible = false;
+                        MainPanel.Visible = true;
                     }
-                    FillScreens();
-                    BankNamePanel.Visible = false;
-                    MainPanel.Visible = true;
+                    else
+                    {
+                        MessageBox.Show("Please check your connection to database", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
                 }
                 else
                 {
@@ -138,32 +145,39 @@ namespace TSDApp
         {
             try
             {
-                if (gvScreens.SelectedRows.Count > 0)
+                if (BusinessAccessLayer.ConnectionString.ConnectionString.IsServerConnected())
                 {
-                    DialogResult dialogResult = MessageBox.Show(@"Are you sure you want to delete selected screen\s ?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                    if (dialogResult == DialogResult.Yes)
+                    if (gvScreens.SelectedRows.Count > 0)
                     {
-                        foreach (DataGridViewRow screenRow in gvScreens.SelectedRows)
+                        DialogResult dialogResult = MessageBox.Show(@"Are you sure you want to delete selected screen\s ?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                        if (dialogResult == DialogResult.Yes)
                         {
-                            int id = (int)screenRow.Cells["id"].Value;
-                            //Delete buttons for the deleted screen
-                            string pDeleteButtonQuery = "delete from tblButtons where ScreenId = @ScreenId";
-                            BusinessAccessLayer.Button.Button.DeleteButtonsByScreenId(pDeleteButtonQuery, id);
-                            //Delete screen whitch is selected
-                            string pDeleteScreenQuery = "delete from tblScreens where id = @id";
-                            BusinessAccessLayer.Screen.Screen.DeleteScreenById(pDeleteScreenQuery, id);
+                            foreach (DataGridViewRow screenRow in gvScreens.SelectedRows)
+                            {
+                                int id = (int)screenRow.Cells["id"].Value;
+                                //Delete buttons for the deleted screen
+                                string pDeleteButtonQuery = "delete from tblButtons where ScreenId = @ScreenId";
+                                BusinessAccessLayer.Button.Button.DeleteButtonsByScreenId(pDeleteButtonQuery, id);
+                                //Delete screen whitch is selected
+                                string pDeleteScreenQuery = "delete from tblScreens where id = @id";
+                                BusinessAccessLayer.Screen.Screen.DeleteScreenById(pDeleteScreenQuery, id);
+                            }
+                            FillScreens();
+                            MessageBox.Show(@"Screen\s have been deleted successfully", "Done", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
-                        FillScreens();
-                        MessageBox.Show(@"Screen\s have been deleted successfully", "Done", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        else if (dialogResult == DialogResult.No)
+                        {
+                            MessageBox.Show(@"No screen\s have been deleted", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        }
                     }
-                    else if (dialogResult == DialogResult.No)
+                    else
                     {
-                        MessageBox.Show(@"No screen\s have been deleted", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        MessageBox.Show("Please select item to delete", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
                 }
                 else
                 {
-                    MessageBox.Show("Please select item to delete", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Please check your connection to database", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
             catch (Exception ex)
@@ -244,17 +258,24 @@ namespace TSDApp
         {
             try
             {
-                lblTitle.Text = "Main Form - " + CurrentBank.Name;
-                lblGVTitle.Text = "Bank " + CurrentBank.Name + " screens";
-                string pSelectScreens = "SELECT id,name,isActive,BankId FROM tblScreens where BankId = @BankId";
-                gvScreens.DataSource = BusinessAccessLayer.Screen.Screen.SelectScreensByBankId(pSelectScreens, CurrentBank);
-                TSDApp.Models.SharingMethods.ChangeColumnWidth(gvScreens, 2);
-                this.gvScreens.Columns[0].Visible = false;
-                this.gvScreens.Columns[3].Visible = false;
-                this.gvScreens.AllowUserToAddRows = false;
-                this.gvScreens.AllowUserToResizeColumns = false;
-                this.gvScreens.AllowUserToResizeRows = false;
-                this.gvScreens.ReadOnly = true;
+                if (BusinessAccessLayer.ConnectionString.ConnectionString.IsServerConnected())
+                {
+                    lblTitle.Text = "Main Form - " + CurrentBank.Name;
+                    lblGVTitle.Text = "Bank " + CurrentBank.Name + " screens";
+                    string pSelectScreens = "SELECT id,name,isActive,BankId FROM tblScreens where BankId = @BankId";
+                    gvScreens.DataSource = BusinessAccessLayer.Screen.Screen.SelectScreensByBankId(pSelectScreens, CurrentBank);
+                    TSDApp.Models.SharingMethods.ChangeColumnWidth(gvScreens, 2);
+                    this.gvScreens.Columns[0].Visible = false;
+                    this.gvScreens.Columns[3].Visible = false;
+                    this.gvScreens.AllowUserToAddRows = false;
+                    this.gvScreens.AllowUserToResizeColumns = false;
+                    this.gvScreens.AllowUserToResizeRows = false;
+                    this.gvScreens.ReadOnly = true;
+                }
+                else
+                {
+                    MessageBox.Show("Please check your connection to database", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
             }
             catch (Exception ex)
             {

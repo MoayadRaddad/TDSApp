@@ -104,6 +104,22 @@ namespace TSD.DataAccessLayer.DBHelper
                 throw ex;
             }
         }
+        public static bool IsServerConnected()
+        {
+            using (var l_oConnection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    l_oConnection.Open();
+                    return true;
+                }
+                catch (SqlException ex)
+                {
+                    BusinessObjects.ExceptionsWriter.ExceptionsWriter.SaveExceptionToLogFile(ex);
+                    return false;
+                }
+            }
+        }
 
         #region Private Methods
 
