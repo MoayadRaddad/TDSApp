@@ -7,7 +7,7 @@ namespace BusinessAccessLayer.Screen
 {
     public static class Screen
     {
-        public static DataTable SelectScreensByBankId(TSDApp.Models.Bank pBank)
+        public static List<TSDApp.Models.Screen> SelectScreensByBankId(TSDApp.Models.Bank pBank)
         {
             try
             {
@@ -19,27 +19,16 @@ namespace BusinessAccessLayer.Screen
                 return null;
             }
         }
-        public static void DeleteScreenById(int pScreenId)
+        public static int DeleteScreenById(int pScreenId)
         {
             try
             {
-                TSD.DataAccessLayer.Screen.Screen.DeleteScreenById(pScreenId);
+                return TSD.DataAccessLayer.Screen.Screen.DeleteScreenById(pScreenId);
             }
             catch (Exception ex)
             {
                 BusinessObjects.ExceptionsWriter.ExceptionsWriter.SaveExceptionToLogFile(ex);
-            }
-        }
-        public static TSDApp.Models.Screen SelectScreenbyId(string pquery, int pScreenId)
-        {
-            try
-            {
-                return TSD.DataAccessLayer.Screen.Screen.SelectScreenbyId(pquery, pScreenId);
-            }
-            catch (Exception ex)
-            {
-                BusinessObjects.ExceptionsWriter.ExceptionsWriter.SaveExceptionToLogFile(ex);
-                return null;
+                return 0;
             }
         }
         public static TSDApp.Models.Screen InsertScreen(TSDApp.Models.Screen pScreen)

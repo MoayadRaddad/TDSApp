@@ -8,14 +8,31 @@ namespace TSD.DataAccessLayer.Screen
 {
     public static class Screen
     {
-        public static DataTable SelectScreensByBankId(TSDApp.Models.Bank pBank)
+        public static List<TSDApp.Models.Screen> SelectScreensByBankId(TSDApp.Models.Bank pBank)
         {
             try
             {
-                string pquery = "SELECT id,name,isActive,BankId FROM tblScreens where BankId = @BankId";
-                SqlParameter BankName = new SqlParameter("@BankId", pBank.id);
-                object[] BankParams = new object[] { BankName.ParameterName, BankName.SqlValue };
-                return DBHelper.DBHelper.ExecuteQuery(pquery, BankParams);
+                List<TSDApp.Models.Screen> lstButtons = new List<TSDApp.Models.Screen>();
+                using (SqlConnection con = new SqlConnection(DBHelper.DBHelper.GetConnectionString()))
+                {
+                    SqlCommand go = new SqlCommand();
+                    con.Open();
+                    go.Connection = con;
+                    go.CommandText = "SELECT id,name,isActive,BankId FROM tblScreens where BankId = @BankId";
+                    go.Parameters.Add(new SqlParameter("@BankId", pBank.id));
+
+                    SqlDataReader reader = go.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        lstButtons.Add(new TSDApp.Models.Screen(
+                            reader["id"] != null ? Convert.ToInt32(reader["id"]) : 0,
+                            reader["Name"] != null ? Convert.ToString(reader["Name"]) : string.Empty,
+                            reader["isActive"] != null ? Convert.ToBoolean(reader["isActive"]) : false,
+                            reader["BankId"] != null ? Convert.ToInt32(reader["BankId"]) : 0));
+                    }
+                    con.Close();
+                }
+                return lstButtons;
             }
             catch (Exception ex)
             {
@@ -23,45 +40,20 @@ namespace TSD.DataAccessLayer.Screen
                 return null;
             }
         }
-        public static void DeleteScreenById(int pScreenId)
+        public static int DeleteScreenById(int pScreenId)
         {
             try
             {
                 string pquery = "delete from tblScreens where id = @id";
-                SqlParameter BankName = new SqlParameter("@id", pScreenId);
-                object[] BankParams = new object[] { BankName.ParameterName, BankName.SqlValue };
-                DBHelper.DBHelper.ExecuteNonQuery(pquery, BankParams);
+                List<SqlParameter> ScreenParams = new List<SqlParameter>();
+                ScreenParams.Add(new SqlParameter("@id", pScreenId));
+                DBHelper.DBHelper.ExecuteNonQuery(pquery, ScreenParams);
+                return 1;
             }
             catch (Exception ex)
             {
                 BusinessObjects.ExceptionsWriter.ExceptionsWriter.SaveExceptionToLogFile(ex);
-            }
-        }
-        public static TSDApp.Models.Screen SelectScreenbyId(string pquery, int pScreenId)
-        {
-            try
-            {
-                SqlParameter ScreenId = new SqlParameter("@id", pScreenId);
-                object[] ScreenParams = new object[] { ScreenId.ParameterName, ScreenId.SqlValue };
-                DataTable ScreenTable = DBHelper.DBHelper.ExecuteQuery(pquery, ScreenParams);
-                TSDApp.Models.Screen CurrentScreen = new TSDApp.Models.Screen();
-                CurrentScreen.id = Convert.ToInt32(ScreenTable.Rows[0]["id"]);
-                CurrentScreen.Name = Convert.ToString(ScreenTable.Rows[0]["Name"]);
-                if (Convert.ToBoolean(ScreenTable.Rows[0]["isActive"]))
-                {
-                    CurrentScreen.isActive = "Activated";
-                }
-                else
-                {
-                    CurrentScreen.isActive = "Deactivated";
-                }
-                CurrentScreen.BankId = Convert.ToInt32(ScreenTable.Rows[0]["BankId"]);
-                return CurrentScreen;
-            }
-            catch (Exception ex)
-            {
-                BusinessObjects.ExceptionsWriter.ExceptionsWriter.SaveExceptionToLogFile(ex);
-                return null;
+                return 0;
             }
         }
         public static TSDApp.Models.Screen InsertScreen(TSDApp.Models.Screen pScreen)
@@ -69,12 +61,12 @@ namespace TSD.DataAccessLayer.Screen
             try
             {
                 string pquery = "insert into tblScreens OUTPUT INSERTED.IDENTITYCOL  values (@Name,@isActive,@BankId)";
-                SqlParameter ScreenName = new SqlParameter("@Name", pScreen.Name);
-                SqlParameter ScreenIsActive = new SqlParameter("@isActive", pScreen.isActive);
-                SqlParameter ScreenBankId = new SqlParameter("@BankId", pScreen.BankId);
-                object[] ScreenParams = new object[] { ScreenName.ParameterName, ScreenName.SqlValue, ScreenIsActive.ParameterName, ScreenIsActive.SqlValue, ScreenBankId.ParameterName, ScreenBankId.SqlValue };
+                List<SqlParameter> ScreenParams = new List<SqlParameter>();
+                ScreenParams.Add(new SqlParameter("@Name", pScreen.Name));
+                ScreenParams.Add(new SqlParameter("@isActive", pScreen.isActive));
+                ScreenParams.Add(new SqlParameter("@BankId", pScreen.BankId));
                 pScreen.id = Convert.ToInt32(DBHelper.DBHelper.ExecuteScalar(pquery, ScreenParams));
-                if (pScreen.isActive == "True")
+                if (pScreen.isActive)
                 {
                     UpdateActiveScreen(pScreen.id);
                 }
@@ -91,12 +83,12 @@ namespace TSD.DataAccessLayer.Screen
             try
             {
                 string pquery = "update tblScreens set name = @Name,isActive = @isActive where id = @id";
-                SqlParameter ScreenName = new SqlParameter("@Name", pScreen.Name);
-                SqlParameter ScreenIsActive = new SqlParameter("@isActive", pScreen.isActive);
-                SqlParameter ScreenId = new SqlParameter("@id", pScreen.id);
-                object[] ScreenParams = new object[] { ScreenName.ParameterName, ScreenName.SqlValue, ScreenIsActive.ParameterName, ScreenIsActive.Value, ScreenId.ParameterName, ScreenId.Value};
+                List<SqlParameter> ScreenParams = new List<SqlParameter>();
+                ScreenParams.Add(new SqlParameter("@Name", pScreen.Name));
+                ScreenParams.Add(new SqlParameter("@isActive", pScreen.isActive));
+                ScreenParams.Add(new SqlParameter("@id", pScreen.id));
                 DBHelper.DBHelper.ExecuteNonQuery(pquery, ScreenParams);
-                if (pScreen.isActive == "True")
+                if (pScreen.isActive)
                 {
                     UpdateActiveScreen(pScreen.id);
                 }
@@ -113,8 +105,8 @@ namespace TSD.DataAccessLayer.Screen
             try
             {
                 string pquery = "update tblScreens set isActive = 0 where id != @id";
-                SqlParameter ScreenId = new SqlParameter("@id", pScreenId);
-                object[] ScreenParams = new object[] { ScreenId.ParameterName, ScreenId.SqlValue };
+                List<SqlParameter> ScreenParams = new List<SqlParameter>();
+                ScreenParams.Add(new SqlParameter("@id", pScreenId));
                 DBHelper.DBHelper.ExecuteScalar(pquery, ScreenParams);
             }
             catch (Exception ex)

@@ -11,16 +11,16 @@ namespace TSDApp.Models
     {
         public int id { get; set; }
         public string Name { get; set; }
-        public string isActive { get; set; }
+        public bool isActive { get; set; }
         public int BankId { get; set; }
         public Screen()
         {
             id = 0;
             Name = string.Empty;
-            isActive = string.Empty;
+            isActive = false;
             BankId = 0;
         }
-        public Screen(int pId, string pName, string pisActive, int pBankId)
+        public Screen(int pId, string pName, bool pisActive, int pBankId)
         {
             id = pId;
             Name = pName;

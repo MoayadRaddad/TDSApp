@@ -18,6 +18,7 @@ namespace TSDApp
     public partial class TSD : Form
     {
         #region Variables
+        private int CheckDataBase = 0;
         private bool isVisited = false;
         public static Models.Bank CurrentBank;
         #endregion
@@ -106,14 +107,18 @@ namespace TSDApp
                 {
                     CurrentBank = new Models.Bank();
                     CurrentBank.Name = txtBankName.Text;
-                    if (BusinessAccessLayer.ConnectionString.ConnectionString.IsServerConnected())
+                    CurrentBank = BusinessAccessLayer.Bank.Bank.CheckBankExist(CurrentBank);
+                    if (CurrentBank != null)
                     {
-                        CurrentBank = BusinessAccessLayer.Bank.Bank.CheckBankExist(CurrentBank);
-                        if (CurrentBank == null)
+                        if (CurrentBank.id == 0)
                         {
                             CurrentBank = new Models.Bank();
                             CurrentBank.Name = txtBankName.Text;
                             CurrentBank = BusinessAccessLayer.Bank.Bank.InsertBank(CurrentBank);
+                            if (CurrentBank == null)
+                            {
+                                MessageBox.Show("Please check your connection to databse", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            }
                         }
                         FillScreens();
                         BankNamePanel.Visible = false;
@@ -121,7 +126,7 @@ namespace TSDApp
                     }
                     else
                     {
-                        MessageBox.Show("Please check your connection to database", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        MessageBox.Show("Please check your connection to databse", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
                 }
                 else
@@ -143,37 +148,41 @@ namespace TSDApp
         {
             try
             {
-                if (BusinessAccessLayer.ConnectionString.ConnectionString.IsServerConnected())
+                if (gvScreens.SelectedRows.Count > 0)
                 {
-                    if (gvScreens.SelectedRows.Count > 0)
+                    DialogResult dialogResult = MessageBox.Show(@"Are you sure you want to delete selected screen\s ?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    if (dialogResult == DialogResult.Yes)
                     {
-                        DialogResult dialogResult = MessageBox.Show(@"Are you sure you want to delete selected screen\s ?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                        if (dialogResult == DialogResult.Yes)
+                        foreach (DataGridViewRow screenRow in gvScreens.SelectedRows)
                         {
-                            foreach (DataGridViewRow screenRow in gvScreens.SelectedRows)
+                            int id = (int)screenRow.Cells["id"].Value;
+                            //Delete buttons for the deleted screen
+                            CheckDataBase = BusinessAccessLayer.Button.Button.DeleteButtonWhere(new List<int> { id }, "ScreenId");
+                            if (CheckDataBase == 1)
                             {
-                                int id = (int)screenRow.Cells["id"].Value;
-                                //Delete buttons for the deleted screen
-                                BusinessAccessLayer.Button.Button.DeleteButtonsByScreenId(id);
-                                //Delete screen whitch is selected
-                                BusinessAccessLayer.Screen.Screen.DeleteScreenById(id);
+                                CheckDataBase = BusinessAccessLayer.Screen.Screen.DeleteScreenById(id);
+                                if (CheckDataBase == 0)
+                                {
+                                    MessageBox.Show("Please check your connection to databse", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                }
                             }
-                            FillScreens();
-                            MessageBox.Show(@"Screen\s have been deleted successfully", "Done", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            else
+                            {
+                                MessageBox.Show("Please check your connection to databse", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            }
+                            //Delete screen whitch is selected
                         }
-                        else if (dialogResult == DialogResult.No)
-                        {
-                            MessageBox.Show(@"No screen\s have been deleted", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        }
+                        FillScreens();
+                        MessageBox.Show(@"Screen\s have been deleted successfully", "Done", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
-                    else
+                    else if (dialogResult == DialogResult.No)
                     {
-                        MessageBox.Show("Please select item to delete", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        MessageBox.Show(@"No screen\s have been deleted", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
                 }
                 else
                 {
-                    MessageBox.Show("Please check your connection to database", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Please select item to delete", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
             catch (Exception ex)
@@ -212,7 +221,7 @@ namespace TSDApp
                         Models.Screen pScreen = new Models.Screen();
                         pScreen.id = (int)gvScreens.SelectedRows[0].Cells[0].Value;
                         pScreen.Name = (string)gvScreens.SelectedRows[0].Cells[1].Value;
-                        pScreen.isActive = (bool)gvScreens.SelectedRows[0].Cells[2].Value == true ? "True" : "False";
+                        pScreen.isActive = (bool)gvScreens.SelectedRows[0].Cells[2].Value;
                         pScreen.BankId = (int)gvScreens.SelectedRows[0].Cells[3].Value;
                         AddEditScreen addEditScreen = new AddEditScreen(CurrentBank.id, pScreen);
                         this.Hide();
@@ -241,7 +250,7 @@ namespace TSDApp
             try
             {
                 this.Dispose();
-                Application.Exit();
+                System.Environment.Exit(1);
             }
             catch (Exception ex)
             {
@@ -258,11 +267,12 @@ namespace TSDApp
         {
             try
             {
-                if (BusinessAccessLayer.ConnectionString.ConnectionString.IsServerConnected())
+                lblTitle.Text = "Main Form - " + CurrentBank.Name;
+                lblGVTitle.Text = "Bank " + CurrentBank.Name + " screens";
+                List<TSDApp.Models.Screen> screens = Models.SharingMethods.GetIEnumrable(BusinessAccessLayer.Screen.Screen.SelectScreensByBankId(CurrentBank)).ToList();
+                if (screens != null)
                 {
-                    lblTitle.Text = "Main Form - " + CurrentBank.Name;
-                    lblGVTitle.Text = "Bank " + CurrentBank.Name + " screens";
-                    gvScreens.DataSource = BusinessAccessLayer.Screen.Screen.SelectScreensByBankId(CurrentBank);
+                    gvScreens.DataSource = screens;
                     TSDApp.Models.SharingMethods.ChangeColumnWidth(gvScreens, 2);
                     this.gvScreens.Columns[0].Visible = false;
                     this.gvScreens.Columns[3].Visible = false;
@@ -273,7 +283,7 @@ namespace TSDApp
                 }
                 else
                 {
-                    MessageBox.Show("Please check your connection to database", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Please check your connection to databse", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
             catch (Exception ex)

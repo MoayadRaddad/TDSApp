@@ -96,7 +96,7 @@ namespace TSDApp.Fomrs
             this.ddlActive.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ddlActive.FormattingEnabled = true;
             this.ddlActive.Items.AddRange(new object[] {
-            "- Select -",
+            "Select",
             "True",
             "False"});
             this.ddlActive.Location = new System.Drawing.Point(132, 83);

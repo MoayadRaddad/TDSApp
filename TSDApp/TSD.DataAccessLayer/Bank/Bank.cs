@@ -12,11 +12,21 @@ namespace TSD.DataAccessLayer.Bank
         {
             try
             {
-                string pquery = "SELECT id,Name FROM tblBanks WHERE Name = @Name";
-                SqlParameter BankName = new SqlParameter("@Name", pBank.Name);
-                object[] BankParams = new object[] { BankName.ParameterName,BankName.SqlValue };
-                DataTable QueryResult = DBHelper.DBHelper.ExecuteQuery(pquery, BankParams);
-                pBank.id = Convert.ToInt32(QueryResult.Rows[0][0]);
+                using (SqlConnection con = new SqlConnection(DBHelper.DBHelper.GetConnectionString()))
+                {
+                    SqlCommand go = new SqlCommand();
+                    con.Open();
+                    go.Connection = con;
+                    go.CommandText = "SELECT id,Name FROM tblBanks WHERE Name = @Name";
+                    go.Parameters.Add(new SqlParameter("@Name", pBank.Name));
+
+                    SqlDataReader reader = go.ExecuteReader();
+                    if (reader.Read())
+                    {
+                        pBank.id = Convert.ToInt32(reader["id"].ToString());
+                    }
+                    con.Close();
+                }
                 return pBank;
             }
             catch (Exception ex)
@@ -30,8 +40,8 @@ namespace TSD.DataAccessLayer.Bank
             try
             {
                 string pquery = "insert into tblBanks OUTPUT INSERTED.IDENTITYCOL  values (@Name)";
-                SqlParameter BankName = new SqlParameter("@Name", pBank.Name);
-                object[] BankParams = new object[] { BankName.ParameterName, BankName.SqlValue };
+                List<SqlParameter> BankParams = new List<SqlParameter>();
+                BankParams.Add(new SqlParameter("@Name", pBank.Name));
                 pBank.id = Convert.ToInt32(DBHelper.DBHelper.ExecuteScalar(pquery, BankParams));
                 return pBank;
             }

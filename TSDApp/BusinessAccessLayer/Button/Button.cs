@@ -7,45 +7,11 @@ namespace BusinessAccessLayer.Button
 {
     public static class Button
     {
-        public static void DeleteButtonsByScreenId(int pScreenId)
-        {
-            try
-            {
-                TSD.DataAccessLayer.Button.Button.DeleteButtonsByScreenId(pScreenId);
-            }
-            catch (Exception ex)
-            {
-                BusinessObjects.ExceptionsWriter.ExceptionsWriter.SaveExceptionToLogFile(ex);
-            }
-        }
-        public static DataTable SelectButtonsbyScreenId(int pScreenId)
+        public static List<TSDApp.Models.Button> SelectButtonsbyScreenId(int pScreenId)
         {
             try
             {
                 return TSD.DataAccessLayer.Button.Button.SelectButtonsbyScreenId(pScreenId);
-            }
-            catch (Exception ex)
-            {
-                BusinessObjects.ExceptionsWriter.ExceptionsWriter.SaveExceptionToLogFile(ex);
-                return null;
-            }
-        }
-        public static void DeleteButtonsByIds(List<int> pButtonsIds)
-        {
-            try
-            {
-                TSD.DataAccessLayer.Button.Button.DeleteButtonsByIds(pButtonsIds);
-            }
-            catch (Exception ex)
-            {
-                BusinessObjects.ExceptionsWriter.ExceptionsWriter.SaveExceptionToLogFile(ex);
-            }
-        }
-        public static TSDApp.Models.Button SelectButtonById(string pquery, int pButtonId)
-        {
-            try
-            {
-                return TSD.DataAccessLayer.Button.Button.SelectButtonById(pquery, pButtonId);
             }
             catch (Exception ex)
             {
@@ -75,6 +41,18 @@ namespace BusinessAccessLayer.Button
             {
                 BusinessObjects.ExceptionsWriter.ExceptionsWriter.SaveExceptionToLogFile(ex);
                 return null;
+            }
+        }
+        public static int DeleteButtonWhere(List<int> pButtonsIds, string ConditionColumn)
+        {
+            try
+            {
+                return TSD.DataAccessLayer.Button.Button.DeleteButtonWhere(pButtonsIds, ConditionColumn);
+            }
+            catch (Exception ex)
+            {
+                BusinessObjects.ExceptionsWriter.ExceptionsWriter.SaveExceptionToLogFile(ex);
+                return 0;
             }
         }
     }

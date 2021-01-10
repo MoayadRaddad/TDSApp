@@ -29,17 +29,5 @@ namespace BusinessAccessLayer.ConnectionString
                 BusinessObjects.ExceptionsWriter.ExceptionsWriter.SaveExceptionToLogFile(ex);
             }
         }
-        public static bool IsServerConnected()
-        {
-            try
-            {
-                return TSD.DataAccessLayer.DBHelper.DBHelper.IsServerConnected();
-            }
-            catch (Exception ex)
-            {
-                BusinessObjects.ExceptionsWriter.ExceptionsWriter.SaveExceptionToLogFile(ex);
-                return false;
-            }
-        }
     }
 }

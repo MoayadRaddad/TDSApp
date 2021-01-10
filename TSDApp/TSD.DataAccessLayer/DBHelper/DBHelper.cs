@@ -5,12 +5,13 @@ using System.Web;
 using System.Data;
 using System.Data.SqlClient;
 using System.Collections.Specialized;
+using System.Reflection;
 
 namespace TSD.DataAccessLayer.DBHelper
 {
     public static class DBHelper
     {
-        private static string connectionString = "Data Source=localhost;Initial Catalog=GLOBOBH_MapaAntenas;Integrated Security=SSPI";
+        private static string connectionString;
         public static string GetConnectionString()
         {
             return connectionString;
@@ -20,27 +21,11 @@ namespace TSD.DataAccessLayer.DBHelper
             connectionString = pConnectionString;
         }
 
-        public static DataTable ExecuteProcedure(string PROC_NAME, params object[] parameters)
+        public static int ExecuteNonQuery(string query, List<SqlParameter> parametros)
         {
             try
             {
-                if (parameters.Length % 2 != 0)
-                    throw new ArgumentException("Wrong number of parameters sent to procedure. Expected an even number.");
-                DataTable a = new DataTable();
-                List<SqlParameter> filters = new List<SqlParameter>();
-
-                string query = "EXEC " + PROC_NAME;
-
-                bool first = true;
-                for (int i = 0; i < parameters.Length; i += 2)
-                {
-                    filters.Add(new SqlParameter(parameters[i] as string, parameters[i + 1]));
-                    query += (first ? " " : ", ") + ((string)parameters[i]);
-                    first = false;
-                }
-
-                a = Query(query, filters);
-                return a;
+                return NonQuery(query, parametros);
             }
             catch (Exception ex)
             {
@@ -48,20 +33,11 @@ namespace TSD.DataAccessLayer.DBHelper
             }
         }
 
-        public static DataTable ExecuteQuery(string query, params object[] parameters)
+        public static object ExecuteScalar(string query, List<SqlParameter> parametros)
         {
             try
             {
-                if (parameters.Length % 2 != 0)
-                    throw new ArgumentException("Wrong number of parameters sent to procedure. Expected an even number.");
-                DataTable a = new DataTable();
-                List<SqlParameter> filters = new List<SqlParameter>();
-
-                for (int i = 0; i < parameters.Length; i += 2)
-                    filters.Add(new SqlParameter(parameters[i] as string, parameters[i + 1]));
-
-                a = Query(query, filters);
-                return a;
+                return Scalar(query, parametros);
             }
             catch (Exception ex)
             {
@@ -69,94 +45,10 @@ namespace TSD.DataAccessLayer.DBHelper
             }
         }
 
-        public static int ExecuteNonQuery(string query, params object[] parameters)
-        {
-            try
-            {
-                if (parameters.Length % 2 != 0)
-                    throw new ArgumentException("Wrong number of parameters sent to procedure. Expected an even number.");
-                List<SqlParameter> filters = new List<SqlParameter>();
-
-                for (int i = 0; i < parameters.Length; i += 2)
-                    filters.Add(new SqlParameter(parameters[i] as string, parameters[i + 1]));
-                return NonQuery(query, filters);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
-        public static object ExecuteScalar(string query, params object[] parameters)
-        {
-            try
-            {
-                if (parameters.Length % 2 != 0)
-                    throw new ArgumentException("Wrong number of parameters sent to query. Expected an even number.");
-                List<SqlParameter> filters = new List<SqlParameter>();
-
-                for (int i = 0; i < parameters.Length; i += 2)
-                    filters.Add(new SqlParameter(parameters[i] as string, parameters[i + 1]));
-                return Scalar(query, filters);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-        public static bool IsServerConnected()
-        {
-            using (var l_oConnection = new SqlConnection(connectionString))
-            {
-                try
-                {
-                    l_oConnection.Open();
-                    return true;
-                }
-                catch (SqlException ex)
-                {
-                    BusinessObjects.ExceptionsWriter.ExceptionsWriter.SaveExceptionToLogFile(ex);
-                    return false;
-                }
-            }
-        }
 
         #region Private Methods
 
-        private static DataTable Query(String consulta, IList<SqlParameter> parametros)
-        {
-            try
-            {
-                DataTable dt = new DataTable();
-                SqlConnection connection = new SqlConnection(connectionString);
-                SqlCommand command = new SqlCommand();
-                SqlDataAdapter da;
-                try
-                {
-                    command.Connection = connection;
-                    command.CommandText = consulta;
-                    if (parametros != null)
-                    {
-                        command.Parameters.AddRange(parametros.ToArray());
-                    }
-                    da = new SqlDataAdapter(command);
-                    da.Fill(dt);
-                }
-                finally
-                {
-                    if (connection != null)
-                        connection.Close();
-                }
-                return dt;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-
-        }
-
-        private static int NonQuery(string query, IList<SqlParameter> parametros)
+        private static int NonQuery(string query, List<SqlParameter> parametros)
         {
             try
             {

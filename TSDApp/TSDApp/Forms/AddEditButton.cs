@@ -43,6 +43,7 @@ namespace TSDApp.Forms
             try
             {
                 InitializeComponent();
+                FillComboBox();
                 CurrentScreen = pScreen;
             }
             catch (Exception ex)
@@ -62,6 +63,7 @@ namespace TSDApp.Forms
             try
             {
                 InitializeComponent();
+                FillComboBox();
                 CurrentScreen = new Models.Screen();
                 CurrentScreen = pScreen;
                 CurrentButton = pButton;
@@ -156,6 +158,7 @@ namespace TSDApp.Forms
                 {
                     addEditScreen = new AddEditScreen(TSD.CurrentBank.id);
                 }
+                CurrentScreen = null;
                 addEditScreen.Show();
             }
             catch (Exception ex)
@@ -174,6 +177,7 @@ namespace TSDApp.Forms
                 CurrentButton = null;
                 this.Dispose();
                 addEditScreen = new AddEditScreen(TSD.CurrentBank.id, CurrentScreen, null, null);
+                CurrentScreen = null;
                 addEditScreen.Show();
             }
             catch (Exception ex)
@@ -197,31 +201,23 @@ namespace TSDApp.Forms
                         //Check which radio button checked
                         if (rbIssueTicket.Checked)
                         {
-                            //Check if combobox selected
-                            if (ddlIssueTicket.SelectedIndex != 0)
+                            //Check if it is new button to insert or edit button to update
+                            if (CurrentButton == null)
                             {
-                                //Check if it is new button to insert or edit button to update
-                                if (CurrentButton == null)
-                                {
-                                    CurrentButton = new Models.Button(0, txtENName.Text, txtARName.Text, rbIssueTicket.Text, null, null, ddlIssueTicket.SelectedItem.ToString(), CurrentScreen.id, false);
-                                    this.Dispose();
-                                    AddEditScreen addEditScreen = new AddEditScreen(TSD.CurrentBank.id, CurrentScreen, CurrentButton, null);
-                                    addEditScreen.Show();
-                                    CurrentButton = null;
-                                }
-                                else
-                                {
-                                    Models.Button OldButton = CurrentButton;
-                                    CurrentButton = new Models.Button(CurrentButton.id, txtENName.Text, txtARName.Text, rbIssueTicket.Text, null, null, ddlIssueTicket.SelectedItem.ToString(), CurrentScreen.id, true, CurrentButton.LstIndex);
-                                    this.Dispose();
-                                    AddEditScreen addEditScreen = new AddEditScreen(TSD.CurrentBank.id, CurrentScreen, CurrentButton, OldButton);
-                                    addEditScreen.Show();
-                                    CurrentButton = null;
-                                }
+                                CurrentButton = new Models.Button(0, txtENName.Text, txtARName.Text, rbIssueTicket.Text, null, null, Convert.ToInt32(ddlIssueTicket.SelectedValue), CurrentScreen.id, false);
+                                this.Dispose();
+                                AddEditScreen addEditScreen = new AddEditScreen(TSD.CurrentBank.id, CurrentScreen, CurrentButton, null);
+                                addEditScreen.Show();
+                                CurrentButton = null;
                             }
                             else
                             {
-                                MessageBox.Show("Please select issue ticket", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                Models.Button OldButton = CurrentButton;
+                                CurrentButton = new Models.Button(CurrentButton.id, txtENName.Text, txtARName.Text, rbIssueTicket.Text, null, null, Convert.ToInt32(ddlIssueTicket.SelectedValue), CurrentScreen.id, true, CurrentButton.LstIndex);
+                                this.Dispose();
+                                AddEditScreen addEditScreen = new AddEditScreen(TSD.CurrentBank.id, CurrentScreen, CurrentButton, OldButton);
+                                addEditScreen.Show();
+                                CurrentButton = null;
                             }
                         }
                         else
@@ -300,14 +296,7 @@ namespace TSDApp.Forms
                     txtMessageAR.Visible = false;
                     lblMessageEN.Visible = false;
                     txtMessageEN.Visible = false;
-                    if (CurrentButton.issueType == "withdraw")
-                    {
-                        ddlIssueTicket.SelectedIndex = 1;
-                    }
-                    else
-                    {
-                        ddlIssueTicket.SelectedIndex = 2;
-                    }
+                    ddlIssueTicket.SelectedValue = CurrentButton.issueTicketType;
                 }
                 else
                 {
@@ -320,6 +309,23 @@ namespace TSDApp.Forms
             catch (Exception ex)
             {
                 Models.SharingMethods.SaveExceptionToLogFile(ex);
+            }
+        }
+
+        private void FillComboBox()
+        {
+            ddlIssueTicket.DropDownStyle = ComboBoxStyle.DropDownList;
+            ddlIssueTicket.Items.Clear();
+            List<BusinessObjects.Models.IssueTicketType> ListIssueTicket = BusinessAccessLayer.IssueTicketType.IssueTicketType.SelectIssueTicketType();
+            if (ListIssueTicket != null)
+            {
+                ddlIssueTicket.DataSource = ListIssueTicket;
+                ddlIssueTicket.ValueMember = "id";
+                ddlIssueTicket.DisplayMember = "Name";
+            }
+            else
+            {
+                MessageBox.Show("Please check your connection to databse", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
         #endregion

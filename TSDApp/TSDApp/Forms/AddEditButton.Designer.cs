@@ -61,10 +61,6 @@ namespace TSDApp.Forms
             // 
             this.ddlIssueTicket.Font = new System.Drawing.Font("Tahoma", 9.75F);
             this.ddlIssueTicket.FormattingEnabled = true;
-            this.ddlIssueTicket.Items.AddRange(new object[] {
-            "- Select -",
-            "withdraw",
-            "deposit"});
             this.ddlIssueTicket.Location = new System.Drawing.Point(261, 195);
             this.ddlIssueTicket.Name = "ddlIssueTicket";
             this.ddlIssueTicket.Size = new System.Drawing.Size(217, 24);
