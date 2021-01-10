@@ -106,16 +106,14 @@ namespace TSDApp
                 {
                     CurrentBank = new Models.Bank();
                     CurrentBank.Name = txtBankName.Text;
-                    string pSelectBankquery = "SELECT id,Name FROM tblBanks WHERE Name = @Name";
                     if (BusinessAccessLayer.ConnectionString.ConnectionString.IsServerConnected())
                     {
-                        CurrentBank = BusinessAccessLayer.Bank.Bank.CheckBankExist(pSelectBankquery, CurrentBank);
+                        CurrentBank = BusinessAccessLayer.Bank.Bank.CheckBankExist(CurrentBank);
                         if (CurrentBank == null)
                         {
                             CurrentBank = new Models.Bank();
                             CurrentBank.Name = txtBankName.Text;
-                            string pInsertBankquery = "insert into tblBanks OUTPUT INSERTED.IDENTITYCOL  values (@Name)";
-                            CurrentBank = BusinessAccessLayer.Bank.Bank.InsertBank(pInsertBankquery, CurrentBank);
+                            CurrentBank = BusinessAccessLayer.Bank.Bank.InsertBank(CurrentBank);
                         }
                         FillScreens();
                         BankNamePanel.Visible = false;
@@ -156,11 +154,9 @@ namespace TSDApp
                             {
                                 int id = (int)screenRow.Cells["id"].Value;
                                 //Delete buttons for the deleted screen
-                                string pDeleteButtonQuery = "delete from tblButtons where ScreenId = @ScreenId";
-                                BusinessAccessLayer.Button.Button.DeleteButtonsByScreenId(pDeleteButtonQuery, id);
+                                BusinessAccessLayer.Button.Button.DeleteButtonsByScreenId(id);
                                 //Delete screen whitch is selected
-                                string pDeleteScreenQuery = "delete from tblScreens where id = @id";
-                                BusinessAccessLayer.Screen.Screen.DeleteScreenById(pDeleteScreenQuery, id);
+                                BusinessAccessLayer.Screen.Screen.DeleteScreenById(id);
                             }
                             FillScreens();
                             MessageBox.Show(@"Screen\s have been deleted successfully", "Done", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -266,8 +262,7 @@ namespace TSDApp
                 {
                     lblTitle.Text = "Main Form - " + CurrentBank.Name;
                     lblGVTitle.Text = "Bank " + CurrentBank.Name + " screens";
-                    string pSelectScreens = "SELECT id,name,isActive,BankId FROM tblScreens where BankId = @BankId";
-                    gvScreens.DataSource = BusinessAccessLayer.Screen.Screen.SelectScreensByBankId(pSelectScreens, CurrentBank);
+                    gvScreens.DataSource = BusinessAccessLayer.Screen.Screen.SelectScreensByBankId(CurrentBank);
                     TSDApp.Models.SharingMethods.ChangeColumnWidth(gvScreens, 2);
                     this.gvScreens.Columns[0].Visible = false;
                     this.gvScreens.Columns[3].Visible = false;

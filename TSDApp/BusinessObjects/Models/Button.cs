@@ -19,6 +19,7 @@ namespace TSDApp.Models
         public string issueType { get; set; }
         public int ScreenId { get; set; }
         public bool Updated { get; set; }
+        public int LstIndex { get; set; }
         public SqlDbType Name { get; set; }
 
         public Button()
@@ -32,8 +33,9 @@ namespace TSDApp.Models
             issueType = string.Empty;
             ScreenId = 0;
             Updated = false;
+            LstIndex = -1;
         }
-        public Button(int pId, string pENName, string pARName, string pType, string pMessageAR, string pMessageEN, string pissueType, int pScreenId, bool pUpdated = false)
+        public Button(int pId, string pENName, string pARName, string pType, string pMessageAR, string pMessageEN, string pissueType, int pScreenId, bool pUpdated = false, int pLstIndex = -1)
         {
             id = pId;
             ENName = pENName;
@@ -44,6 +46,7 @@ namespace TSDApp.Models
             issueType = pissueType;
             ScreenId = pScreenId;
             Updated = pUpdated;
+            LstIndex = pLstIndex;
         }
     }
 }

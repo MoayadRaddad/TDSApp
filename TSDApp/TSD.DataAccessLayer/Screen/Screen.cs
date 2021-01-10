@@ -8,10 +8,11 @@ namespace TSD.DataAccessLayer.Screen
 {
     public static class Screen
     {
-        public static DataTable SelectScreensByBankId(string pquery, TSDApp.Models.Bank pBank)
+        public static DataTable SelectScreensByBankId(TSDApp.Models.Bank pBank)
         {
             try
             {
+                string pquery = "SELECT id,name,isActive,BankId FROM tblScreens where BankId = @BankId";
                 SqlParameter BankName = new SqlParameter("@BankId", pBank.id);
                 object[] BankParams = new object[] { BankName.ParameterName, BankName.SqlValue };
                 return DBHelper.DBHelper.ExecuteQuery(pquery, BankParams);
@@ -22,10 +23,11 @@ namespace TSD.DataAccessLayer.Screen
                 return null;
             }
         }
-        public static void DeleteScreenById(string pquery, int pScreenId)
+        public static void DeleteScreenById(int pScreenId)
         {
             try
             {
+                string pquery = "delete from tblScreens where id = @id";
                 SqlParameter BankName = new SqlParameter("@id", pScreenId);
                 object[] BankParams = new object[] { BankName.ParameterName, BankName.SqlValue };
                 DBHelper.DBHelper.ExecuteNonQuery(pquery, BankParams);
@@ -62,10 +64,11 @@ namespace TSD.DataAccessLayer.Screen
                 return null;
             }
         }
-        public static TSDApp.Models.Screen InsertScreen(string pquery, TSDApp.Models.Screen pScreen)
+        public static TSDApp.Models.Screen InsertScreen(TSDApp.Models.Screen pScreen)
         {
             try
             {
+                string pquery = "insert into tblScreens OUTPUT INSERTED.IDENTITYCOL  values (@Name,@isActive,@BankId)";
                 SqlParameter ScreenName = new SqlParameter("@Name", pScreen.Name);
                 SqlParameter ScreenIsActive = new SqlParameter("@isActive", pScreen.isActive);
                 SqlParameter ScreenBankId = new SqlParameter("@BankId", pScreen.BankId);
@@ -83,10 +86,11 @@ namespace TSD.DataAccessLayer.Screen
                 return null;
             }
         }
-        public static TSDApp.Models.Screen UpdateScreen(string pquery, TSDApp.Models.Screen pScreen)
+        public static TSDApp.Models.Screen UpdateScreen(TSDApp.Models.Screen pScreen)
         {
             try
             {
+                string pquery = "update tblScreens set name = @Name,isActive = @isActive where id = @id";
                 SqlParameter ScreenName = new SqlParameter("@Name", pScreen.Name);
                 SqlParameter ScreenIsActive = new SqlParameter("@isActive", pScreen.isActive);
                 SqlParameter ScreenId = new SqlParameter("@id", pScreen.id);

@@ -7,11 +7,11 @@ namespace BusinessAccessLayer.Screen
 {
     public static class Screen
     {
-        public static DataTable SelectScreensByBankId(string pquery, TSDApp.Models.Bank pBank)
+        public static DataTable SelectScreensByBankId(TSDApp.Models.Bank pBank)
         {
             try
             {
-                return TSD.DataAccessLayer.Screen.Screen.SelectScreensByBankId(pquery, pBank);
+                return TSD.DataAccessLayer.Screen.Screen.SelectScreensByBankId(pBank);
             }
             catch (Exception ex)
             {
@@ -19,11 +19,11 @@ namespace BusinessAccessLayer.Screen
                 return null;
             }
         }
-        public static void DeleteScreenById(string pquery, int pScreenId)
+        public static void DeleteScreenById(int pScreenId)
         {
             try
             {
-                TSD.DataAccessLayer.Screen.Screen.DeleteScreenById(pquery, pScreenId);
+                TSD.DataAccessLayer.Screen.Screen.DeleteScreenById(pScreenId);
             }
             catch (Exception ex)
             {
@@ -42,11 +42,11 @@ namespace BusinessAccessLayer.Screen
                 return null;
             }
         }
-        public static TSDApp.Models.Screen InsertScreen(string pquery, TSDApp.Models.Screen pScreen)
+        public static TSDApp.Models.Screen InsertScreen(TSDApp.Models.Screen pScreen)
         {
             try
             {
-                return TSD.DataAccessLayer.Screen.Screen.InsertScreen(pquery, pScreen);
+                return TSD.DataAccessLayer.Screen.Screen.InsertScreen(pScreen);
             }
             catch (Exception ex)
             {
@@ -54,11 +54,11 @@ namespace BusinessAccessLayer.Screen
                 return null;
             }
         }
-        public static TSDApp.Models.Screen UpdateScreen(string pquery, TSDApp.Models.Screen pScreen)
+        public static TSDApp.Models.Screen UpdateScreen(TSDApp.Models.Screen pScreen)
         {
             try
             {
-                return TSD.DataAccessLayer.Screen.Screen.UpdateScreen(pquery, pScreen);
+                return TSD.DataAccessLayer.Screen.Screen.UpdateScreen(pScreen);
             }
             catch (Exception ex)
             {

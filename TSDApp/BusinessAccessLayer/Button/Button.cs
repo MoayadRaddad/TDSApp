@@ -7,22 +7,22 @@ namespace BusinessAccessLayer.Button
 {
     public static class Button
     {
-        public static void DeleteButtonsByScreenId(string pquery, int pScreenId)
+        public static void DeleteButtonsByScreenId(int pScreenId)
         {
             try
             {
-                TSD.DataAccessLayer.Button.Button.DeleteButtonsByScreenId(pquery, pScreenId);
+                TSD.DataAccessLayer.Button.Button.DeleteButtonsByScreenId(pScreenId);
             }
             catch (Exception ex)
             {
                 BusinessObjects.ExceptionsWriter.ExceptionsWriter.SaveExceptionToLogFile(ex);
             }
         }
-        public static DataTable SelectButtonsbyScreenId(string pquery, int pScreenId)
+        public static DataTable SelectButtonsbyScreenId(int pScreenId)
         {
             try
             {
-                return TSD.DataAccessLayer.Button.Button.SelectButtonsbyScreenId(pquery, pScreenId);
+                return TSD.DataAccessLayer.Button.Button.SelectButtonsbyScreenId(pScreenId);
             }
             catch (Exception ex)
             {
@@ -30,11 +30,11 @@ namespace BusinessAccessLayer.Button
                 return null;
             }
         }
-        public static void DeleteButtonsByIds(string pquery, List<int> pButtonsIds)
+        public static void DeleteButtonsByIds(List<int> pButtonsIds)
         {
             try
             {
-                TSD.DataAccessLayer.Button.Button.DeleteButtonsByIds(pquery, pButtonsIds);
+                TSD.DataAccessLayer.Button.Button.DeleteButtonsByIds(pButtonsIds);
             }
             catch (Exception ex)
             {
@@ -53,11 +53,11 @@ namespace BusinessAccessLayer.Button
                 return null;
             }
         }
-        public static TSDApp.Models.Button InsertButton(string pquery, TSDApp.Models.Button pButton)
+        public static TSDApp.Models.Button InsertButton(TSDApp.Models.Button pButton)
         {
             try
             {
-                return TSD.DataAccessLayer.Button.Button.InsertButton(pquery, pButton);
+                return TSD.DataAccessLayer.Button.Button.InsertButton(pButton);
             }
             catch (Exception ex)
             {
@@ -65,11 +65,11 @@ namespace BusinessAccessLayer.Button
                 return null;
             }
         }
-        public static TSDApp.Models.Button UpdateButton(string pquery, TSDApp.Models.Button pButton)
+        public static TSDApp.Models.Button UpdateButton(TSDApp.Models.Button pButton)
         {
             try
             {
-                return TSD.DataAccessLayer.Button.Button.UpdateButton(pquery, pButton);
+                return TSD.DataAccessLayer.Button.Button.UpdateButton(pButton);
             }
             catch (Exception ex)
             {

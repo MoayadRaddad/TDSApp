@@ -153,7 +153,7 @@ namespace TSDApp.Fomrs
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(94, 40);
             this.btnSave.TabIndex = 9;
-            this.btnSave.Text = "Add";
+            this.btnSave.Text = "Save";
             this.btnSave.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);

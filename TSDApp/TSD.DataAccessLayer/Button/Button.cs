@@ -8,10 +8,11 @@ namespace TSD.DataAccessLayer.Button
 {
     public static class Button
     {
-        public static void DeleteButtonsByScreenId(string pquery, int pScreenId)
+        public static void DeleteButtonsByScreenId(int pScreenId)
         {
             try
             {
+                string pquery = "delete from tblButtons where ScreenId = @ScreenId";
                 SqlParameter BankName = new SqlParameter("@ScreenId", pScreenId);
                 object[] BankParams = new object[] { BankName.ParameterName, BankName.SqlValue };
                 DBHelper.DBHelper.ExecuteNonQuery(pquery, BankParams);
@@ -21,10 +22,11 @@ namespace TSD.DataAccessLayer.Button
                 BusinessObjects.ExceptionsWriter.ExceptionsWriter.SaveExceptionToLogFile(ex);
             }
         }
-        public static DataTable SelectButtonsbyScreenId(string pquery, int pScreenId)
+        public static DataTable SelectButtonsbyScreenId(int pScreenId)
         {
             try
             {
+                string pquery = "SELECT id, ENName, ARName, Type, MessageAR, MessageEN, issueType, ScreenId FROM tblButtons where ScreenId = @ScreenId";
                 SqlParameter ScreenId = new SqlParameter("@ScreenId", pScreenId);
                 object[] ScreenParams = new object[] { ScreenId.ParameterName, ScreenId.SqlValue };
                 return DBHelper.DBHelper.ExecuteQuery(pquery, ScreenParams);
@@ -35,10 +37,11 @@ namespace TSD.DataAccessLayer.Button
                 return null;
             }
         }
-        public static void DeleteButtonsByIds(string pquery, List<int> pButtonsIds)
+        public static void DeleteButtonsByIds(List<int> pButtonsIds)
         {
             try
             {
+                string pquery = "delete from tblButtons where id = @id";
                 foreach (int item in pButtonsIds)
                 {
                     SqlParameter ButtonId = new SqlParameter("@id", item);
@@ -75,10 +78,11 @@ namespace TSD.DataAccessLayer.Button
                 return null;
             }
         }
-        public static TSDApp.Models.Button InsertButton(string pquery, TSDApp.Models.Button pButton)
+        public static TSDApp.Models.Button InsertButton(TSDApp.Models.Button pButton)
         {
             try
             {
+                string pquery = "insert into tblButtons OUTPUT INSERTED.IDENTITYCOL  values (@ENName,@ARName,@Type,@MessageAR,@MessageEN,@issueType,@ScreenId)";
                 SqlParameter ENName = new SqlParameter("@ENName", pButton.ENName);
                 SqlParameter ARName = new SqlParameter("@ARName", pButton.ARName);
                 SqlParameter Type = new SqlParameter("@Type", pButton.Type);
@@ -99,10 +103,11 @@ namespace TSD.DataAccessLayer.Button
                 return null;
             }
         }
-        public static TSDApp.Models.Button UpdateButton(string pquery, TSDApp.Models.Button pButton)
+        public static TSDApp.Models.Button UpdateButton(TSDApp.Models.Button pButton)
         {
             try
             {
+                string pquery = "update tblButtons set ENName = @ENName,ARName = @ARName,Type = @Type,MessageAR = @MessageAR,MessageEN = @MessageEN,issueType = @issueType,ScreenId = @ScreenId where id = @id";
                 SqlParameter id = new SqlParameter("@id", pButton.id);
                 SqlParameter ENName = new SqlParameter("@ENName", pButton.ENName);
                 SqlParameter ARName = new SqlParameter("@ARName", pButton.ARName);

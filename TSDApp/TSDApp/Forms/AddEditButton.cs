@@ -203,7 +203,7 @@ namespace TSDApp.Forms
                                 //Check if it is new button to insert or edit button to update
                                 if (CurrentButton == null)
                                 {
-                                    CurrentButton = new Models.Button(0, txtENName.Text, txtARName.Text, rbIssueTicket.Text, null, null, ddlIssueTicket.SelectedItem.ToString(), CurrentScreen.id);
+                                    CurrentButton = new Models.Button(0, txtENName.Text, txtARName.Text, rbIssueTicket.Text, null, null, ddlIssueTicket.SelectedItem.ToString(), CurrentScreen.id, false);
                                     this.Dispose();
                                     AddEditScreen addEditScreen = new AddEditScreen(TSD.CurrentBank.id, CurrentScreen, CurrentButton, null);
                                     addEditScreen.Show();
@@ -212,7 +212,7 @@ namespace TSDApp.Forms
                                 else
                                 {
                                     Models.Button OldButton = CurrentButton;
-                                    CurrentButton = new Models.Button(CurrentButton.id, txtENName.Text, txtARName.Text, rbIssueTicket.Text, null, null, ddlIssueTicket.SelectedItem.ToString(), CurrentScreen.id, true);
+                                    CurrentButton = new Models.Button(CurrentButton.id, txtENName.Text, txtARName.Text, rbIssueTicket.Text, null, null, ddlIssueTicket.SelectedItem.ToString(), CurrentScreen.id, true, CurrentButton.LstIndex);
                                     this.Dispose();
                                     AddEditScreen addEditScreen = new AddEditScreen(TSD.CurrentBank.id, CurrentScreen, CurrentButton, OldButton);
                                     addEditScreen.Show();

@@ -45,6 +45,7 @@ namespace TSDApp.Fomrs
             try
             {
                 InitializeComponent();
+                LstButtons = new List<Models.Button>();
                 BankId = pBankId;
                 ddlActive.SelectedIndex = 0;
             }
@@ -86,7 +87,7 @@ namespace TSDApp.Fomrs
                 }
                 else if (pNewButton != null)
                 {
-                    LstButtons[LstButtons.FindIndex(x => x.id == pOldButton.id)] = pNewButton;
+                    LstButtons[LstButtons.FindIndex(x => x.LstIndex == pOldButton.LstIndex)] = pNewButton;
                     IEnumrableLstButtons = Models.SharingMethods.GetIEnumrable(LstButtons);
                 }
                 gvButtons.DataSource = LstButtons.ToList();
@@ -131,45 +132,26 @@ namespace TSDApp.Fomrs
                             {
                                 if (CurrentScreen.id == 0)
                                 {
-                                    string pInsertScreenquery = "insert into tblScreens OUTPUT INSERTED.IDENTITYCOL  values (@Name,@isActive,@BankId)";
-                                    CurrentScreen = BusinessAccessLayer.Screen.Screen.InsertScreen(pInsertScreenquery, CurrentScreen);
+                                    CurrentScreen = BusinessAccessLayer.Screen.Screen.InsertScreen(CurrentScreen);
                                 }
                                 else
                                 {
                                     CurrentScreen.Name = txtName.Text;
                                     CurrentScreen.isActive = ddlActive.SelectedItem.ToString();
-                                    string pUpdateScreenquery = "update tblScreens set name = @Name,isActive = @isActive where id = @id";
-                                    CurrentScreen = BusinessAccessLayer.Screen.Screen.UpdateScreen(pUpdateScreenquery, CurrentScreen);
+                                    CurrentScreen = BusinessAccessLayer.Screen.Screen.UpdateScreen(CurrentScreen);
                                     lblGVTitle.Text = CurrentScreen.Name;
                                 }
                                 foreach (Models.Button pbutton in LstButtons)
                                 {
-                                    //if (pbutton.Type == "Issue Ticket")
-                                    //{
-                                        if (pbutton.id == 0)
-                                        {
-                                            string pInsertButton = "insert into tblButtons OUTPUT INSERTED.IDENTITYCOL  values (@ENName,@ARName,@Type,@MessageAR,@MessageEN,@issueType,@ScreenId)";
-                                            BusinessAccessLayer.Button.Button.InsertButton(pInsertButton, pbutton);
-                                        }
-                                        else if (pbutton.Updated == true)
-                                        {
-                                            string pUpdateButton = "update tblButtons set ENName = @ENName,ARName = @ARName,Type = @Type,MessageAR = @MessageAR,MessageEN = @MessageEN,issueType = @issueType,ScreenId = @ScreenId where id = @id";
-                                            BusinessAccessLayer.Button.Button.UpdateButton(pUpdateButton, pbutton);
-                                        }
-                                    //}
-                                    //else
-                                    //{
-                                    //    if (pbutton.id == 0)
-                                    //    {
-                                    //        string pInsertButton = "insert into tblButtons OUTPUT INSERTED.IDENTITYCOL  values (@ENName,@ARName,@Type,@MessageAR,@MessageEN,@issueType,@ScreenId)";
-                                    //        BusinessAccessLayer.Button.Button.InsertButton(pInsertButton, pbutton);
-                                    //    }
-                                    //    else if (pbutton.Updated == true)
-                                    //    {
-                                    //        string pInsertButton = "update tblButtons set ENName = @ENName,ARName = @ARName,Type = @Type,MessageAR = @MessageAR,MessageEN = @MessageEN,issueType = @issueType,ScreenId = @ScreenId where id = @id";
-                                    //        BusinessAccessLayer.Button.Button.UpdateButton(pInsertButton, pbutton);
-                                    //    }
-                                    //}
+                                    if (pbutton.id == 0)
+                                    {
+                                        pbutton.ScreenId = CurrentScreen.id;
+                                        BusinessAccessLayer.Button.Button.InsertButton(pbutton);
+                                    }
+                                    else if (pbutton.Updated == true)
+                                    {
+                                        BusinessAccessLayer.Button.Button.UpdateButton(pbutton);
+                                    }
                                 }
                                 MessageBox.Show("Button and screen had been saved successfully", "Done", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             }
@@ -254,8 +236,7 @@ namespace TSDApp.Fomrs
                                 pButtonsIds.Add((int)buttonRow.Cells["id"].Value);
                                 LstButtons.Remove((LstButtons.Where(x => x.id == (int)buttonRow.Cells["id"].Value).FirstOrDefault()));
                             }
-                            string pDeleteButtonByIdQuery = "delete from tblButtons where id = @id";
-                            BusinessAccessLayer.Button.Button.DeleteButtonsByIds(pDeleteButtonByIdQuery, pButtonsIds);
+                            BusinessAccessLayer.Button.Button.DeleteButtonsByIds(pButtonsIds);
                             IEnumrableLstButtons = Models.SharingMethods.GetIEnumrable(LstButtons);
                             gvButtons.DataSource = IEnumrableLstButtons.ToList();
                             MessageBox.Show(@"Button\s have been deleted successfully", "Done", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -338,8 +319,9 @@ namespace TSDApp.Fomrs
                 {
                     if (gvButtons.SelectedRows.Count == 1)
                     {
-                        int buttonId = (int)gvButtons.SelectedRows[0].Cells[0].Value;
-                        Models.Button CurrentButton = LstButtons.Where(x => x.id == buttonId).FirstOrDefault();
+                        int buttonIndex = (int)gvButtons.SelectedRows[0].Index;
+                        Models.Button CurrentButton = LstButtons[buttonIndex];
+                        CurrentButton.LstIndex = buttonIndex;
                         AddEditButton addEditButton = new AddEditButton(CurrentScreen, CurrentButton);
                         this.Hide();
                         addEditButton.Show();
@@ -374,7 +356,7 @@ namespace TSDApp.Fomrs
                 txtName.Text = CurrentScreen.Name;
                 lblGVTitle.Text = CurrentScreen.Name + " - Buttons";
                 lblTitle.Text = "Edit Screen";
-                btnSave.Text = "Edit";
+                btnSave.Text = "Save";
                 if (CurrentScreen.isActive.ToString() == "True")
                 {
                     ddlActive.SelectedIndex = 1;
@@ -400,8 +382,7 @@ namespace TSDApp.Fomrs
                 if (BusinessAccessLayer.ConnectionString.ConnectionString.IsServerConnected())
                 {
                     LstButtons = new List<Models.Button>();
-                    string pSelectButtonsQuery = "SELECT id, ENName, ARName, Type, MessageAR, MessageEN, issueType, ScreenId FROM tblButtons where ScreenId = @ScreenId";
-                    var dataTable = BusinessAccessLayer.Button.Button.SelectButtonsbyScreenId(pSelectButtonsQuery, CurrentScreen.id);
+                    var dataTable = BusinessAccessLayer.Button.Button.SelectButtonsbyScreenId(CurrentScreen.id);
                     IEnumrableLstButtons = dataTable.AsEnumerable().Select(row => new Models.Button
                     {
                         id = row["id"] != null ? Convert.ToInt32(row["id"]) : 0,
@@ -458,6 +439,7 @@ namespace TSDApp.Fomrs
             this.gvButtons.Columns[7].Visible = false;
             this.gvButtons.Columns[8].Visible = false;
             this.gvButtons.Columns[9].Visible = false;
+            this.gvButtons.Columns[10].Visible = false;
             this.gvButtons.AllowUserToAddRows = false;
             this.gvButtons.AllowUserToResizeColumns = false;
             this.gvButtons.AllowUserToResizeRows = false;
