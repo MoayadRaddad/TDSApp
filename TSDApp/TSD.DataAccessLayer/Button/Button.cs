@@ -8,31 +8,34 @@ namespace TSD.DataAccessLayer.Button
 {
     public static class Button
     {
-        public static List<TSDApp.Models.Button> SelectButtonsbyScreenId(int pScreenId)
+        public static List<T> SelectButtonsbyScreenId<T>(int pScreenId, BusinessObjects.Models.btnType btnType)
         {
             try
             {
-                List<TSDApp.Models.Button> lstButtons = new List<TSDApp.Models.Button>();
+                List<T> lstButtons = new List<T>();
                 using (SqlConnection con = new SqlConnection(DBHelper.DBHelper.GetConnectionString()))
                 {
                     SqlCommand go = new SqlCommand();
                     con.Open();
                     go.Connection = con;
-                    go.CommandText = "SELECT id, ENName, ARName, Type, MessageAR, MessageEN, issueTicketType, ScreenId FROM tblButtons where ScreenId = @ScreenId";
+                    go.CommandText = "SELECT * FROM tbl" + btnType.ToString() + " where ScreenId = @ScreenId";
                     go.Parameters.Add(new SqlParameter("@ScreenId", pScreenId));
 
                     SqlDataReader reader = go.ExecuteReader();
                     while (reader.Read())
                     {
-                        lstButtons.Add(new TSDApp.Models.Button(
-                        reader["id"] != null ? Convert.ToInt32(reader["id"]) : 0,
-                        reader["ENName"] != null ? Convert.ToString(reader["ENName"]) : string.Empty,
-                        reader["ARName"] != null ? Convert.ToString(reader["ARName"]) : string.Empty,
-                        reader["Type"] != null ? Convert.ToString(reader["Type"]) : string.Empty,
-                        reader["MessageAR"] != null ? Convert.ToString(reader["MessageAR"]) : string.Empty,
-                        reader["MessageEN"] != null ? Convert.ToString(reader["MessageEN"]) : string.Empty,
-                        reader["issueTicketType"] != DBNull.Value ? Convert.ToInt32(reader["issueTicketType"]) : 0,
-                        reader["ScreenId"] != null ? Convert.ToInt32(reader["ScreenId"]) : 0));
+                        if (btnType == BusinessObjects.Models.btnType.ShowMessage)
+                        {
+                            var btn = new BusinessObjects.Models.ShowMessage(Convert.ToInt32(reader["id"]), reader["ENName"].ToString(), reader["ARName"].ToString(),
+                                reader["MessageAR"].ToString(), reader["MessageEN"].ToString(), Convert.ToInt32(reader["ScreenId"]));
+                            lstButtons.Add((T)(object)btn);
+                        }
+                        else
+                        {
+                            var btn = new BusinessObjects.Models.IssueTicket(Convert.ToInt32(reader["id"]), reader["ENName"].ToString(), reader["ARName"].ToString(),
+                                Convert.ToInt32(reader["SreviceType"]), Convert.ToInt32(reader["ScreenId"]));
+                            lstButtons.Add((T)(object)btn);
+                        }
                     }
                     con.Close();
                 }
@@ -44,18 +47,17 @@ namespace TSD.DataAccessLayer.Button
                 return null;
             }
         }
-        public static TSDApp.Models.Button InsertButton(TSDApp.Models.Button pButton)
+        public static BusinessObjects.Models.ShowMessage InsertShowMessageButton(BusinessObjects.Models.ShowMessage pButton)
         {
             try
             {
-                string pquery = "insert into tblButtons OUTPUT INSERTED.IDENTITYCOL  values (@ENName,@ARName,@Type,@MessageAR,@MessageEN,@issueTicketType,@ScreenId)";
+                string pquery = "insert into tblShowMessage OUTPUT INSERTED.IDENTITYCOL  values (@ENName,@ARName,@MessageEN,@MessageAR,@ScreenId)";
                 List<SqlParameter> ScreenParams = new List<SqlParameter>();
                 ScreenParams.Add(new SqlParameter("@ENName", pButton.ENName));
                 ScreenParams.Add(new SqlParameter("@ARName", pButton.ARName));
                 ScreenParams.Add(new SqlParameter("@Type", pButton.Type));
-                ScreenParams.Add(new SqlParameter("@MessageAR", pButton.MessageAR != null ? pButton.MessageAR : (object)DBNull.Value));
-                ScreenParams.Add(new SqlParameter("@MessageEN", pButton.MessageEN != null ? pButton.MessageEN : (object)DBNull.Value));
-                ScreenParams.Add(new SqlParameter("@issueTicketType", pButton.issueTicketType != null ? pButton.issueTicketType : (object)DBNull.Value));
+                ScreenParams.Add(new SqlParameter("@MessageEN", pButton.MessageEN));
+                ScreenParams.Add(new SqlParameter("@MessageAR", pButton.MessageAR));
                 ScreenParams.Add(new SqlParameter("@ScreenId", pButton.ScreenId));
                 pButton.id = Convert.ToInt32(DBHelper.DBHelper.ExecuteScalar(pquery, ScreenParams));
                 return pButton;
@@ -66,20 +68,18 @@ namespace TSD.DataAccessLayer.Button
                 return null;
             }
         }
-        public static TSDApp.Models.Button UpdateButton(TSDApp.Models.Button pButton)
+        public static BusinessObjects.Models.ShowMessage UpdateShowMessageButton(BusinessObjects.Models.ShowMessage pButton)
         {
             try
             {
-                string pquery = "update tblButtons set ENName = @ENName,ARName = @ARName,Type = @Type,MessageAR = @MessageAR,MessageEN = @MessageEN,issueTicketType = @issueTicketType,ScreenId = @ScreenId where id = @id";
+                string pquery = "update tblShowMessage set ENName = @ENName,ARName = @ARName,Type = @Type,MessageAR = @MessageAR,MessageEN = @MessageEN,issueTicketType = @issueTicketType where id = @id";
                 List<SqlParameter> ScreenParams = new List<SqlParameter>();
                 ScreenParams.Add(new SqlParameter("@id", pButton.id));
                 ScreenParams.Add(new SqlParameter("@ENName", pButton.ENName));
                 ScreenParams.Add(new SqlParameter("@ARName", pButton.ARName));
                 ScreenParams.Add(new SqlParameter("@Type", pButton.Type));
-                ScreenParams.Add(new SqlParameter("@MessageAR", pButton.MessageAR != null ? pButton.MessageAR : (object)DBNull.Value));
-                ScreenParams.Add(new SqlParameter("@MessageEN", pButton.MessageEN != null ? pButton.MessageEN : (object)DBNull.Value));
-                ScreenParams.Add(new SqlParameter("@issueTicketType", pButton.issueTicketType));
-                ScreenParams.Add(new SqlParameter("@ScreenId", pButton.ScreenId));
+                ScreenParams.Add(new SqlParameter("@MessageEN", pButton.MessageEN));
+                ScreenParams.Add(new SqlParameter("@MessageAR", pButton.MessageAR));
                 DBHelper.DBHelper.ExecuteNonQuery(pquery, ScreenParams);
                 return pButton;
             }
@@ -89,17 +89,76 @@ namespace TSD.DataAccessLayer.Button
                 return null;
             }
         }
-        public static int DeleteButtonWhere(List<int> pButtonsIds, string ConditionColumn)
+        public static BusinessObjects.Models.IssueTicket InsertIssueTicketButton(BusinessObjects.Models.IssueTicket pButton)
         {
             try
             {
-                string pquery = "delete from tblButtons where " + ConditionColumn + " = @id";
-                foreach (int item in pButtonsIds)
+                string pquery = "insert into tblIssueTicket OUTPUT INSERTED.IDENTITYCOL  values (@ENName,@ARName,@ServiceType,@ScreenId)";
+                List<SqlParameter> ScreenParams = new List<SqlParameter>();
+                ScreenParams.Add(new SqlParameter("@ENName", pButton.ENName));
+                ScreenParams.Add(new SqlParameter("@ARName", pButton.ARName));
+                ScreenParams.Add(new SqlParameter("@ServiceType", pButton.Type));
+                ScreenParams.Add(new SqlParameter("@ScreenId", pButton.ScreenId));
+                pButton.id = Convert.ToInt32(DBHelper.DBHelper.ExecuteScalar(pquery, ScreenParams));
+                return pButton;
+            }
+            catch (Exception ex)
+            {
+                BusinessObjects.ExceptionsWriter.ExceptionsWriter.SaveExceptionToLogFile(ex);
+                return null;
+            }
+        }
+        public static BusinessObjects.Models.IssueTicket UpdateIssueTicketButton(BusinessObjects.Models.IssueTicket pButton)
+        {
+            try
+            {
+                string pquery = "update tblIssueTicket set ENName = @ENName,ARName = @ARName,ServiceType = @ServiceType where id = @id";
+                List<SqlParameter> ScreenParams = new List<SqlParameter>();
+                ScreenParams.Add(new SqlParameter("@id", pButton.id));
+                ScreenParams.Add(new SqlParameter("@ENName", pButton.ENName));
+                ScreenParams.Add(new SqlParameter("@ARName", pButton.ARName));
+                ScreenParams.Add(new SqlParameter("@ServiceType", pButton.Type));
+                DBHelper.DBHelper.ExecuteNonQuery(pquery, ScreenParams);
+                return pButton;
+            }
+            catch (Exception ex)
+            {
+                BusinessObjects.ExceptionsWriter.ExceptionsWriter.SaveExceptionToLogFile(ex);
+                return null;
+            }
+        }
+        public static int DeleteButtonWhere(IDictionary<int, string> pButtonsIds, string ConditionColumn)
+        {
+            try
+            {
+                foreach (KeyValuePair<int, string> item in pButtonsIds)
                 {
+                    string pquery = string.Empty;
+                    pquery = "delete from tbl" + item.Value.ToString() + " where " + ConditionColumn + " = @id";
                     List<SqlParameter> ScreenParams = new List<SqlParameter>();
-                    ScreenParams.Add(new SqlParameter("@id", item));
+                    ScreenParams.Add(new SqlParameter("@id", item.Key));
                     DBHelper.DBHelper.ExecuteNonQuery(pquery, ScreenParams);
                 }
+                return 1;
+            }
+            catch (Exception ex)
+            {
+                BusinessObjects.ExceptionsWriter.ExceptionsWriter.SaveExceptionToLogFile(ex);
+                return 0;
+            }
+        }
+        public static int DeleteAllButtonByScreenId(int pScreenId)
+        {
+            try
+            {
+                string pquery = "delete from tblShowMessage where ScreenId = @ScreenId";
+                List<SqlParameter> ScreenParams = new List<SqlParameter>();
+                ScreenParams.Add(new SqlParameter("@ScreenId", pScreenId));
+                DBHelper.DBHelper.ExecuteNonQuery(pquery, ScreenParams);
+                pquery = "delete from tblIssueTicket where ScreenId = @ScreenId";
+                ScreenParams = new List<SqlParameter>();
+                ScreenParams.Add(new SqlParameter("@ScreenId", pScreenId));
+                DBHelper.DBHelper.ExecuteNonQuery(pquery, ScreenParams);
                 return 1;
             }
             catch (Exception ex)

@@ -6,11 +6,11 @@ namespace BusinessAccessLayer.IssueTicketType
 {
     public static class IssueTicketType
     {
-        public static List<BusinessObjects.Models.IssueTicketType> SelectIssueTicketType()
+        public static List<BusinessObjects.Models.IssueServiceType> SelectIssueTicketType()
         {
             try
             {
-                return TSD.DataAccessLayer.IssueTicketType.IssueTicketType.SelectIssueTicketType();
+                return TSD.DataAccessLayer.IssueTicketType.ServiceType.SelectIssueTicketType();
             }
             catch (Exception ex)
             {

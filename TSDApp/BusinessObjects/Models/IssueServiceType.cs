@@ -4,16 +4,16 @@ using System.Text;
 
 namespace BusinessObjects.Models
 {
-    public class IssueTicketType
+    public class IssueServiceType
     {
         public int id { get; set; }
         public string Name { get; set; }
-        public IssueTicketType()
+        public IssueServiceType()
         {
             id = 0;
             Name = string.Empty;
         }
-        public IssueTicketType(int pId, string pName)
+        public IssueServiceType(int pId, string pName)
         {
             id = pId;
             Name = pName;

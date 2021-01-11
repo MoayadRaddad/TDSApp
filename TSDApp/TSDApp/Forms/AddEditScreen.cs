@@ -17,8 +17,10 @@ namespace TSDApp.Fomrs
         #region Variables
         private int BankId;
         private static Models.Screen CurrentScreen;
-        public static List<Models.Button> LstButtons = new List<Models.Button>();
-        public static IEnumerable<Models.Button> IEnumrableLstButtons;
+        public static List<BusinessObjects.Models.ShowMessage> LstShowMessageButtons = new List<BusinessObjects.Models.ShowMessage>();
+        public static List<BusinessObjects.Models.IssueTicket> LstIssueTicketButtons = new List<BusinessObjects.Models.IssueTicket>();
+        public static List<BusinessObjects.Models.ButtonMaster> LstButtons;
+        public static IEnumerable<BusinessObjects.Models.ButtonMaster> IEnumrableLstButtons;
         #endregion
 
         #region constructors
@@ -47,8 +49,10 @@ namespace TSDApp.Fomrs
             {
                 InitializeComponent();
                 ddlActive.DropDownStyle = ComboBoxStyle.DropDownList;
-                LstButtons = new List<Models.Button>();
-                IEnumrableLstButtons = new List<Models.Button>().ToList();
+                LstShowMessageButtons = new List<BusinessObjects.Models.ShowMessage>();
+                LstIssueTicketButtons = new List<BusinessObjects.Models.IssueTicket>();
+                LstButtons = new List<BusinessObjects.Models.ButtonMaster>();
+                IEnumrableLstButtons = new List<BusinessObjects.Models.ButtonMaster>().ToList();
                 BankId = pBankId;
                 ddlActive.SelectedIndex = 0;
             }
@@ -77,7 +81,7 @@ namespace TSDApp.Fomrs
                 Models.SharingMethods.SaveExceptionToLogFile(ex);
             }
         }
-        public AddEditScreen(int pBankId, Models.Screen pScreen, Models.Button pNewButton, Models.Button pOldButton)
+        public AddEditScreen(int pBankId, Models.Screen pScreen, BusinessObjects.Models.ShowMessage pNewButton, BusinessObjects.Models.ShowMessage pOldButton)
         {
             try
             {
@@ -87,16 +91,36 @@ namespace TSDApp.Fomrs
                 FillScreens(pScreen);
                 if (pOldButton == null && pNewButton != null)
                 {
-                    LstButtons.Add(pNewButton);
-                    IEnumrableLstButtons = Models.SharingMethods.GetIEnumrable(LstButtons).ToList();
+                    LstShowMessageButtons.Add(pNewButton);
                 }
                 else if (pNewButton != null)
                 {
-                    LstButtons[LstButtons.FindIndex(x => x.LstIndex == pOldButton.LstIndex)] = pNewButton;
-                    IEnumrableLstButtons = Models.SharingMethods.GetIEnumrable(LstButtons).ToList();
+                    LstShowMessageButtons[LstShowMessageButtons.FindIndex(x => x.indexUpdated == pOldButton.indexUpdated)] = pNewButton;
                 }
-                gvButtons.DataSource = LstButtons.ToList();
-                SetdataGridViewDisplay();
+                RefreshGrid();
+            }
+            catch (Exception ex)
+            {
+                Models.SharingMethods.SaveExceptionToLogFile(ex);
+            }
+        }
+        public AddEditScreen(int pBankId, Models.Screen pScreen, BusinessObjects.Models.IssueTicket pNewButton, BusinessObjects.Models.IssueTicket pOldButton)
+        {
+            try
+            {
+                InitializeComponent();
+                ddlActive.DropDownStyle = ComboBoxStyle.DropDownList;
+                BankId = pBankId;
+                FillScreens(pScreen);
+                if (pOldButton == null && pNewButton != null)
+                {
+                    LstIssueTicketButtons.Add(pNewButton);
+                }
+                else if (pNewButton != null)
+                {
+                    LstIssueTicketButtons[LstIssueTicketButtons.FindIndex(x => x.indexUpdated == pOldButton.indexUpdated)] = pNewButton;
+                }
+                RefreshGrid();
             }
             catch (Exception ex)
             {
@@ -152,12 +176,12 @@ namespace TSDApp.Fomrs
                                 }
                                 lblGVTitle.Text = CurrentScreen.Name;
                             }
-                            foreach (Models.Button pbutton in LstButtons)
+                            foreach (BusinessObjects.Models.IssueTicket pbutton in LstIssueTicketButtons)
                             {
                                 if (pbutton.id == 0)
                                 {
                                     pbutton.ScreenId = CurrentScreen.id;
-                                    Models.Button btnInsertCheck = BusinessAccessLayer.Button.Button.InsertButton(pbutton);
+                                    BusinessObjects.Models.IssueTicket btnInsertCheck = BusinessAccessLayer.Button.Button.InsertIssueTicketButton(pbutton);
                                     if (btnInsertCheck == null)
                                     {
                                         MessageBox.Show("Please check your connection to databse", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -165,7 +189,27 @@ namespace TSDApp.Fomrs
                                 }
                                 else if (pbutton.Updated == true)
                                 {
-                                    Models.Button btnUpdateCheck = BusinessAccessLayer.Button.Button.UpdateButton(pbutton);
+                                    BusinessObjects.Models.IssueTicket btnUpdateCheck = BusinessAccessLayer.Button.Button.UpdateIssueTicketButton(pbutton);
+                                    if (btnUpdateCheck == null)
+                                    {
+                                        MessageBox.Show("Please check your connection to databse", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                    }
+                                }
+                            }
+                            foreach (BusinessObjects.Models.ShowMessage pbutton in LstShowMessageButtons)
+                            {
+                                if (pbutton.id == 0)
+                                {
+                                    pbutton.ScreenId = CurrentScreen.id;
+                                    BusinessObjects.Models.ShowMessage btnInsertCheck = BusinessAccessLayer.Button.Button.InsertShowMessageButton(pbutton);
+                                    if (btnInsertCheck == null)
+                                    {
+                                        MessageBox.Show("Please check your connection to databse", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                    }
+                                }
+                                else if (pbutton.Updated == true)
+                                {
+                                    BusinessObjects.Models.ShowMessage btnUpdateCheck = BusinessAccessLayer.Button.Button.UpdateShowMessageButton(pbutton);
                                     if (btnUpdateCheck == null)
                                     {
                                         MessageBox.Show("Please check your connection to databse", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -203,6 +247,8 @@ namespace TSDApp.Fomrs
             {
                 CurrentScreen = null;
                 TSD tsd = null;
+                LstShowMessageButtons = null;
+                LstIssueTicketButtons = null;
                 LstButtons = null;
                 IEnumrableLstButtons = null;
                 this.Dispose();
@@ -223,6 +269,8 @@ namespace TSDApp.Fomrs
             {
                 CurrentScreen = null;
                 TSD tsd = null;
+                LstShowMessageButtons = null;
+                LstIssueTicketButtons = null;
                 LstButtons = null;
                 IEnumrableLstButtons = null;
                 this.Dispose();
@@ -246,25 +294,29 @@ namespace TSDApp.Fomrs
                     DialogResult dialogResult = MessageBox.Show(@"Are you sure you want to delete selected button\s ?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                     if (dialogResult == DialogResult.Yes)
                     {
-                        List<int> pButtonsIds = new List<int>();
+                        IDictionary<int, string> pButtonsDetailsIds = new Dictionary<int, string>();
                         foreach (DataGridViewRow buttonRow in gvButtons.SelectedRows)
                         {
-                            pButtonsIds.Add((int)buttonRow.Cells["id"].Value);
-                            LstButtons.Remove((LstButtons.Where(x => x.id == (int)buttonRow.Cells["id"].Value).FirstOrDefault()));
-                        }
-                        int CheckDelete = BusinessAccessLayer.Button.Button.DeleteButtonWhere(pButtonsIds, "id");
-                        if (CheckDelete == 1)
-                        {
-                            IEnumrableLstButtons = Models.SharingMethods.GetIEnumrable(LstButtons).ToList();
-                            if (IEnumrableLstButtons != null)
+                            var btnId = (int)buttonRow.Cells["id"].Value;
+                            var btnType = (string)buttonRow.Cells["Type"].Value;
+                            if (btnId != 0)
                             {
-                                gvButtons.DataSource = IEnumrableLstButtons.ToList();
-                                MessageBox.Show(@"Button\s have been deleted successfully", "Done", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                pButtonsDetailsIds.Add(btnId, btnType);
+                            }
+                            if (btnType == BusinessObjects.Models.btnType.ShowMessage.ToString())
+                            {
+                                LstShowMessageButtons.Remove((LstShowMessageButtons.Where(x => x.id == btnId).FirstOrDefault()));
                             }
                             else
                             {
-                                MessageBox.Show("Please check your connection to databse", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                LstIssueTicketButtons.Remove((LstIssueTicketButtons.Where(x => x.id == btnId).FirstOrDefault()));
                             }
+                        }
+                        int CheckDelete = BusinessAccessLayer.Button.Button.DeleteButtonWhere(pButtonsDetailsIds, "id");
+                        if (CheckDelete == 1)
+                        {
+                            RefreshGrid();
+                            MessageBox.Show(@"Button\s have been deleted successfully", "Done", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         else
                         {
@@ -344,12 +396,25 @@ namespace TSDApp.Fomrs
                 {
                     if (gvButtons.SelectedRows.Count == 1)
                     {
-                        int buttonIndex = (int)gvButtons.SelectedRows[0].Index;
-                        Models.Button CurrentButton = LstButtons[buttonIndex];
-                        CurrentButton.LstIndex = buttonIndex;
-                        AddEditButton addEditButton = new AddEditButton(CurrentScreen, CurrentButton);
-                        this.Hide();
-                        addEditButton.Show();
+                        DataGridViewRow buttonRow = gvButtons.SelectedRows[0];
+                        int buttonId = (int)buttonRow.Cells["id"].Value;
+                        string buttonType = (string)buttonRow.Cells["Type"].Value;
+                        if (buttonType == BusinessObjects.Models.btnType.ShowMessage.ToString())
+                        {
+                            BusinessObjects.Models.ShowMessage CurrentButton = LstShowMessageButtons.Where(x => x.id == buttonId).FirstOrDefault();
+                            CurrentButton.indexUpdated = LstShowMessageButtons.IndexOf(CurrentButton);
+                            AddEditButton addEditButton = new AddEditButton(CurrentScreen, CurrentButton);
+                            this.Hide();
+                            addEditButton.Show();
+                        }
+                        else
+                        {
+                            BusinessObjects.Models.IssueTicket CurrentButton = LstIssueTicketButtons.Where(x => x.id == buttonId).FirstOrDefault();
+                            CurrentButton.indexUpdated = LstIssueTicketButtons.IndexOf(CurrentButton);
+                            AddEditButton addEditButton = new AddEditButton(CurrentScreen, CurrentButton);
+                            this.Hide();
+                            addEditButton.Show();
+                        }
                     }
                     else
                     {
@@ -404,22 +469,39 @@ namespace TSDApp.Fomrs
         {
             try
             {
-                LstButtons = new List<Models.Button>();
-                LstButtons = BusinessAccessLayer.Button.Button.SelectButtonsbyScreenId(CurrentScreen.id);
-                if(LstButtons != null)
+                LstButtons = new List<BusinessObjects.Models.ButtonMaster>();
+                if ((LstShowMessageButtons == null || LstIssueTicketButtons == null) || (LstShowMessageButtons.Count == 0 && LstIssueTicketButtons.Count == 0))
                 {
-                    IEnumrableLstButtons = Models.SharingMethods.GetIEnumrable(LstButtons).ToList();
-                    gvButtons.DataSource = IEnumrableLstButtons.ToList();
-                    SetdataGridViewDisplay();
+                    LstShowMessageButtons = BusinessAccessLayer.Button.Button.SelectButtonsbyScreenId<BusinessObjects.Models.ShowMessage>(CurrentScreen.id, BusinessObjects.Models.btnType.ShowMessage);
+                    LstIssueTicketButtons = BusinessAccessLayer.Button.Button.SelectButtonsbyScreenId<BusinessObjects.Models.IssueTicket>(CurrentScreen.id, BusinessObjects.Models.btnType.IssueTicket);
                 }
-                else
-                {
-                    MessageBox.Show("Please check your connection to databse", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                }
+                RefreshGrid();
             }
             catch (Exception ex)
             {
                 Models.SharingMethods.SaveExceptionToLogFile(ex);
+            }
+        }
+        private void RefreshGrid()
+        {
+            LstButtons.Clear();
+            foreach (var item in LstShowMessageButtons)
+            {
+                LstButtons.Add(new BusinessObjects.Models.ButtonMaster(item.id, item.ENName, item.ARName, item.ScreenId, item.Type));
+            }
+            foreach (var item in LstIssueTicketButtons)
+            {
+                LstButtons.Add(new BusinessObjects.Models.ButtonMaster(item.id, item.ENName, item.ARName, item.ScreenId, item.Type));
+            }
+            if (LstButtons != null)
+            {
+                IEnumrableLstButtons = Models.SharingMethods.GetIEnumrable(LstButtons).ToList();
+                gvButtons.DataSource = IEnumrableLstButtons.ToList();
+                SetdataGridViewDisplay();
+            }
+            else
+            {
+                MessageBox.Show("Please check your connection to databse", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
         /// <summary>
@@ -447,13 +529,9 @@ namespace TSDApp.Fomrs
         {
             TSDApp.Models.SharingMethods.ChangeColumnWidth(gvButtons, 3);
             this.gvButtons.Columns[0].Visible = false;
-            this.gvButtons.Columns[4].Visible = false;
+            this.gvButtons.Columns[3].Visible = false;
             this.gvButtons.Columns[5].Visible = false;
             this.gvButtons.Columns[6].Visible = false;
-            this.gvButtons.Columns[7].Visible = false;
-            this.gvButtons.Columns[8].Visible = false;
-            this.gvButtons.Columns[9].Visible = false;
-            this.gvButtons.Columns[10].Visible = false;
             this.gvButtons.AllowUserToAddRows = false;
             this.gvButtons.AllowUserToResizeColumns = false;
             this.gvButtons.AllowUserToResizeRows = false;

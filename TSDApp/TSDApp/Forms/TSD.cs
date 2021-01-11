@@ -155,12 +155,12 @@ namespace TSDApp
                     {
                         foreach (DataGridViewRow screenRow in gvScreens.SelectedRows)
                         {
-                            int id = (int)screenRow.Cells["id"].Value;
+                            int pScreenId = (int)screenRow.Cells["id"].Value;
                             //Delete buttons for the deleted screen
-                            CheckDataBase = BusinessAccessLayer.Button.Button.DeleteButtonWhere(new List<int> { id }, "ScreenId");
+                            CheckDataBase = BusinessAccessLayer.Button.Button.DeleteAllButtonByScreenId(pScreenId);
                             if (CheckDataBase == 1)
                             {
-                                CheckDataBase = BusinessAccessLayer.Screen.Screen.DeleteScreenById(id);
+                                CheckDataBase = BusinessAccessLayer.Screen.Screen.DeleteScreenById(pScreenId);
                                 if (CheckDataBase == 0)
                                 {
                                     MessageBox.Show("Please check your connection to databse", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
