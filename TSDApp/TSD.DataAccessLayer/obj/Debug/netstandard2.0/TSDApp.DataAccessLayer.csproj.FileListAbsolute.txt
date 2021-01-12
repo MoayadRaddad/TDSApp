@@ -1,9 +1,0 @@
-C:\Users\Moayad\Documents\GitHub\TDSApp\TSDApp\TSD.DataAccessLayer\bin\Debug\netstandard2.0\TSDApp.DataAccessLayer.deps.json
-C:\Users\Moayad\Documents\GitHub\TDSApp\TSDApp\TSD.DataAccessLayer\bin\Debug\netstandard2.0\TSDApp.DataAccessLayer.dll
-C:\Users\Moayad\Documents\GitHub\TDSApp\TSDApp\TSD.DataAccessLayer\bin\Debug\netstandard2.0\TSDApp.DataAccessLayer.pdb
-C:\Users\Moayad\Documents\GitHub\TDSApp\TSDApp\TSD.DataAccessLayer\obj\Debug\netstandard2.0\TSDApp.DataAccessLayer.csprojAssemblyReference.cache
-C:\Users\Moayad\Documents\GitHub\TDSApp\TSDApp\TSD.DataAccessLayer\obj\Debug\netstandard2.0\TSDApp.DataAccessLayer.AssemblyInfoInputs.cache
-C:\Users\Moayad\Documents\GitHub\TDSApp\TSDApp\TSD.DataAccessLayer\obj\Debug\netstandard2.0\TSDApp.DataAccessLayer.AssemblyInfo.cs
-C:\Users\Moayad\Documents\GitHub\TDSApp\TSDApp\TSD.DataAccessLayer\obj\Debug\netstandard2.0\TSDApp.DataAccessLayer.csproj.CoreCompileInputs.cache
-C:\Users\Moayad\Documents\GitHub\TDSApp\TSDApp\TSD.DataAccessLayer\obj\Debug\netstandard2.0\TSDApp.DataAccessLayer.dll
-C:\Users\Moayad\Documents\GitHub\TDSApp\TSDApp\TSD.DataAccessLayer\obj\Debug\netstandard2.0\TSDApp.DataAccessLayer.pdb
