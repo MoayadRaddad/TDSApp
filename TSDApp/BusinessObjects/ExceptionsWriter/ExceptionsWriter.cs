@@ -6,12 +6,12 @@ using System.Text;
 
 namespace BusinessObjects.ExceptionsWriter
 {
-    public static class ExceptionsWriter
+    public class ExceptionsWriter
     {
         /// <summary>
         /// public method get exception,handle it and save it to log file with json type
         /// </summary>
-        public static void SaveExceptionToLogFile(Exception ex)
+        public void SaveExceptionToLogFile(Exception ex)
         {
             string filePath = System.AppDomain.CurrentDomain.BaseDirectory + "Exceptions.json";
             using (StreamWriter writer = File.AppendText(filePath))

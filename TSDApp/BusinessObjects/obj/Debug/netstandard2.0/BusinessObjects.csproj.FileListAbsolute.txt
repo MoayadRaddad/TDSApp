@@ -6,4 +6,3 @@ C:\Users\Moayad\Documents\GitHub\TDSApp\TSDApp\BusinessObjects\obj\Debug\netstan
 C:\Users\Moayad\Documents\GitHub\TDSApp\TSDApp\BusinessObjects\obj\Debug\netstandard2.0\BusinessObjects.csproj.CoreCompileInputs.cache
 C:\Users\Moayad\Documents\GitHub\TDSApp\TSDApp\BusinessObjects\obj\Debug\netstandard2.0\BusinessObjects.dll
 C:\Users\Moayad\Documents\GitHub\TDSApp\TSDApp\BusinessObjects\obj\Debug\netstandard2.0\BusinessObjects.pdb
-C:\Users\Moayad\Documents\GitHub\TDSApp\TSDApp\BusinessObjects\obj\Debug\netstandard2.0\BusinessObjects.csprojAssemblyReference.cache

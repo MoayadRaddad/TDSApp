@@ -10,16 +10,16 @@ namespace TSDApp.Models
     public class Bank
     {
         public int id { get; set; }
-        public string Name { get; set; }
+        public string name { get; set; }
         public Bank()
         {
             id = 0;
-            Name = string.Empty;
+            name = string.Empty;
         }
-        public Bank (int pId, string pName)
+        public Bank (int pid, string pname)
         {
-            id = pId;
-            Name = pName;
+            id = pid;
+            name = pname;
         }
     }
 }

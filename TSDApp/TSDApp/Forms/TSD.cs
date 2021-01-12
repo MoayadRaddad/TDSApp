@@ -19,8 +19,7 @@ namespace TSDApp
     {
         #region Variables
         private int CheckDataBase = 0;
-        private bool isVisited = false;
-        public static Models.Bank CurrentBank;
+        private Models.Bank CurrentBank;
         #endregion
 
         #region constructors
@@ -35,28 +34,10 @@ namespace TSDApp
             }
             catch (Exception ex)
             {
-                Models.SharingMethods.SaveExceptionToLogFile(ex);
+                Models.SharingMethods sharingMethods = new Models.SharingMethods();
+                sharingMethods.SaveExceptionToLogFile(ex);
             }
         }
-        /// <summary>
-        /// Parametarize constructor
-        /// </summary>
-        /// <param name="pIsVisited">Fill isVisited to know if the user already choose a bank</param>
-        public TSD(bool pIsVisited)
-        {
-            try
-            {
-                InitializeComponent();
-                isVisited = pIsVisited;
-            }
-            catch (Exception ex)
-            {
-                Models.SharingMethods.SaveExceptionToLogFile(ex);
-            }
-        }
-        /// <summary>
-        /// Load function to fill data and show panels
-        /// </summary>
         #endregion
 
         #region Events
@@ -64,36 +45,23 @@ namespace TSDApp
         {
             try
             {
-                if (isVisited)
+                BusinessAccessLayer.ConnectionString.BALConnectionString bALConnectionString = new BusinessAccessLayer.ConnectionString.BALConnectionString();
+                int ConnectionStringFileExist = bALConnectionString.SetConnectionString();
+                if (ConnectionStringFileExist == 1)
                 {
-                    BankNamePanel.Visible = false;
-                    MainPanel.Visible = true;
-                    FillScreens();
+                    MainPanel.Visible = false;
                 }
                 else
                 {
-                    Models.SharingMethods.SetConnectionString();
-                    MainPanel.Visible = false;
+                    MessageBox.Show("ConnectionString file does not exist.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    this.Dispose();
+                    System.Environment.Exit(1);
                 }
-                LoadToolTips();
             }
             catch (Exception ex)
             {
-                Models.SharingMethods.SaveExceptionToLogFile(ex);
-            }
-        }
-        /// <summary>
-        /// Cancel button to exit the Application
-        /// </summary>
-        private void btnCancel_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                Application.Exit();
-            }
-            catch (Exception ex)
-            {
-                Models.SharingMethods.SaveExceptionToLogFile(ex);
+                Models.SharingMethods sharingMethods = new Models.SharingMethods();
+                sharingMethods.SaveExceptionToLogFile(ex);
             }
         }
         /// <summary>
@@ -106,15 +74,16 @@ namespace TSDApp
                 if (txtBankName.Text != "")
                 {
                     CurrentBank = new Models.Bank();
-                    CurrentBank.Name = txtBankName.Text;
-                    CurrentBank = BusinessAccessLayer.Bank.Bank.CheckBankExist(CurrentBank);
+                    CurrentBank.name = txtBankName.Text;
+                    BusinessAccessLayer.Bank.BALBank bank = new BusinessAccessLayer.Bank.BALBank();
+                    CurrentBank = bank.CheckBankExist(CurrentBank);
                     if (CurrentBank != null)
                     {
                         if (CurrentBank.id == 0)
                         {
                             CurrentBank = new Models.Bank();
-                            CurrentBank.Name = txtBankName.Text;
-                            CurrentBank = BusinessAccessLayer.Bank.Bank.InsertBank(CurrentBank);
+                            CurrentBank.name = txtBankName.Text;
+                            CurrentBank = bank.InsertBank(CurrentBank);
                             if (CurrentBank == null)
                             {
                                 MessageBox.Show("Please check your connection to databse", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -136,7 +105,8 @@ namespace TSDApp
             }
             catch (Exception ex)
             {
-                Models.SharingMethods.SaveExceptionToLogFile(ex);
+                Models.SharingMethods sharingMethods = new Models.SharingMethods();
+                sharingMethods.SaveExceptionToLogFile(ex);
             }
         }
         /// <summary>
@@ -157,10 +127,12 @@ namespace TSDApp
                         {
                             int pScreenId = (int)screenRow.Cells["id"].Value;
                             //Delete buttons for the deleted screen
-                            CheckDataBase = BusinessAccessLayer.Button.Button.DeleteAllButtonByScreenId(pScreenId);
+                            BusinessAccessLayer.Button.BALButton button = new BusinessAccessLayer.Button.BALButton();
+                            CheckDataBase = button.DeleteAllButtonByScreenId(pScreenId);
                             if (CheckDataBase == 1)
                             {
-                                CheckDataBase = BusinessAccessLayer.Screen.Screen.DeleteScreenById(pScreenId);
+                                BusinessAccessLayer.Screen.BALScreen screen = new BusinessAccessLayer.Screen.BALScreen();
+                                CheckDataBase = screen.DeleteScreenById(pScreenId);
                                 if (CheckDataBase == 0)
                                 {
                                     MessageBox.Show("Please check your connection to databse", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -187,9 +159,11 @@ namespace TSDApp
             }
             catch (Exception ex)
             {
-                Models.SharingMethods.SaveExceptionToLogFile(ex);
+                Models.SharingMethods sharingMethods = new Models.SharingMethods();
+                sharingMethods.SaveExceptionToLogFile(ex);
             }
         }
+
         /// <summary>
         /// Add screen button to redirect to add/edit screen form to add new screen
         /// </summary>
@@ -199,14 +173,20 @@ namespace TSDApp
             {
                 //Send current bank id to use it in add/edit screen form
                 AddEditScreen addEditScreen = new AddEditScreen(CurrentBank.id);
-                this.Hide();
+                addEditScreen.FormClosed += new FormClosedEventHandler(AddEditScreen_Closed);
                 addEditScreen.Show();
             }
             catch (Exception ex)
             {
-                Models.SharingMethods.SaveExceptionToLogFile(ex);
+                Models.SharingMethods sharingMethods = new Models.SharingMethods();
+                sharingMethods.SaveExceptionToLogFile(ex);
             }
         }
+        void AddEditScreen_Closed(object sender, FormClosedEventArgs e)
+        {
+            FillScreens();
+        }
+
         /// <summary>
         /// Edit screen button to redirect to add/edit screen form to edit selected screen
         /// </summary>
@@ -220,11 +200,11 @@ namespace TSDApp
                     {
                         Models.Screen pScreen = new Models.Screen();
                         pScreen.id = (int)gvScreens.SelectedRows[0].Cells[0].Value;
-                        pScreen.Name = (string)gvScreens.SelectedRows[0].Cells[1].Value;
+                        pScreen.name = (string)gvScreens.SelectedRows[0].Cells[1].Value;
                         pScreen.isActive = (bool)gvScreens.SelectedRows[0].Cells[2].Value;
-                        pScreen.BankId = (int)gvScreens.SelectedRows[0].Cells[3].Value;
+                        pScreen.bankId = (int)gvScreens.SelectedRows[0].Cells[3].Value;
                         AddEditScreen addEditScreen = new AddEditScreen(CurrentBank.id, pScreen);
-                        this.Hide();
+                        addEditScreen.FormClosed += new FormClosedEventHandler(AddEditScreen_Closed);
                         addEditScreen.Show();
                     }
                     else
@@ -239,7 +219,24 @@ namespace TSDApp
             }
             catch (Exception ex)
             {
-                Models.SharingMethods.SaveExceptionToLogFile(ex);
+                Models.SharingMethods sharingMethods = new Models.SharingMethods();
+                sharingMethods.SaveExceptionToLogFile(ex);
+            }
+        }
+        /// <summary>
+        /// Cancel button to exit the Application
+        /// </summary>
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                this.Dispose();
+                System.Environment.Exit(1);
+            }
+            catch (Exception ex)
+            {
+                Models.SharingMethods sharingMethods = new Models.SharingMethods();
+                sharingMethods.SaveExceptionToLogFile(ex);
             }
         }
         /// <summary>
@@ -254,7 +251,8 @@ namespace TSDApp
             }
             catch (Exception ex)
             {
-                Models.SharingMethods.SaveExceptionToLogFile(ex);
+                Models.SharingMethods sharingMethods = new Models.SharingMethods();
+                sharingMethods.SaveExceptionToLogFile(ex);
             }
         }
         #endregion
@@ -267,19 +265,22 @@ namespace TSDApp
         {
             try
             {
-                lblTitle.Text = "Main Form - " + CurrentBank.Name;
-                lblGVTitle.Text = "Bank " + CurrentBank.Name + " screens";
-                List<TSDApp.Models.Screen> screens = Models.SharingMethods.GetIEnumrable(BusinessAccessLayer.Screen.Screen.SelectScreensByBankId(CurrentBank)).ToList();
+                lblTitle.Text = "Main Form - " + CurrentBank.name;
+                lblGVTitle.Text = "Bank " + CurrentBank.name + " screens";
+                BusinessAccessLayer.Screen.BALScreen screen = new BusinessAccessLayer.Screen.BALScreen();
+                Models.SharingMethods sharingMethods = new Models.SharingMethods();
+                List<TSDApp.Models.Screen> screens = sharingMethods.GetIEnumrable(screen.SelectScreensByBankId(CurrentBank)).ToList();
                 if (screens != null)
                 {
                     gvScreens.DataSource = screens;
-                    TSDApp.Models.SharingMethods.ChangeColumnWidth(gvScreens, 2);
+                    sharingMethods.ChangeColumnWidth(gvScreens, 2);
                     this.gvScreens.Columns[0].Visible = false;
                     this.gvScreens.Columns[3].Visible = false;
                     this.gvScreens.AllowUserToAddRows = false;
                     this.gvScreens.AllowUserToResizeColumns = false;
                     this.gvScreens.AllowUserToResizeRows = false;
                     this.gvScreens.ReadOnly = true;
+                    LoadToolTips();
                 }
                 else
                 {
@@ -288,7 +289,8 @@ namespace TSDApp
             }
             catch (Exception ex)
             {
-                Models.SharingMethods.SaveExceptionToLogFile(ex);
+                Models.SharingMethods sharingMethods = new Models.SharingMethods();
+                sharingMethods.SaveExceptionToLogFile(ex);
             }
         }
         /// <summary>
@@ -308,7 +310,8 @@ namespace TSDApp
             }
             catch (Exception ex)
             {
-                Models.SharingMethods.SaveExceptionToLogFile(ex);
+                Models.SharingMethods sharingMethods = new Models.SharingMethods();
+                sharingMethods.SaveExceptionToLogFile(ex);
             }
         }
         #endregion

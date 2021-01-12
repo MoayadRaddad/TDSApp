@@ -15,26 +15,12 @@ namespace TSDApp.Forms
     public partial class AddEditButton : Form
     {
         #region Variables
-        private static BusinessObjects.Models.ShowMessage ShowMessageButton;
-        private static BusinessObjects.Models.IssueTicket IssueTicketButton;
-        private static Models.Screen CurrentScreen;
+        private BusinessObjects.Models.ShowMessageButton ShowMessageButton;
+        private BusinessObjects.Models.IssueTicketButton IssueTicketButton;
+        private Models.Screen CurrentScreen;
         #endregion
 
         #region constructors
-        /// <summary>
-        /// Default constructor
-        /// </summary>
-        public AddEditButton()
-        {
-            try
-            {
-                InitializeComponent();
-            }
-            catch (Exception ex)
-            {
-                Models.SharingMethods.SaveExceptionToLogFile(ex);
-            }
-        }
         /// <summary>
         /// Parametarize constructor get screen object
         /// </summary>
@@ -49,7 +35,8 @@ namespace TSDApp.Forms
             }
             catch (Exception ex)
             {
-                Models.SharingMethods.SaveExceptionToLogFile(ex);
+                Models.SharingMethods sharingMethods = new Models.SharingMethods();
+                sharingMethods.SaveExceptionToLogFile(ex);
             }
         }
         /// <summary>
@@ -57,9 +44,10 @@ namespace TSDApp.Forms
         /// Fill screenId to know the currently screen id
         /// Fill data for current button to this form
         /// </summary>
-        /// <param name="pScreenId"></param>
-        /// <param name="pButtonId"></param>
-        public AddEditButton(Models.Screen pScreen, BusinessObjects.Models.ShowMessage pButton)
+        /// <param name="pScreen"></param>
+        /// <param name="pShowMessageButton"></param>
+        /// <param name="pIssueTicketButton"></param>
+        public AddEditButton(Models.Screen pScreen, BusinessObjects.Models.ShowMessageButton pShowMessageButton, BusinessObjects.Models.IssueTicketButton pIssueTicketButton)
         {
             try
             {
@@ -67,32 +55,23 @@ namespace TSDApp.Forms
                 FillComboBox();
                 CurrentScreen = new Models.Screen();
                 CurrentScreen = pScreen;
-                ShowMessageButton = pButton;
-                FillShowMessageData();
+                if(!(pShowMessageButton == null))
+                {
+                    ShowMessageButton = pShowMessageButton;
+                    FillShowMessageData();
+                }
+                else
+                {
+                    IssueTicketButton = pIssueTicketButton;
+                    FillIssueTicketData();
+                }
                 lblTitle.Text = "Edit Button";
                 btnSave.Text = "Edit";
             }
             catch (Exception ex)
             {
-                Models.SharingMethods.SaveExceptionToLogFile(ex);
-            }
-        }
-        public AddEditButton(Models.Screen pScreen, BusinessObjects.Models.IssueTicket pButton)
-        {
-            try
-            {
-                InitializeComponent();
-                FillComboBox();
-                CurrentScreen = new Models.Screen();
-                CurrentScreen = pScreen;
-                IssueTicketButton = pButton;
-                FillIssueTicketData();
-                lblTitle.Text = "Edit Button";
-                btnSave.Text = "Edit";
-            }
-            catch (Exception ex)
-            {
-                Models.SharingMethods.SaveExceptionToLogFile(ex);
+                Models.SharingMethods sharingMethods = new Models.SharingMethods();
+                sharingMethods.SaveExceptionToLogFile(ex);
             }
         }
         #endregion
@@ -110,7 +89,8 @@ namespace TSDApp.Forms
             }
             catch (Exception ex)
             {
-                Models.SharingMethods.SaveExceptionToLogFile(ex);
+                Models.SharingMethods sharingMethods = new Models.SharingMethods();
+                sharingMethods.SaveExceptionToLogFile(ex);
             }
         }
         /// <summary>
@@ -133,7 +113,8 @@ namespace TSDApp.Forms
             }
             catch (Exception ex)
             {
-                Models.SharingMethods.SaveExceptionToLogFile(ex);
+                Models.SharingMethods sharingMethods = new Models.SharingMethods();
+                sharingMethods.SaveExceptionToLogFile(ex);
             }
         }
         /// <summary>
@@ -156,7 +137,8 @@ namespace TSDApp.Forms
             }
             catch (Exception ex)
             {
-                Models.SharingMethods.SaveExceptionToLogFile(ex);
+                Models.SharingMethods sharingMethods = new Models.SharingMethods();
+                sharingMethods.SaveExceptionToLogFile(ex);
             }
         }
         /// <summary>
@@ -166,24 +148,15 @@ namespace TSDApp.Forms
         {
             try
             {
-                AddEditScreen addEditScreen = null;
                 ShowMessageButton = null;
                 IssueTicketButton = null;
-                this.Dispose();
-                if (CurrentScreen.id != 0)
-                {
-                    addEditScreen = new AddEditScreen(TSD.CurrentBank.id, CurrentScreen, null, ShowMessageButton);
-                }
-                else
-                {
-                    addEditScreen = new AddEditScreen(TSD.CurrentBank.id);
-                }
                 CurrentScreen = null;
-                addEditScreen.Show();
+                this.Dispose();
             }
             catch (Exception ex)
             {
-                Models.SharingMethods.SaveExceptionToLogFile(ex);
+                Models.SharingMethods sharingMethods = new Models.SharingMethods();
+                sharingMethods.SaveExceptionToLogFile(ex);
             }
         }
         /// <summary>
@@ -193,17 +166,15 @@ namespace TSDApp.Forms
         {
             try
             {
-                AddEditScreen addEditScreen = null;
                 ShowMessageButton = null;
                 IssueTicketButton = null;
-                this.Dispose();
-                addEditScreen = new AddEditScreen(TSD.CurrentBank.id, CurrentScreen, null, ShowMessageButton);
                 CurrentScreen = null;
-                addEditScreen.Show();
+                this.Dispose();
             }
             catch (Exception ex)
             {
-                Models.SharingMethods.SaveExceptionToLogFile(ex);
+                Models.SharingMethods sharingMethods = new Models.SharingMethods();
+                sharingMethods.SaveExceptionToLogFile(ex);
             }
         }
         /// <summary>
@@ -225,19 +196,19 @@ namespace TSDApp.Forms
                             //Check if it is new button to insert or edit button to update
                             if (IssueTicketButton == null)
                             {
-                                IssueTicketButton = new BusinessObjects.Models.IssueTicket(0, txtENName.Text, txtARName.Text, Convert.ToInt32(ddlIssueTicket.SelectedValue), CurrentScreen.id);
+                                IssueTicketButton = new BusinessObjects.Models.IssueTicketButton(0, txtENName.Text, txtARName.Text, Convert.ToInt32(ddlIssueTicket.SelectedValue), CurrentScreen.id);
                                 this.Dispose();
-                                AddEditScreen addEditScreen = new AddEditScreen(TSD.CurrentBank.id, CurrentScreen, IssueTicketButton, null);
-                                addEditScreen.Show();
+                                //AddEditScreen addEditScreen = new AddEditScreen(CurrentScreen, IssueTicketButton, null);
+                                //addEditScreen.Show();
                                 IssueTicketButton = null;
                             }
                             else
                             {
-                                BusinessObjects.Models.IssueTicket OldButton = IssueTicketButton;
-                                IssueTicketButton = new BusinessObjects.Models.IssueTicket(IssueTicketButton.id, txtENName.Text, txtARName.Text, Convert.ToInt32(ddlIssueTicket.SelectedValue), CurrentScreen.id, true, OldButton.indexUpdated);
+                                BusinessObjects.Models.IssueTicketButton OldButton = IssueTicketButton;
+                                IssueTicketButton = new BusinessObjects.Models.IssueTicketButton(IssueTicketButton.id, txtENName.Text, txtARName.Text, Convert.ToInt32(ddlIssueTicket.SelectedValue), CurrentScreen.id, true, OldButton.indexUpdated);
                                 this.Dispose();
-                                AddEditScreen addEditScreen = new AddEditScreen(TSD.CurrentBank.id, CurrentScreen, IssueTicketButton, OldButton);
-                                addEditScreen.Show();
+                                //AddEditScreen addEditScreen = new AddEditScreen(CurrentScreen, IssueTicketButton, OldButton);
+                                //addEditScreen.Show();
                                 IssueTicketButton = null;
                             }
                         }
@@ -252,19 +223,19 @@ namespace TSDApp.Forms
                                     //Check if it is new button to insert or edit button to update
                                     if (ShowMessageButton == null)
                                     {
-                                        ShowMessageButton = new BusinessObjects.Models.ShowMessage(0, txtENName.Text, txtARName.Text, txtMessageAR.Text, txtMessageEN.Text, CurrentScreen.id);
+                                        ShowMessageButton = new BusinessObjects.Models.ShowMessageButton(0, txtENName.Text, txtARName.Text, txtMessageAR.Text, txtMessageEN.Text, CurrentScreen.id);
                                         this.Dispose();
-                                        AddEditScreen addEditScreen = new AddEditScreen(TSD.CurrentBank.id, CurrentScreen, ShowMessageButton, null);
-                                        addEditScreen.Show();
+                                        //AddEditScreen addEditScreen = new AddEditScreen(CurrentScreen, ShowMessageButton, null);
+                                        //addEditScreen.Show();
                                         ShowMessageButton = null;
                                     }
                                     else
                                     {
-                                        BusinessObjects.Models.ShowMessage OldButton = ShowMessageButton;
-                                        ShowMessageButton = new BusinessObjects.Models.ShowMessage(ShowMessageButton.id, txtENName.Text, txtARName.Text, txtMessageAR.Text, txtMessageEN.Text, CurrentScreen.id, true, OldButton.indexUpdated);
+                                        BusinessObjects.Models.ShowMessageButton OldButton = ShowMessageButton;
+                                        ShowMessageButton = new BusinessObjects.Models.ShowMessageButton(ShowMessageButton.id, txtENName.Text, txtARName.Text, txtMessageAR.Text, txtMessageEN.Text, CurrentScreen.id, true, OldButton.indexUpdated);
                                         this.Dispose();
-                                        AddEditScreen addEditScreen = new AddEditScreen(TSD.CurrentBank.id, CurrentScreen, ShowMessageButton, OldButton);
-                                        addEditScreen.Show();
+                                        //AddEditScreen addEditScreen = new AddEditScreen(CurrentScreen, ShowMessageButton, OldButton);
+                                        //addEditScreen.Show();
                                         ShowMessageButton = null;
                                     }
                                 }
@@ -292,7 +263,8 @@ namespace TSDApp.Forms
             }
             catch (Exception ex)
             {
-                Models.SharingMethods.SaveExceptionToLogFile(ex);
+                Models.SharingMethods sharingMethods = new Models.SharingMethods();
+                sharingMethods.SaveExceptionToLogFile(ex);
             }
         }
         #endregion
@@ -306,10 +278,10 @@ namespace TSDApp.Forms
         {
             try
             {
-                txtENName.Text = ShowMessageButton.ENName;
-                txtARName.Text = ShowMessageButton.ARName;
-                txtMessageEN.Text = ShowMessageButton.MessageEN;
-                txtMessageAR.Text = ShowMessageButton.MessageAR;
+                txtENName.Text = ShowMessageButton.enName;
+                txtARName.Text = ShowMessageButton.arName;
+                txtMessageEN.Text = ShowMessageButton.messageEN;
+                txtMessageAR.Text = ShowMessageButton.messageAR;
                 rbShowMessage.Checked = true;
                 lblIssueTicket.Visible = false;
                 ddlIssueTicket.Visible = false;
@@ -318,7 +290,8 @@ namespace TSDApp.Forms
             }
             catch (Exception ex)
             {
-                Models.SharingMethods.SaveExceptionToLogFile(ex);
+                Models.SharingMethods sharingMethods = new Models.SharingMethods();
+                sharingMethods.SaveExceptionToLogFile(ex);
             }
         }
         /// <summary>
@@ -329,9 +302,9 @@ namespace TSDApp.Forms
         {
             try
             {
-                txtENName.Text = IssueTicketButton.ENName;
-                txtARName.Text = IssueTicketButton.ARName;
-                ddlIssueTicket.SelectedValue = IssueTicketButton.SreviceType;
+                txtENName.Text = IssueTicketButton.enName;
+                txtARName.Text = IssueTicketButton.arName;
+                ddlIssueTicket.SelectedValue = IssueTicketButton.serviceId;
                 rbIssueTicket.Checked = true;
                 lblMessageAR.Visible = false;
                 txtMessageAR.Visible = false;
@@ -341,7 +314,8 @@ namespace TSDApp.Forms
             }
             catch (Exception ex)
             {
-                Models.SharingMethods.SaveExceptionToLogFile(ex);
+                Models.SharingMethods sharingMethods = new Models.SharingMethods();
+                sharingMethods.SaveExceptionToLogFile(ex);
             }
         }
 
@@ -349,7 +323,8 @@ namespace TSDApp.Forms
         {
             ddlIssueTicket.DropDownStyle = ComboBoxStyle.DropDownList;
             ddlIssueTicket.Items.Clear();
-            List<BusinessObjects.Models.IssueServiceType> ListIssueTicket = BusinessAccessLayer.IssueTicketType.IssueTicketType.SelectIssueTicketType();
+            BusinessAccessLayer.IssueTicketType.BALIssueTicketService service = new BusinessAccessLayer.IssueTicketType.BALIssueTicketService();
+            List<BusinessObjects.Models.IssueTicketService> ListIssueTicket = service.SelectIssueTicketType();
             if (ListIssueTicket != null)
             {
                 ddlIssueTicket.DataSource = ListIssueTicket;

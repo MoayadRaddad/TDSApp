@@ -5,24 +5,26 @@ using System.Text;
 
 namespace TSD.DataAccessLayer.IssueTicketType
 {
-    public static class ServiceType
+    public class DALIssueTicketService
     {
-        public static List<BusinessObjects.Models.IssueServiceType> SelectIssueTicketType()
+        DBHelper.DALDBHelper dBHelper;
+        public List<BusinessObjects.Models.IssueTicketService> SelectIssueTicketType()
         {
             try
             {
-                List<BusinessObjects.Models.IssueServiceType> lstIssueTicketTypes = new List<BusinessObjects.Models.IssueServiceType>();
-                using (SqlConnection con = new SqlConnection(DBHelper.DBHelper.GetConnectionString()))
+                List<BusinessObjects.Models.IssueTicketService> lstIssueTicketTypes = new List<BusinessObjects.Models.IssueTicketService>();
+                dBHelper = new DBHelper.DALDBHelper();
+                using (SqlConnection con = new SqlConnection(dBHelper.GetConnectionString()))
                 {
                     SqlCommand go = new SqlCommand();
                     con.Open();
                     go.Connection = con;
-                    go.CommandText = "SELECT id,name FROM tblServiceType";
+                    go.CommandText = "SELECT id,name FROM tblService";
 
                     SqlDataReader reader = go.ExecuteReader();
                     while (reader.Read())
                     {
-                        lstIssueTicketTypes.Add(new BusinessObjects.Models.IssueServiceType(
+                        lstIssueTicketTypes.Add(new BusinessObjects.Models.IssueTicketService(
                             reader["id"] != null ? Convert.ToInt32(reader["id"]) : 0,
                             reader["Name"] != null ? Convert.ToString(reader["Name"]) : string.Empty));
                     }
@@ -32,7 +34,8 @@ namespace TSD.DataAccessLayer.IssueTicketType
             }
             catch (Exception ex)
             {
-                BusinessObjects.ExceptionsWriter.ExceptionsWriter.SaveExceptionToLogFile(ex);
+                BusinessObjects.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessObjects.ExceptionsWriter.ExceptionsWriter();
+                exceptionsWriter.SaveExceptionToLogFile(ex);
                 return null;
             }
         }

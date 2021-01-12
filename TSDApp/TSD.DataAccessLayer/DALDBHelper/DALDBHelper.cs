@@ -6,22 +6,45 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Collections.Specialized;
 using System.Reflection;
+using System.IO;
 
 namespace TSD.DataAccessLayer.DBHelper
 {
-    public static class DBHelper
+    public class DALDBHelper
     {
-        private static string connectionString;
-        public static string GetConnectionString()
+        private static string connectionString = string.Empty;
+        public string GetConnectionString()
         {
             return connectionString;
         }
-        public static void SetConnectionString(string pConnectionString)
+        public int SetConnectionString()
         {
-            connectionString = pConnectionString;
+            try
+            {
+                string txtpath = System.AppDomain.CurrentDomain.BaseDirectory + "ConnectionString.txt";
+                if (File.Exists(txtpath))
+                {
+                    using (StreamReader reader = new StreamReader(txtpath))
+                    {
+                        if (reader.Peek() >= 0)
+                        {
+                            connectionString = reader.ReadLine();
+                        }
+                    }
+                    return 1;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
-        public static int ExecuteNonQuery(string query, List<SqlParameter> parametros)
+        public int ExecuteNonQuery(string query, List<SqlParameter> parametros)
         {
             try
             {
@@ -33,7 +56,7 @@ namespace TSD.DataAccessLayer.DBHelper
             }
         }
 
-        public static object ExecuteScalar(string query, List<SqlParameter> parametros)
+        public object ExecuteScalar(string query, List<SqlParameter> parametros)
         {
             try
             {
@@ -44,11 +67,33 @@ namespace TSD.DataAccessLayer.DBHelper
                 throw ex;
             }
         }
+        public DataSet ExecuteAdapter( string commandText, List<SqlParameter> commandParameters)
+        {
+            try
+            {
+                DALDBHelper dBHelper = new DALDBHelper();
+                var cmd = new SqlCommand();
+                SqlConnection con = new SqlConnection(dBHelper.GetConnectionString());
+                cmd.Connection = con;
+                cmd.CommandText = commandText;
+                foreach (SqlParameter param in commandParameters)
+                {
+                    cmd.Parameters.Add(param);
+                }
 
-
+                SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                DataSet dataSet = new DataSet();
+                adapter.Fill(dataSet);
+                return dataSet;
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+        }
         #region Private Methods
 
-        private static int NonQuery(string query, List<SqlParameter> parametros)
+        private int NonQuery(string query, List<SqlParameter> parametros)
         {
             try
             {
@@ -78,7 +123,7 @@ namespace TSD.DataAccessLayer.DBHelper
             }
         }
 
-        private static object Scalar(string query, List<SqlParameter> parametros)
+        private object Scalar(string query, List<SqlParameter> parametros)
         {
             try
             {

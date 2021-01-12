@@ -15,30 +15,15 @@ namespace TSDApp.Fomrs
     public partial class AddEditScreen : Form
     {
         #region Variables
-        private int BankId;
-        private static Models.Screen CurrentScreen;
-        public static List<BusinessObjects.Models.ShowMessage> LstShowMessageButtons = new List<BusinessObjects.Models.ShowMessage>();
-        public static List<BusinessObjects.Models.IssueTicket> LstIssueTicketButtons = new List<BusinessObjects.Models.IssueTicket>();
-        public static List<BusinessObjects.Models.ButtonMaster> LstButtons;
-        public static IEnumerable<BusinessObjects.Models.ButtonMaster> IEnumrableLstButtons;
+        public int BankId;
+        private Models.Screen CurrentScreen;
+        public List<BusinessObjects.Models.ShowMessageButton> LstShowMessageButtons;
+        public List<BusinessObjects.Models.IssueTicketButton> LstIssueTicketButtons;
+        public List<BusinessObjects.Models.Button> LstButtons;
+        public IEnumerable<BusinessObjects.Models.Button> IEnumrableLstButtons;
         #endregion
 
         #region constructors
-        /// <summary>
-        /// Default constructor
-        /// </summary>
-        public AddEditScreen()
-        {
-            try
-            {
-                InitializeComponent();
-                ddlActive.DropDownStyle = ComboBoxStyle.DropDownList;
-            }
-            catch (Exception ex)
-            {
-                Models.SharingMethods.SaveExceptionToLogFile(ex);
-            }
-        }
         /// <summary>
         /// Parametarize constructor (if new screen)
         /// </summary>
@@ -49,16 +34,13 @@ namespace TSDApp.Fomrs
             {
                 InitializeComponent();
                 ddlActive.DropDownStyle = ComboBoxStyle.DropDownList;
-                LstShowMessageButtons = new List<BusinessObjects.Models.ShowMessage>();
-                LstIssueTicketButtons = new List<BusinessObjects.Models.IssueTicket>();
-                LstButtons = new List<BusinessObjects.Models.ButtonMaster>();
-                IEnumrableLstButtons = new List<BusinessObjects.Models.ButtonMaster>().ToList();
                 BankId = pBankId;
                 ddlActive.SelectedIndex = 0;
             }
             catch (Exception ex)
             {
-                Models.SharingMethods.SaveExceptionToLogFile(ex);
+                Models.SharingMethods sharingMethods = new Models.SharingMethods();
+                sharingMethods.SaveExceptionToLogFile(ex);
             }
         }
         /// <summary>
@@ -73,58 +55,18 @@ namespace TSDApp.Fomrs
                 InitializeComponent();
                 ddlActive.DropDownStyle = ComboBoxStyle.DropDownList;
                 BankId = pBankId;
-                FillScreens(pScreen);
+                CurrentScreen = new Models.Screen();
+                CurrentScreen = pScreen;
+                LstShowMessageButtons = new List<BusinessObjects.Models.ShowMessageButton>();
+                LstIssueTicketButtons = new List<BusinessObjects.Models.IssueTicketButton>();
+                LstButtons = new List<BusinessObjects.Models.Button>();
+                FillScreens(CurrentScreen);
                 FillButtons();
             }
             catch (Exception ex)
             {
-                Models.SharingMethods.SaveExceptionToLogFile(ex);
-            }
-        }
-        public AddEditScreen(int pBankId, Models.Screen pScreen, BusinessObjects.Models.ShowMessage pNewButton, BusinessObjects.Models.ShowMessage pOldButton)
-        {
-            try
-            {
-                InitializeComponent();
-                ddlActive.DropDownStyle = ComboBoxStyle.DropDownList;
-                BankId = pBankId;
-                FillScreens(pScreen);
-                if (pOldButton == null && pNewButton != null)
-                {
-                    LstShowMessageButtons.Add(pNewButton);
-                }
-                else if (pNewButton != null)
-                {
-                    LstShowMessageButtons[LstShowMessageButtons.FindIndex(x => x.indexUpdated == pOldButton.indexUpdated)] = pNewButton;
-                }
-                RefreshGrid();
-            }
-            catch (Exception ex)
-            {
-                Models.SharingMethods.SaveExceptionToLogFile(ex);
-            }
-        }
-        public AddEditScreen(int pBankId, Models.Screen pScreen, BusinessObjects.Models.IssueTicket pNewButton, BusinessObjects.Models.IssueTicket pOldButton)
-        {
-            try
-            {
-                InitializeComponent();
-                ddlActive.DropDownStyle = ComboBoxStyle.DropDownList;
-                BankId = pBankId;
-                FillScreens(pScreen);
-                if (pOldButton == null && pNewButton != null)
-                {
-                    LstIssueTicketButtons.Add(pNewButton);
-                }
-                else if (pNewButton != null)
-                {
-                    LstIssueTicketButtons[LstIssueTicketButtons.FindIndex(x => x.indexUpdated == pOldButton.indexUpdated)] = pNewButton;
-                }
-                RefreshGrid();
-            }
-            catch (Exception ex)
-            {
-                Models.SharingMethods.SaveExceptionToLogFile(ex);
+                Models.SharingMethods sharingMethods = new Models.SharingMethods();
+                sharingMethods.SaveExceptionToLogFile(ex);
             }
         }
         #endregion
@@ -137,11 +79,13 @@ namespace TSDApp.Fomrs
         {
             try
             {
+                IEnumrableLstButtons = new List<BusinessObjects.Models.Button>().ToList();
                 LoadToolTips();
             }
             catch (Exception ex)
             {
-                Models.SharingMethods.SaveExceptionToLogFile(ex);
+                Models.SharingMethods sharingMethods = new Models.SharingMethods();
+                sharingMethods.SaveExceptionToLogFile(ex);
             }
         }
         /// <summary>
@@ -157,9 +101,10 @@ namespace TSDApp.Fomrs
                     {
                         if (gvButtons.RowCount > 0)
                         {
+                            BusinessAccessLayer.Screen.BALScreen screen = new BusinessAccessLayer.Screen.BALScreen();
                             if (CurrentScreen.id == 0)
                             {
-                                CurrentScreen = BusinessAccessLayer.Screen.Screen.InsertScreen(CurrentScreen);
+                                CurrentScreen = screen.InsertScreen(CurrentScreen);
                                 if (CurrentScreen == null)
                                 {
                                     MessageBox.Show("Please check your connection to databse", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -167,56 +112,57 @@ namespace TSDApp.Fomrs
                             }
                             else
                             {
-                                CurrentScreen.Name = txtName.Text;
+                                CurrentScreen.name = txtName.Text;
                                 CurrentScreen.isActive = Convert.ToBoolean(ddlActive.SelectedItem);
-                                CurrentScreen = BusinessAccessLayer.Screen.Screen.UpdateScreen(CurrentScreen);
+                                CurrentScreen = screen.UpdateScreen(CurrentScreen);
                                 if (CurrentScreen == null)
                                 {
                                     MessageBox.Show("Please check your connection to databse", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                 }
-                                lblGVTitle.Text = CurrentScreen.Name;
+                                lblGVTitle.Text = CurrentScreen.name;
                             }
-                            foreach (BusinessObjects.Models.IssueTicket pbutton in LstIssueTicketButtons)
+                            BusinessAccessLayer.Button.BALButton button = new BusinessAccessLayer.Button.BALButton();
+                            foreach (BusinessObjects.Models.IssueTicketButton pbutton in LstIssueTicketButtons)
                             {
                                 if (pbutton.id == 0)
                                 {
-                                    pbutton.ScreenId = CurrentScreen.id;
-                                    BusinessObjects.Models.IssueTicket btnInsertCheck = BusinessAccessLayer.Button.Button.InsertIssueTicketButton(pbutton);
+                                    pbutton.screenId = CurrentScreen.id;
+                                    BusinessObjects.Models.IssueTicketButton btnInsertCheck = button.InsertIssueTicketButton(pbutton);
                                     if (btnInsertCheck == null)
                                     {
                                         MessageBox.Show("Please check your connection to databse", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                     }
                                 }
-                                else if (pbutton.Updated == true)
+                                else if (pbutton.updated == true)
                                 {
-                                    BusinessObjects.Models.IssueTicket btnUpdateCheck = BusinessAccessLayer.Button.Button.UpdateIssueTicketButton(pbutton);
+                                    BusinessObjects.Models.IssueTicketButton btnUpdateCheck = button.UpdateIssueTicketButton(pbutton);
                                     if (btnUpdateCheck == null)
                                     {
                                         MessageBox.Show("Please check your connection to databse", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                     }
                                 }
                             }
-                            foreach (BusinessObjects.Models.ShowMessage pbutton in LstShowMessageButtons)
+                            foreach (BusinessObjects.Models.ShowMessageButton pbutton in LstShowMessageButtons)
                             {
                                 if (pbutton.id == 0)
                                 {
-                                    pbutton.ScreenId = CurrentScreen.id;
-                                    BusinessObjects.Models.ShowMessage btnInsertCheck = BusinessAccessLayer.Button.Button.InsertShowMessageButton(pbutton);
+                                    pbutton.screenId = CurrentScreen.id;
+                                    BusinessObjects.Models.ShowMessageButton btnInsertCheck = button.InsertShowMessageButton(pbutton);
                                     if (btnInsertCheck == null)
                                     {
                                         MessageBox.Show("Please check your connection to databse", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                     }
                                 }
-                                else if (pbutton.Updated == true)
+                                else if (pbutton.updated == true)
                                 {
-                                    BusinessObjects.Models.ShowMessage btnUpdateCheck = BusinessAccessLayer.Button.Button.UpdateShowMessageButton(pbutton);
+                                    BusinessObjects.Models.ShowMessageButton btnUpdateCheck = button.UpdateShowMessageButton(pbutton);
                                     if (btnUpdateCheck == null)
                                     {
                                         MessageBox.Show("Please check your connection to databse", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                     }
                                 }
                             }
-                            MessageBox.Show("Button and screen had been saved successfully", "Done", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            CloseForm();
                         }
                         else
                         {
@@ -235,7 +181,8 @@ namespace TSDApp.Fomrs
             }
             catch (Exception ex)
             {
-                Models.SharingMethods.SaveExceptionToLogFile(ex);
+                Models.SharingMethods sharingMethods = new Models.SharingMethods();
+                sharingMethods.SaveExceptionToLogFile(ex);
             }
         }
         /// <summary>
@@ -245,19 +192,12 @@ namespace TSDApp.Fomrs
         {
             try
             {
-                CurrentScreen = null;
-                TSD tsd = null;
-                LstShowMessageButtons = null;
-                LstIssueTicketButtons = null;
-                LstButtons = null;
-                IEnumrableLstButtons = null;
-                this.Dispose();
-                tsd = new TSD(true);
-                tsd.Show();
+                CloseForm();
             }
             catch (Exception ex)
             {
-                Models.SharingMethods.SaveExceptionToLogFile(ex);
+                Models.SharingMethods sharingMethods = new Models.SharingMethods();
+                sharingMethods.SaveExceptionToLogFile(ex);
             }
         }
         /// <summary>
@@ -267,19 +207,12 @@ namespace TSDApp.Fomrs
         {
             try
             {
-                CurrentScreen = null;
-                TSD tsd = null;
-                LstShowMessageButtons = null;
-                LstIssueTicketButtons = null;
-                LstButtons = null;
-                IEnumrableLstButtons = null;
-                this.Dispose();
-                tsd = new TSD(true);
-                tsd.Show();
+                CloseForm();
             }
             catch (Exception ex)
             {
-                Models.SharingMethods.SaveExceptionToLogFile(ex);
+                Models.SharingMethods sharingMethods = new Models.SharingMethods();
+                sharingMethods.SaveExceptionToLogFile(ex);
             }
         }
         /// <summary>
@@ -312,7 +245,8 @@ namespace TSDApp.Fomrs
                                 LstIssueTicketButtons.Remove((LstIssueTicketButtons.Where(x => x.id == btnId).FirstOrDefault()));
                             }
                         }
-                        int CheckDelete = BusinessAccessLayer.Button.Button.DeleteButtonWhere(pButtonsDetailsIds, "id");
+                        BusinessAccessLayer.Button.BALButton button = new BusinessAccessLayer.Button.BALButton();
+                        int CheckDelete = button.DeleteButtonWhere(pButtonsDetailsIds, "id");
                         if (CheckDelete == 1)
                         {
                             RefreshGrid();
@@ -335,7 +269,8 @@ namespace TSDApp.Fomrs
             }
             catch (Exception ex)
             {
-                Models.SharingMethods.SaveExceptionToLogFile(ex);
+                Models.SharingMethods sharingMethods = new Models.SharingMethods();
+                sharingMethods.SaveExceptionToLogFile(ex);
             }
         }
         /// <summary>
@@ -349,24 +284,23 @@ namespace TSDApp.Fomrs
                 {
                     if (ddlActive.SelectedIndex != 0)
                     {
+                        AddEditButton addEditButton = null;
                         if (CurrentScreen == null)
                         {
-                            AddEditButton addEditButton = null;
                             CurrentScreen = new Models.Screen();
-                            CurrentScreen.Name = txtName.Text;
+                            CurrentScreen.name = txtName.Text;
                             CurrentScreen.isActive = Convert.ToBoolean(ddlActive.SelectedItem);
-                            CurrentScreen.BankId = BankId;
+                            CurrentScreen.bankId = BankId;
                             addEditButton = new AddEditButton(CurrentScreen);
-                            this.Hide();
+                            addEditButton.FormClosed += new FormClosedEventHandler(AddEditButton_Closed);
                             addEditButton.Show();
                         }
                         else
                         {
-                            AddEditButton addEditButton = null;
-                            CurrentScreen.Name = txtName.Text;
+                            CurrentScreen.name = txtName.Text;
                             CurrentScreen.isActive = Convert.ToBoolean(ddlActive.SelectedItem);
                             addEditButton = new AddEditButton(CurrentScreen);
-                            this.Hide();
+                            addEditButton.FormClosed += new FormClosedEventHandler(AddEditButton_Closed);
                             addEditButton.Show();
                         }
                     }
@@ -382,7 +316,8 @@ namespace TSDApp.Fomrs
             }
             catch (Exception ex)
             {
-                Models.SharingMethods.SaveExceptionToLogFile(ex);
+                Models.SharingMethods sharingMethods = new Models.SharingMethods();
+                sharingMethods.SaveExceptionToLogFile(ex);
             }
         }
         /// <summary>
@@ -401,18 +336,18 @@ namespace TSDApp.Fomrs
                         string buttonType = (string)buttonRow.Cells["Type"].Value;
                         if (buttonType == BusinessObjects.Models.btnType.ShowMessage.ToString())
                         {
-                            BusinessObjects.Models.ShowMessage CurrentButton = LstShowMessageButtons.Where(x => x.id == buttonId).FirstOrDefault();
+                            BusinessObjects.Models.ShowMessageButton CurrentButton = LstShowMessageButtons.Where(x => x.id == buttonId).FirstOrDefault();
                             CurrentButton.indexUpdated = LstShowMessageButtons.IndexOf(CurrentButton);
-                            AddEditButton addEditButton = new AddEditButton(CurrentScreen, CurrentButton);
-                            this.Hide();
+                            AddEditButton addEditButton = new AddEditButton(CurrentScreen, CurrentButton, null);
+                            addEditButton.FormClosed += new FormClosedEventHandler(AddEditButton_Closed);
                             addEditButton.Show();
                         }
                         else
                         {
-                            BusinessObjects.Models.IssueTicket CurrentButton = LstIssueTicketButtons.Where(x => x.id == buttonId).FirstOrDefault();
+                            BusinessObjects.Models.IssueTicketButton CurrentButton = LstIssueTicketButtons.Where(x => x.id == buttonId).FirstOrDefault();
                             CurrentButton.indexUpdated = LstIssueTicketButtons.IndexOf(CurrentButton);
-                            AddEditButton addEditButton = new AddEditButton(CurrentScreen, CurrentButton);
-                            this.Hide();
+                            AddEditButton addEditButton = new AddEditButton(CurrentScreen, null, CurrentButton);
+                            addEditButton.FormClosed += new FormClosedEventHandler(AddEditButton_Closed);
                             addEditButton.Show();
                         }
                     }
@@ -428,12 +363,34 @@ namespace TSDApp.Fomrs
             }
             catch (Exception ex)
             {
-                Models.SharingMethods.SaveExceptionToLogFile(ex);
+                Models.SharingMethods sharingMethods = new Models.SharingMethods();
+                sharingMethods.SaveExceptionToLogFile(ex);
             }
         }
         #endregion
 
         #region Methods
+        void AddEditButton_Closed(object sender, FormClosedEventArgs e)
+        {
+            MessageBox.Show("S");
+        }
+        private void CloseForm()
+        {
+            try
+            {
+                CurrentScreen = null;
+                LstShowMessageButtons = null;
+                LstIssueTicketButtons = null;
+                LstButtons = null;
+                IEnumrableLstButtons = null;
+                this.Dispose();
+            }
+            catch (Exception ex)
+            {
+                Models.SharingMethods sharingMethods = new Models.SharingMethods();
+                sharingMethods.SaveExceptionToLogFile(ex);
+            }
+        }
         /// <summary>
         /// Function to fill textboxes with current screen data
         /// </summary>
@@ -443,8 +400,8 @@ namespace TSDApp.Fomrs
             try
             {
                 CurrentScreen = pScreen;
-                txtName.Text = CurrentScreen.Name;
-                lblGVTitle.Text = CurrentScreen.Name + " - Buttons";
+                txtName.Text = CurrentScreen.name;
+                lblGVTitle.Text = CurrentScreen.name + " - Buttons";
                 lblTitle.Text = "Edit Screen";
                 btnSave.Text = "Save";
                 if (CurrentScreen.isActive.ToString() == "True")
@@ -459,7 +416,8 @@ namespace TSDApp.Fomrs
             }
             catch (Exception ex)
             {
-                Models.SharingMethods.SaveExceptionToLogFile(ex);
+                Models.SharingMethods sharingMethods = new Models.SharingMethods();
+                sharingMethods.SaveExceptionToLogFile(ex);
             }
         }
         /// <summary>
@@ -469,17 +427,19 @@ namespace TSDApp.Fomrs
         {
             try
             {
-                LstButtons = new List<BusinessObjects.Models.ButtonMaster>();
+                LstButtons = new List<BusinessObjects.Models.Button>();
                 if ((LstShowMessageButtons == null || LstIssueTicketButtons == null) || (LstShowMessageButtons.Count == 0 && LstIssueTicketButtons.Count == 0))
                 {
-                    LstShowMessageButtons = BusinessAccessLayer.Button.Button.SelectButtonsbyScreenId<BusinessObjects.Models.ShowMessage>(CurrentScreen.id, BusinessObjects.Models.btnType.ShowMessage);
-                    LstIssueTicketButtons = BusinessAccessLayer.Button.Button.SelectButtonsbyScreenId<BusinessObjects.Models.IssueTicket>(CurrentScreen.id, BusinessObjects.Models.btnType.IssueTicket);
+                    BusinessAccessLayer.Button.BALButton button = new BusinessAccessLayer.Button.BALButton();
+                    LstShowMessageButtons = button.SelectButtonsbyScreenId<BusinessObjects.Models.ShowMessageButton>(CurrentScreen.id, BusinessObjects.Models.btnType.ShowMessage);
+                    LstIssueTicketButtons = button.SelectButtonsbyScreenId<BusinessObjects.Models.IssueTicketButton>(CurrentScreen.id, BusinessObjects.Models.btnType.IssueTicket);
                 }
                 RefreshGrid();
             }
             catch (Exception ex)
             {
-                Models.SharingMethods.SaveExceptionToLogFile(ex);
+                Models.SharingMethods sharingMethods = new Models.SharingMethods();
+                sharingMethods.SaveExceptionToLogFile(ex);
             }
         }
         private void RefreshGrid()
@@ -487,15 +447,16 @@ namespace TSDApp.Fomrs
             LstButtons.Clear();
             foreach (var item in LstShowMessageButtons)
             {
-                LstButtons.Add(new BusinessObjects.Models.ButtonMaster(item.id, item.ENName, item.ARName, item.ScreenId, item.Type));
+                LstButtons.Add(new BusinessObjects.Models.Button(item.id, item.enName, item.arName, item.screenId, item.type));
             }
             foreach (var item in LstIssueTicketButtons)
             {
-                LstButtons.Add(new BusinessObjects.Models.ButtonMaster(item.id, item.ENName, item.ARName, item.ScreenId, item.Type));
+                LstButtons.Add(new BusinessObjects.Models.Button(item.id, item.enName, item.arName, item.screenId, item.type));
             }
             if (LstButtons != null)
             {
-                IEnumrableLstButtons = Models.SharingMethods.GetIEnumrable(LstButtons).ToList();
+                Models.SharingMethods sharingMethods = new Models.SharingMethods();
+                IEnumrableLstButtons = sharingMethods.GetIEnumrable(LstButtons).ToList();
                 gvButtons.DataSource = IEnumrableLstButtons.ToList();
                 SetdataGridViewDisplay();
             }
@@ -522,12 +483,14 @@ namespace TSDApp.Fomrs
             }
             catch (Exception ex)
             {
-                Models.SharingMethods.SaveExceptionToLogFile(ex);
+                Models.SharingMethods sharingMethods = new Models.SharingMethods();
+                sharingMethods.SaveExceptionToLogFile(ex);
             }
         }
         private void SetdataGridViewDisplay()
         {
-            TSDApp.Models.SharingMethods.ChangeColumnWidth(gvButtons, 3);
+            Models.SharingMethods sharingMethods = new Models.SharingMethods();
+            sharingMethods.ChangeColumnWidth(gvButtons, 3);
             this.gvButtons.Columns[0].Visible = false;
             this.gvButtons.Columns[3].Visible = false;
             this.gvButtons.Columns[5].Visible = false;

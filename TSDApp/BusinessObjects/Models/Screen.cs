@@ -10,22 +10,22 @@ namespace TSDApp.Models
     public class Screen
     {
         public int id { get; set; }
-        public string Name { get; set; }
+        public string name { get; set; }
         public bool isActive { get; set; }
-        public int BankId { get; set; }
+        public int bankId { get; set; }
         public Screen()
         {
             id = 0;
-            Name = string.Empty;
+            name = string.Empty;
             isActive = false;
-            BankId = 0;
+            bankId = 0;
         }
-        public Screen(int pId, string pName, bool pisActive, int pBankId)
+        public Screen(int pId, string pname, bool pisActive, int pbankId)
         {
             id = pId;
-            Name = pName;
+            name = pname;
             isActive = pisActive;
-            BankId = pBankId;
+            bankId = pbankId;
         }
     }
 }
