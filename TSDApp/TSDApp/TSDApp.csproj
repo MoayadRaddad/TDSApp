@@ -126,6 +126,10 @@
       <Project>{cd9350f2-5299-4651-b2d0-837d46bb6dbf}</Project>
       <Name>BusinessAccessLayer</Name>
     </ProjectReference>
+    <ProjectReference Include="..\BusinessCommon\BusinessCommon.csproj">
+      <Project>{80630d31-d6b2-4257-b99a-34610617252f}</Project>
+      <Name>BusinessCommon</Name>
+    </ProjectReference>
     <ProjectReference Include="..\BusinessObjects\BusinessObjects.csproj">
       <Project>{19f3866b-a33a-42bb-a69a-c5455c608d1e}</Project>
       <Name>BusinessObjects</Name>

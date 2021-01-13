@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TSDApp.Models
+namespace BusinessObjects.Models
 {
     //Screen model
     public class Screen

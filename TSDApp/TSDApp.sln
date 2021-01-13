@@ -7,9 +7,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TSDApp", "TSDApp\TSDApp.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TSD.DataAccessLayer", "TSD.DataAccessLayer\TSD.DataAccessLayer.csproj", "{1B3532B3-900A-48CF-8C4A-7A663E5770E4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessObjects", "BusinessObjects\BusinessObjects.csproj", "{19F3866B-A33A-42BB-A69A-C5455C608D1E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BusinessObjects", "BusinessObjects\BusinessObjects.csproj", "{19F3866B-A33A-42BB-A69A-C5455C608D1E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessAccessLayer", "BusinessAccessLayer\BusinessAccessLayer.csproj", "{CD9350F2-5299-4651-B2D0-837D46BB6DBF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BusinessAccessLayer", "BusinessAccessLayer\BusinessAccessLayer.csproj", "{CD9350F2-5299-4651-B2D0-837D46BB6DBF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessCommon", "BusinessCommon\BusinessCommon.csproj", "{80630D31-D6B2-4257-B99A-34610617252F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{CD9350F2-5299-4651-B2D0-837D46BB6DBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CD9350F2-5299-4651-B2D0-837D46BB6DBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CD9350F2-5299-4651-B2D0-837D46BB6DBF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80630D31-D6B2-4257-B99A-34610617252F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80630D31-D6B2-4257-B99A-34610617252F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80630D31-D6B2-4257-B99A-34610617252F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80630D31-D6B2-4257-B99A-34610617252F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

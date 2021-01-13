@@ -17,21 +17,20 @@ namespace TSDApp.Forms
         #region Variables
         private BusinessObjects.Models.ShowMessageButton ShowMessageButton;
         private BusinessObjects.Models.IssueTicketButton IssueTicketButton;
-        private Models.Screen CurrentScreen;
+        public event EventHandler<BusinessObjects.Models.ShowMessageButton> SaveShowMessageButton;
+        public event EventHandler<BusinessObjects.Models.IssueTicketButton> SaveIssueTicketButton;
         #endregion
 
         #region constructors
         /// <summary>
         /// Parametarize constructor get screen object
         /// </summary>
-        /// <param name="pScreen"></param>
-        public AddEditButton(Models.Screen pScreen)
+        public AddEditButton()
         {
             try
             {
                 InitializeComponent();
                 FillComboBox();
-                CurrentScreen = pScreen;
             }
             catch (Exception ex)
             {
@@ -44,18 +43,15 @@ namespace TSDApp.Forms
         /// Fill screenId to know the currently screen id
         /// Fill data for current button to this form
         /// </summary>
-        /// <param name="pScreen"></param>
         /// <param name="pShowMessageButton"></param>
         /// <param name="pIssueTicketButton"></param>
-        public AddEditButton(Models.Screen pScreen, BusinessObjects.Models.ShowMessageButton pShowMessageButton, BusinessObjects.Models.IssueTicketButton pIssueTicketButton)
+        public AddEditButton(BusinessObjects.Models.ShowMessageButton pShowMessageButton, BusinessObjects.Models.IssueTicketButton pIssueTicketButton)
         {
             try
             {
                 InitializeComponent();
                 FillComboBox();
-                CurrentScreen = new Models.Screen();
-                CurrentScreen = pScreen;
-                if(!(pShowMessageButton == null))
+                if (!(pShowMessageButton == null))
                 {
                     ShowMessageButton = pShowMessageButton;
                     FillShowMessageData();
@@ -150,7 +146,6 @@ namespace TSDApp.Forms
             {
                 ShowMessageButton = null;
                 IssueTicketButton = null;
-                CurrentScreen = null;
                 this.Dispose();
             }
             catch (Exception ex)
@@ -168,7 +163,6 @@ namespace TSDApp.Forms
             {
                 ShowMessageButton = null;
                 IssueTicketButton = null;
-                CurrentScreen = null;
                 this.Dispose();
             }
             catch (Exception ex)
@@ -196,20 +190,13 @@ namespace TSDApp.Forms
                             //Check if it is new button to insert or edit button to update
                             if (IssueTicketButton == null)
                             {
-                                IssueTicketButton = new BusinessObjects.Models.IssueTicketButton(0, txtENName.Text, txtARName.Text, Convert.ToInt32(ddlIssueTicket.SelectedValue), CurrentScreen.id);
-                                this.Dispose();
-                                //AddEditScreen addEditScreen = new AddEditScreen(CurrentScreen, IssueTicketButton, null);
-                                //addEditScreen.Show();
-                                IssueTicketButton = null;
+                                IssueTicketButton = new BusinessObjects.Models.IssueTicketButton(0, txtENName.Text, txtARName.Text, Convert.ToInt32(ddlIssueTicket.SelectedValue), 0);
+                                OnSaveIssueTicketButton(IssueTicketButton);
                             }
                             else
                             {
-                                BusinessObjects.Models.IssueTicketButton OldButton = IssueTicketButton;
-                                IssueTicketButton = new BusinessObjects.Models.IssueTicketButton(IssueTicketButton.id, txtENName.Text, txtARName.Text, Convert.ToInt32(ddlIssueTicket.SelectedValue), CurrentScreen.id, true, OldButton.indexUpdated);
-                                this.Dispose();
-                                //AddEditScreen addEditScreen = new AddEditScreen(CurrentScreen, IssueTicketButton, OldButton);
-                                //addEditScreen.Show();
-                                IssueTicketButton = null;
+                                IssueTicketButton = new BusinessObjects.Models.IssueTicketButton(IssueTicketButton.id, txtENName.Text, txtARName.Text, Convert.ToInt32(ddlIssueTicket.SelectedValue), IssueTicketButton.screenId, true, IssueTicketButton.indexUpdated);
+                                OnSaveIssueTicketButton(IssueTicketButton);
                             }
                         }
                         else
@@ -223,20 +210,13 @@ namespace TSDApp.Forms
                                     //Check if it is new button to insert or edit button to update
                                     if (ShowMessageButton == null)
                                     {
-                                        ShowMessageButton = new BusinessObjects.Models.ShowMessageButton(0, txtENName.Text, txtARName.Text, txtMessageAR.Text, txtMessageEN.Text, CurrentScreen.id);
-                                        this.Dispose();
-                                        //AddEditScreen addEditScreen = new AddEditScreen(CurrentScreen, ShowMessageButton, null);
-                                        //addEditScreen.Show();
-                                        ShowMessageButton = null;
+                                        ShowMessageButton = new BusinessObjects.Models.ShowMessageButton(0, txtENName.Text, txtARName.Text, txtMessageAR.Text, txtMessageEN.Text, 0);
+                                        OnSaveShowMessageButton(ShowMessageButton);
                                     }
                                     else
                                     {
-                                        BusinessObjects.Models.ShowMessageButton OldButton = ShowMessageButton;
-                                        ShowMessageButton = new BusinessObjects.Models.ShowMessageButton(ShowMessageButton.id, txtENName.Text, txtARName.Text, txtMessageAR.Text, txtMessageEN.Text, CurrentScreen.id, true, OldButton.indexUpdated);
-                                        this.Dispose();
-                                        //AddEditScreen addEditScreen = new AddEditScreen(CurrentScreen, ShowMessageButton, OldButton);
-                                        //addEditScreen.Show();
-                                        ShowMessageButton = null;
+                                        ShowMessageButton = new BusinessObjects.Models.ShowMessageButton(ShowMessageButton.id, txtENName.Text, txtARName.Text, txtMessageAR.Text, txtMessageEN.Text, ShowMessageButton.id, true, ShowMessageButton.indexUpdated);
+                                        OnSaveShowMessageButton(ShowMessageButton);
                                     }
                                 }
                                 else
@@ -250,6 +230,9 @@ namespace TSDApp.Forms
                                 MessageBox.Show("Please fill EN Message", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                             }
                         }
+                        ShowMessageButton = null;
+                        IssueTicketButton = null;
+                        this.Dispose();
                     }
                     else
                     {
@@ -270,6 +253,22 @@ namespace TSDApp.Forms
         #endregion
 
         #region Methods
+        private void OnSaveShowMessageButton(BusinessObjects.Models.ShowMessageButton showMessageButton)
+        {
+            var handler = SaveShowMessageButton;
+            if (SaveShowMessageButton != null)
+            {
+                SaveShowMessageButton.Invoke(this, showMessageButton);
+            }
+        }
+        private void OnSaveIssueTicketButton(BusinessObjects.Models.IssueTicketButton issueTicketButton)
+        {
+            var handler = SaveIssueTicketButton;
+            if (SaveIssueTicketButton != null)
+            {
+                SaveIssueTicketButton.Invoke(this, issueTicketButton);
+            }
+        }
         /// <summary>
         /// Function to fill Issue Ticket data for the current button
         /// </summary>
@@ -323,8 +322,8 @@ namespace TSDApp.Forms
         {
             ddlIssueTicket.DropDownStyle = ComboBoxStyle.DropDownList;
             ddlIssueTicket.Items.Clear();
-            BusinessAccessLayer.IssueTicketType.BALIssueTicketService service = new BusinessAccessLayer.IssueTicketType.BALIssueTicketService();
-            List<BusinessObjects.Models.IssueTicketService> ListIssueTicket = service.SelectIssueTicketType();
+            BusinessAccessLayer.BALService.BALService service = new BusinessAccessLayer.BALService.BALService();
+            List<BusinessObjects.Models.Service> ListIssueTicket = service.SelectIssueTicketType();
             if (ListIssueTicket != null)
             {
                 ddlIssueTicket.DataSource = ListIssueTicket;

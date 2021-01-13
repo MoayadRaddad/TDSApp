@@ -3,21 +3,21 @@ using System.Collections.Generic;
 using System.Data;
 using System.Text;
 
-namespace BusinessAccessLayer.Button
+namespace BusinessAccessLayer.BALButton
 {
     public class BALButton
     {
-        TSD.DataAccessLayer.Button.DALButton button;
+        DataAccessLayer.DALButton.DALButton button;
         public List<T> SelectButtonsbyScreenId<T>(int pScreenId, BusinessObjects.Models.btnType btnType)
         {
             try
             {
-                button = new TSD.DataAccessLayer.Button.DALButton();
+                button = new DataAccessLayer.DALButton.DALButton();
                 return button.SelectButtonsbyScreenId<T>(pScreenId, btnType);
             }
             catch (Exception ex)
             {
-                BusinessObjects.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessObjects.ExceptionsWriter.ExceptionsWriter();
+                BusinessCommon.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessCommon.ExceptionsWriter.ExceptionsWriter();
                 exceptionsWriter.SaveExceptionToLogFile(ex);
                 return null;
             }
@@ -26,12 +26,12 @@ namespace BusinessAccessLayer.Button
         {
             try
             {
-                button = new TSD.DataAccessLayer.Button.DALButton();
+                button = new DataAccessLayer.DALButton.DALButton();
                 return button.InsertShowMessageButton(pButton);
             }
             catch (Exception ex)
             {
-                BusinessObjects.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessObjects.ExceptionsWriter.ExceptionsWriter();
+                BusinessCommon.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessCommon.ExceptionsWriter.ExceptionsWriter();
                 exceptionsWriter.SaveExceptionToLogFile(ex);
                 return null;
             }
@@ -40,12 +40,12 @@ namespace BusinessAccessLayer.Button
         {
             try
             {
-                button = new TSD.DataAccessLayer.Button.DALButton();
+                button = new DataAccessLayer.DALButton.DALButton();
                 return button.UpdateShowMessageButton(pButton);
             }
             catch (Exception ex)
             {
-                BusinessObjects.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessObjects.ExceptionsWriter.ExceptionsWriter();
+                BusinessCommon.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessCommon.ExceptionsWriter.ExceptionsWriter();
                 exceptionsWriter.SaveExceptionToLogFile(ex);
                 return null;
             }
@@ -54,12 +54,12 @@ namespace BusinessAccessLayer.Button
         {
             try
             {
-                button = new TSD.DataAccessLayer.Button.DALButton();
+                button = new DataAccessLayer.DALButton.DALButton();
                 return button.InsertIssueTicketButton(pButton);
             }
             catch (Exception ex)
             {
-                BusinessObjects.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessObjects.ExceptionsWriter.ExceptionsWriter();
+                BusinessCommon.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessCommon.ExceptionsWriter.ExceptionsWriter();
                 exceptionsWriter.SaveExceptionToLogFile(ex);
                 return null;
             }
@@ -68,12 +68,12 @@ namespace BusinessAccessLayer.Button
         {
             try
             {
-                button = new TSD.DataAccessLayer.Button.DALButton();
+                button = new DataAccessLayer.DALButton.DALButton();
                 return button.UpdateIssueTicketButton(pButton);
             }
             catch (Exception ex)
             {
-                BusinessObjects.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessObjects.ExceptionsWriter.ExceptionsWriter();
+                BusinessCommon.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessCommon.ExceptionsWriter.ExceptionsWriter();
                 exceptionsWriter.SaveExceptionToLogFile(ex);
                 return null;
             }
@@ -82,12 +82,12 @@ namespace BusinessAccessLayer.Button
         {
             try
             {
-                button = new TSD.DataAccessLayer.Button.DALButton();
+                button = new DataAccessLayer.DALButton.DALButton();
                 return button.DeleteButtonWhere(pButtonsIds, ConditionColumn);
             }
             catch (Exception ex)
             {
-                BusinessObjects.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessObjects.ExceptionsWriter.ExceptionsWriter();
+                BusinessCommon.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessCommon.ExceptionsWriter.ExceptionsWriter();
                 exceptionsWriter.SaveExceptionToLogFile(ex);
                 return 0;
             }
@@ -96,12 +96,12 @@ namespace BusinessAccessLayer.Button
         {
             try
             {
-                button = new TSD.DataAccessLayer.Button.DALButton();
+                button = new DataAccessLayer.DALButton.DALButton();
                 return button.DeleteAllButtonByScreenId(pScreenId);
             }
             catch (Exception ex)
             {
-                BusinessObjects.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessObjects.ExceptionsWriter.ExceptionsWriter();
+                BusinessCommon.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessCommon.ExceptionsWriter.ExceptionsWriter();
                 exceptionsWriter.SaveExceptionToLogFile(ex);
                 return 0;
             }

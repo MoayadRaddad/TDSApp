@@ -3,35 +3,35 @@ using System.Collections.Generic;
 using System.Data;
 using System.Text;
 
-namespace BusinessAccessLayer.Bank
+namespace BusinessAccessLayer.BALBank
 {
     public class BALBank
     {
-        TSD.DataAccessLayer.Bank.DALBank bank;
-        public TSDApp.Models.Bank CheckBankExist(TSDApp.Models.Bank pBank)
+        DataAccessLayer.DALBank.DALBank bank;
+        public BusinessObjects.Models.Bank CheckBankExist(BusinessObjects.Models.Bank pBank)
         {
             try
             {
-                bank = new TSD.DataAccessLayer.Bank.DALBank();
+                bank = new DataAccessLayer.DALBank.DALBank();
                 return bank.CheckBankExist(pBank);
             }
             catch (Exception ex)
             {
-                BusinessObjects.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessObjects.ExceptionsWriter.ExceptionsWriter();
+                BusinessCommon.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessCommon.ExceptionsWriter.ExceptionsWriter();
                 exceptionsWriter.SaveExceptionToLogFile(ex);
                 return null;
             }
         }
-        public TSDApp.Models.Bank InsertBank(TSDApp.Models.Bank pBank)
+        public BusinessObjects.Models.Bank InsertBank(BusinessObjects.Models.Bank pBank)
         {
             try
             {
-                bank = new TSD.DataAccessLayer.Bank.DALBank();
+                bank = new DataAccessLayer.DALBank.DALBank();
                 return bank.InsertBank(pBank);
             }
             catch (Exception ex)
             {
-                BusinessObjects.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessObjects.ExceptionsWriter.ExceptionsWriter();
+                BusinessCommon.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessCommon.ExceptionsWriter.ExceptionsWriter();
                 exceptionsWriter.SaveExceptionToLogFile(ex);
                 return null;
             }

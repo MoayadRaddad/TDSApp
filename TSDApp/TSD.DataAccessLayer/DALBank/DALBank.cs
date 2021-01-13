@@ -4,19 +4,19 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Text;
 
-namespace TSD.DataAccessLayer.Bank
+namespace DataAccessLayer.DALBank
 {
     public class DALBank
     {
-        DBHelper.DALDBHelper dBHelper;
-        public TSDApp.Models.Bank CheckBankExist(TSDApp.Models.Bank pBank)
+        DALDBHelper.DALDBHelper dBHelper;
+        public BusinessObjects.Models.Bank CheckBankExist(BusinessObjects.Models.Bank pBank)
         {
             try
             {
                 string pquery = "SELECT id,Name FROM tblBanks WHERE Name = @Name";
                 List<SqlParameter> BankParams = new List<SqlParameter>();
                 BankParams.Add(new SqlParameter("@Name", pBank.name));
-                dBHelper = new DBHelper.DALDBHelper();
+                dBHelper = new DALDBHelper.DALDBHelper();
                 DataSet dataSet = dBHelper.ExecuteAdapter(pquery, BankParams);
                 if (dataSet != null && dataSet.Tables[0].Rows.Count > 0)
                 {
@@ -30,25 +30,25 @@ namespace TSD.DataAccessLayer.Bank
             }
             catch (Exception ex)
             {
-                BusinessObjects.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessObjects.ExceptionsWriter.ExceptionsWriter();
+                BusinessCommon.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessCommon.ExceptionsWriter.ExceptionsWriter();
                 exceptionsWriter.SaveExceptionToLogFile(ex);
                 return null;
             }
         }
-        public TSDApp.Models.Bank InsertBank(TSDApp.Models.Bank pBank)
+        public BusinessObjects.Models.Bank InsertBank(BusinessObjects.Models.Bank pBank)
         {
             try
             {
                 string pquery = "insert into tblBanks OUTPUT INSERTED.IDENTITYCOL  values (@Name)";
                 List<SqlParameter> BankParams = new List<SqlParameter>();
                 BankParams.Add(new SqlParameter("@Name", pBank.name));
-                dBHelper = new DBHelper.DALDBHelper();
+                dBHelper = new DALDBHelper.DALDBHelper();
                 pBank.id = Convert.ToInt32(dBHelper.ExecuteScalar(pquery, BankParams));
                 return pBank;
             }
             catch (Exception ex)
             {
-                BusinessObjects.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessObjects.ExceptionsWriter.ExceptionsWriter();
+                BusinessCommon.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessCommon.ExceptionsWriter.ExceptionsWriter();
                 exceptionsWriter.SaveExceptionToLogFile(ex);
                 return null;
             }

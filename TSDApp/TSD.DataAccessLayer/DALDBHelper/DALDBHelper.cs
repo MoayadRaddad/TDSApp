@@ -8,41 +8,10 @@ using System.Collections.Specialized;
 using System.Reflection;
 using System.IO;
 
-namespace TSD.DataAccessLayer.DBHelper
+namespace DataAccessLayer.DALDBHelper
 {
     public class DALDBHelper
     {
-        private static string connectionString = string.Empty;
-        public string GetConnectionString()
-        {
-            return connectionString;
-        }
-        public int SetConnectionString()
-        {
-            try
-            {
-                string txtpath = System.AppDomain.CurrentDomain.BaseDirectory + "ConnectionString.txt";
-                if (File.Exists(txtpath))
-                {
-                    using (StreamReader reader = new StreamReader(txtpath))
-                    {
-                        if (reader.Peek() >= 0)
-                        {
-                            connectionString = reader.ReadLine();
-                        }
-                    }
-                    return 1;
-                }
-                else
-                {
-                    return 0;
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
 
         public int ExecuteNonQuery(string query, List<SqlParameter> parametros)
         {
@@ -71,16 +40,14 @@ namespace TSD.DataAccessLayer.DBHelper
         {
             try
             {
-                DALDBHelper dBHelper = new DALDBHelper();
                 var cmd = new SqlCommand();
-                SqlConnection con = new SqlConnection(dBHelper.GetConnectionString());
+                SqlConnection con = new SqlConnection(BusinessCommon.ConnectionString.ConnectionString.connectionString);
                 cmd.Connection = con;
                 cmd.CommandText = commandText;
                 foreach (SqlParameter param in commandParameters)
                 {
                     cmd.Parameters.Add(param);
                 }
-
                 SqlDataAdapter adapter = new SqlDataAdapter(cmd);
                 DataSet dataSet = new DataSet();
                 adapter.Fill(dataSet);
@@ -97,8 +64,7 @@ namespace TSD.DataAccessLayer.DBHelper
         {
             try
             {
-                DataSet dt = new DataSet();
-                SqlConnection connection = new SqlConnection(connectionString);
+                SqlConnection connection = new SqlConnection(BusinessCommon.ConnectionString.ConnectionString.connectionString);
                 SqlCommand command = new SqlCommand();
 
                 try
@@ -127,8 +93,7 @@ namespace TSD.DataAccessLayer.DBHelper
         {
             try
             {
-                DataSet dt = new DataSet();
-                SqlConnection connection = new SqlConnection(connectionString);
+                SqlConnection connection = new SqlConnection(BusinessCommon.ConnectionString.ConnectionString.connectionString);
                 SqlCommand command = new SqlCommand();
 
                 try

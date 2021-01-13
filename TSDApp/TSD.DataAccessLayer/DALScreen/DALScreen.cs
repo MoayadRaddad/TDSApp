@@ -4,31 +4,31 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Text;
 
-namespace TSD.DataAccessLayer.Screen
+namespace DataAccessLayer.DALScreen
 {
     public class DALScreen
     {
-        DBHelper.DALDBHelper dBHelper;
-        public List<TSDApp.Models.Screen> SelectScreensByBankId(TSDApp.Models.Bank pBank)
+        DALDBHelper.DALDBHelper dBHelper;
+        public List<BusinessObjects.Models.Screen> SelectScreensByBankId(BusinessObjects.Models.Bank pBank)
         {
             try
             {
-                List<TSDApp.Models.Screen> lstScreens = new List<TSDApp.Models.Screen>();
+                List<BusinessObjects.Models.Screen> lstScreens = new List<BusinessObjects.Models.Screen>();
                 string pquery = "SELECT id,name,isActive,BankId FROM tblScreens where BankId = @BankId";
                 List<SqlParameter> ScreenParams = new List<SqlParameter>();
                 ScreenParams.Add(new SqlParameter("@BankId", pBank.id));
-                dBHelper = new DBHelper.DALDBHelper();
+                dBHelper = new DALDBHelper.DALDBHelper();
                 DataSet dataSet = dBHelper.ExecuteAdapter(pquery, ScreenParams);
                 foreach (DataRow dataRow in dataSet.Tables[0].Rows)
                 {
-                    lstScreens.Add(new TSDApp.Models.Screen(Convert.ToInt32(dataRow["id"]), Convert.ToString(dataRow["Name"]),
+                    lstScreens.Add(new BusinessObjects.Models.Screen(Convert.ToInt32(dataRow["id"]), Convert.ToString(dataRow["Name"]),
                         Convert.ToBoolean(dataRow["isActive"]), Convert.ToInt32(dataRow["BankId"])));
                 }
                 return lstScreens;
             }
             catch (Exception ex)
             {
-                BusinessObjects.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessObjects.ExceptionsWriter.ExceptionsWriter();
+                BusinessCommon.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessCommon.ExceptionsWriter.ExceptionsWriter();
                 exceptionsWriter.SaveExceptionToLogFile(ex);
                 return null;
             }
@@ -40,18 +40,18 @@ namespace TSD.DataAccessLayer.Screen
                 string pquery = "delete from tblScreens where id = @id";
                 List<SqlParameter> ScreenParams = new List<SqlParameter>();
                 ScreenParams.Add(new SqlParameter("@id", pScreenId));
-                dBHelper = new DBHelper.DALDBHelper();
+                dBHelper = new DALDBHelper.DALDBHelper();
                 dBHelper.ExecuteNonQuery(pquery, ScreenParams);
                 return 1;
             }
             catch (Exception ex)
             {
-                BusinessObjects.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessObjects.ExceptionsWriter.ExceptionsWriter();
+                BusinessCommon.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessCommon.ExceptionsWriter.ExceptionsWriter();
                 exceptionsWriter.SaveExceptionToLogFile(ex);
                 return 0;
             }
         }
-        public TSDApp.Models.Screen InsertScreen(TSDApp.Models.Screen pScreen)
+        public BusinessObjects.Models.Screen InsertScreen(BusinessObjects.Models.Screen pScreen)
         {
             try
             {
@@ -60,7 +60,7 @@ namespace TSD.DataAccessLayer.Screen
                 ScreenParams.Add(new SqlParameter("@Name", pScreen.name));
                 ScreenParams.Add(new SqlParameter("@isActive", pScreen.isActive));
                 ScreenParams.Add(new SqlParameter("@BankId", pScreen.bankId));
-                dBHelper = new DBHelper.DALDBHelper();
+                dBHelper = new DALDBHelper.DALDBHelper();
                 pScreen.id = Convert.ToInt32(dBHelper.ExecuteScalar(pquery, ScreenParams));
                 if (pScreen.isActive)
                 {
@@ -70,12 +70,12 @@ namespace TSD.DataAccessLayer.Screen
             }
             catch (Exception ex)
             {
-                BusinessObjects.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessObjects.ExceptionsWriter.ExceptionsWriter();
+                BusinessCommon.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessCommon.ExceptionsWriter.ExceptionsWriter();
                 exceptionsWriter.SaveExceptionToLogFile(ex);
                 return null;
             }
         }
-        public TSDApp.Models.Screen UpdateScreen(TSDApp.Models.Screen pScreen)
+        public BusinessObjects.Models.Screen UpdateScreen(BusinessObjects.Models.Screen pScreen)
         {
             try
             {
@@ -84,7 +84,7 @@ namespace TSD.DataAccessLayer.Screen
                 ScreenParams.Add(new SqlParameter("@Name", pScreen.name));
                 ScreenParams.Add(new SqlParameter("@isActive", pScreen.isActive));
                 ScreenParams.Add(new SqlParameter("@id", pScreen.id));
-                dBHelper = new DBHelper.DALDBHelper();
+                dBHelper = new DALDBHelper.DALDBHelper();
                 dBHelper.ExecuteNonQuery(pquery, ScreenParams);
                 if (pScreen.isActive)
                 {
@@ -94,7 +94,7 @@ namespace TSD.DataAccessLayer.Screen
             }
             catch (Exception ex)
             {
-                BusinessObjects.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessObjects.ExceptionsWriter.ExceptionsWriter();
+                BusinessCommon.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessCommon.ExceptionsWriter.ExceptionsWriter();
                 exceptionsWriter.SaveExceptionToLogFile(ex);
                 return null;
             }
@@ -106,12 +106,12 @@ namespace TSD.DataAccessLayer.Screen
                 string pquery = "update tblScreens set isActive = 0 where id != @id";
                 List<SqlParameter> ScreenParams = new List<SqlParameter>();
                 ScreenParams.Add(new SqlParameter("@id", pScreenId));
-                dBHelper = new DBHelper.DALDBHelper();
+                dBHelper = new DALDBHelper.DALDBHelper();
                 dBHelper.ExecuteScalar(pquery, ScreenParams);
             }
             catch (Exception ex)
             {
-                BusinessObjects.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessObjects.ExceptionsWriter.ExceptionsWriter();
+                BusinessCommon.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessCommon.ExceptionsWriter.ExceptionsWriter();
                 exceptionsWriter.SaveExceptionToLogFile(ex);
             }
         }

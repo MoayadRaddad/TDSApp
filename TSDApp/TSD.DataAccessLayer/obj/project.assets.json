@@ -224,6 +224,19 @@
           }
         }
       },
+      "BusinessCommon/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.0",
+        "dependencies": {
+          "BusinessObjects": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/BusinessCommon.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/BusinessCommon.dll": {}
+        }
+      },
       "BusinessObjects/1.0.0": {
         "type": "project",
         "framework": ".NETStandard,Version=v2.0",
@@ -870,6 +883,11 @@
         "version.txt"
       ]
     },
+    "BusinessCommon/1.0.0": {
+      "type": "project",
+      "path": "../BusinessCommon/BusinessCommon.csproj",
+      "msbuildProject": "../BusinessCommon/BusinessCommon.csproj"
+    },
     "BusinessObjects/1.0.0": {
       "type": "project",
       "path": "../BusinessObjects/BusinessObjects.csproj",
@@ -878,6 +896,7 @@
   },
   "projectFileDependencyGroups": {
     ".NETStandard,Version=v2.0": [
+      "BusinessCommon >= 1.0.0",
       "BusinessObjects >= 1.0.0",
       "NETStandard.Library >= 2.0.3",
       "System.Data.SqlClient >= 4.6.1"
@@ -910,6 +929,9 @@
         "netstandard2.0": {
           "targetAlias": "netstandard2.0",
           "projectReferences": {
+            "C:\\Users\\Moayad\\Documents\\GitHub\\TDSApp\\TSDApp\\BusinessCommon\\BusinessCommon.csproj": {
+              "projectPath": "C:\\Users\\Moayad\\Documents\\GitHub\\TDSApp\\TSDApp\\BusinessCommon\\BusinessCommon.csproj"
+            },
             "C:\\Users\\Moayad\\Documents\\GitHub\\TDSApp\\TSDApp\\BusinessObjects\\BusinessObjects.csproj": {
               "projectPath": "C:\\Users\\Moayad\\Documents\\GitHub\\TDSApp\\TSDApp\\BusinessObjects\\BusinessObjects.csproj"
             }
@@ -947,7 +969,7 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.101\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.102\\RuntimeIdentifierGraph.json"
       }
     }
   }

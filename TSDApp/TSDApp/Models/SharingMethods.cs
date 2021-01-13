@@ -21,7 +21,7 @@ namespace TSDApp.Models
         /// </summary>
         public void SaveExceptionToLogFile(Exception ex)
         {
-            BusinessObjects.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessObjects.ExceptionsWriter.ExceptionsWriter();
+            BusinessCommon.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessCommon.ExceptionsWriter.ExceptionsWriter();
             exceptionsWriter.SaveExceptionToLogFile(ex);
             MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }

@@ -4,20 +4,20 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Text;
 
-namespace TSD.DataAccessLayer.Button
+namespace DataAccessLayer.DALButton
 {
     public class DALButton
     {
-        DBHelper.DALDBHelper dBHelper;
+        DALDBHelper.DALDBHelper dBHelper;
         public List<T> SelectButtonsbyScreenId<T>(int pScreenId, BusinessObjects.Models.btnType btnType)
         {
             try
             {
                 List<T> lstButtons = new List<T>();
-                string pquery = "SELECT * FROM tbl" + btnType.ToString() + " where ScreenId = @ScreenId";
+                string pquery = "SELECT * FROM tbl" + btnType.ToString() + "Button where ScreenId = @ScreenId";
                 List<SqlParameter> ScreenParams = new List<SqlParameter>();
                 ScreenParams.Add(new SqlParameter("@ScreenId", pScreenId));
-                dBHelper = new DBHelper.DALDBHelper();
+                dBHelper = new DALDBHelper.DALDBHelper();
                 DataSet dataSet = dBHelper.ExecuteAdapter(pquery, ScreenParams);
                 foreach (DataRow dataRow in dataSet.Tables[0].Rows)
                 {
@@ -38,7 +38,7 @@ namespace TSD.DataAccessLayer.Button
             }
             catch (Exception ex)
             {
-                BusinessObjects.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessObjects.ExceptionsWriter.ExceptionsWriter();
+                BusinessCommon.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessCommon.ExceptionsWriter.ExceptionsWriter();
                 exceptionsWriter.SaveExceptionToLogFile(ex);
                 return null;
             }
@@ -47,7 +47,7 @@ namespace TSD.DataAccessLayer.Button
         {
             try
             {
-                string pquery = "insert into tblShowMessage OUTPUT INSERTED.IDENTITYCOL  values (@ENName,@ARName,@MessageEN,@MessageAR,@ScreenId)";
+                string pquery = "insert into tblShowMessageButton OUTPUT INSERTED.IDENTITYCOL  values (@ENName,@ARName,@MessageEN,@MessageAR,@ScreenId)";
                 List<SqlParameter> ScreenParams = new List<SqlParameter>();
                 ScreenParams.Add(new SqlParameter("@ENName", pButton.enName));
                 ScreenParams.Add(new SqlParameter("@ARName", pButton.arName));
@@ -55,13 +55,13 @@ namespace TSD.DataAccessLayer.Button
                 ScreenParams.Add(new SqlParameter("@MessageEN", pButton.messageEN));
                 ScreenParams.Add(new SqlParameter("@MessageAR", pButton.messageAR));
                 ScreenParams.Add(new SqlParameter("@ScreenId", pButton.screenId));
-                dBHelper = new DBHelper.DALDBHelper();
+                dBHelper = new DALDBHelper.DALDBHelper();
                 pButton.id = Convert.ToInt32(dBHelper.ExecuteScalar(pquery, ScreenParams));
                 return pButton;
             }
             catch (Exception ex)
             {
-                BusinessObjects.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessObjects.ExceptionsWriter.ExceptionsWriter();
+                BusinessCommon.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessCommon.ExceptionsWriter.ExceptionsWriter();
                 exceptionsWriter.SaveExceptionToLogFile(ex);
                 return null;
             }
@@ -70,7 +70,7 @@ namespace TSD.DataAccessLayer.Button
         {
             try
             {
-                string pquery = "update tblShowMessage set ENName = @ENName,ARName = @ARName,Type = @Type,MessageAR = @MessageAR,MessageEN = @MessageEN,issueTicketType = @issueTicketType where id = @id";
+                string pquery = "update tblShowMessageButton set ENName = @ENName,ARName = @ARName,Type = @Type,MessageAR = @MessageAR,MessageEN = @MessageEN,issueTicketType = @issueTicketType where id = @id";
                 List<SqlParameter> ScreenParams = new List<SqlParameter>();
                 ScreenParams.Add(new SqlParameter("@id", pButton.id));
                 ScreenParams.Add(new SqlParameter("@ENName", pButton.enName));
@@ -78,13 +78,13 @@ namespace TSD.DataAccessLayer.Button
                 ScreenParams.Add(new SqlParameter("@Type", pButton.type));
                 ScreenParams.Add(new SqlParameter("@MessageEN", pButton.messageEN));
                 ScreenParams.Add(new SqlParameter("@MessageAR", pButton.messageAR));
-                dBHelper = new DBHelper.DALDBHelper();
+                dBHelper = new DALDBHelper.DALDBHelper();
                 dBHelper.ExecuteNonQuery(pquery, ScreenParams);
                 return pButton;
             }
             catch (Exception ex)
             {
-                BusinessObjects.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessObjects.ExceptionsWriter.ExceptionsWriter();
+                BusinessCommon.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessCommon.ExceptionsWriter.ExceptionsWriter();
                 exceptionsWriter.SaveExceptionToLogFile(ex);
                 return null;
             }
@@ -93,19 +93,19 @@ namespace TSD.DataAccessLayer.Button
         {
             try
             {
-                string pquery = "insert into tblIssueTicket OUTPUT INSERTED.IDENTITYCOL  values (@ENName,@ARName,@ServiceId,@ScreenId)";
+                string pquery = "insert into tblIssueTicketButton OUTPUT INSERTED.IDENTITYCOL  values (@ENName,@ARName,@ServiceId,@ScreenId)";
                 List<SqlParameter> ScreenParams = new List<SqlParameter>();
                 ScreenParams.Add(new SqlParameter("@ENName", pButton.enName));
                 ScreenParams.Add(new SqlParameter("@ARName", pButton.arName));
                 ScreenParams.Add(new SqlParameter("@ServiceId", pButton.serviceId));
                 ScreenParams.Add(new SqlParameter("@ScreenId", pButton.screenId));
-                dBHelper = new DBHelper.DALDBHelper();
+                dBHelper = new DALDBHelper.DALDBHelper();
                 pButton.id = Convert.ToInt32(dBHelper.ExecuteScalar(pquery, ScreenParams));
                 return pButton;
             }
             catch (Exception ex)
             {
-                BusinessObjects.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessObjects.ExceptionsWriter.ExceptionsWriter();
+                BusinessCommon.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessCommon.ExceptionsWriter.ExceptionsWriter();
                 exceptionsWriter.SaveExceptionToLogFile(ex);
                 return null;
             }
@@ -114,19 +114,19 @@ namespace TSD.DataAccessLayer.Button
         {
             try
             {
-                string pquery = "update tblIssueTicket set ENName = @ENName,ARName = @ARName,ServiceId = @ServiceId where id = @id";
+                string pquery = "update tblIssueTicketButton set ENName = @ENName,ARName = @ARName,ServiceId = @ServiceId where id = @id";
                 List<SqlParameter> ScreenParams = new List<SqlParameter>();
                 ScreenParams.Add(new SqlParameter("@id", pButton.id));
                 ScreenParams.Add(new SqlParameter("@ENName", pButton.enName));
                 ScreenParams.Add(new SqlParameter("@ARName", pButton.arName));
-                ScreenParams.Add(new SqlParameter("@ServiceId", pButton.type));
-                dBHelper = new DBHelper.DALDBHelper();
+                ScreenParams.Add(new SqlParameter("@ServiceId", pButton.serviceId));
+                dBHelper = new DALDBHelper.DALDBHelper();
                 dBHelper.ExecuteNonQuery(pquery, ScreenParams);
                 return pButton;
             }
             catch (Exception ex)
             {
-                BusinessObjects.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessObjects.ExceptionsWriter.ExceptionsWriter();
+                BusinessCommon.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessCommon.ExceptionsWriter.ExceptionsWriter();
                 exceptionsWriter.SaveExceptionToLogFile(ex);
                 return null;
             }
@@ -138,17 +138,17 @@ namespace TSD.DataAccessLayer.Button
                 foreach (KeyValuePair<int, string> item in pButtonsIds)
                 {
                     string pquery = string.Empty;
-                    pquery = "delete from tbl" + item.Value.ToString() + " where " + ConditionColumn + " = @id";
+                    pquery = "delete from tbl" + item.Value.ToString() + "Button where " + ConditionColumn + " = @id";
                     List<SqlParameter> ScreenParams = new List<SqlParameter>();
                     ScreenParams.Add(new SqlParameter("@id", item.Key));
-                    dBHelper = new DBHelper.DALDBHelper();
+                    dBHelper = new DALDBHelper.DALDBHelper();
                     dBHelper.ExecuteNonQuery(pquery, ScreenParams);
                 }
                 return 1;
             }
             catch (Exception ex)
             {
-                BusinessObjects.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessObjects.ExceptionsWriter.ExceptionsWriter();
+                BusinessCommon.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessCommon.ExceptionsWriter.ExceptionsWriter();
                 exceptionsWriter.SaveExceptionToLogFile(ex);
                 return 0;
             }
@@ -157,20 +157,21 @@ namespace TSD.DataAccessLayer.Button
         {
             try
             {
-                string pquery = "delete from tblShowMessage where ScreenId = @ScreenId";
+                string pquery = "delete from tblShowMessageButton where ScreenId = @ScreenId";
                 List<SqlParameter> ScreenParams = new List<SqlParameter>();
                 ScreenParams.Add(new SqlParameter("@ScreenId", pScreenId));
+                dBHelper = new DALDBHelper.DALDBHelper();
                 dBHelper.ExecuteNonQuery(pquery, ScreenParams);
-                pquery = "delete from tblIssueTicket where ScreenId = @ScreenId";
+                pquery = "delete from tblIssueTicketButton where ScreenId = @ScreenId";
                 ScreenParams = new List<SqlParameter>();
                 ScreenParams.Add(new SqlParameter("@ScreenId", pScreenId));
-                dBHelper = new DBHelper.DALDBHelper();
+                dBHelper = new DALDBHelper.DALDBHelper();
                 dBHelper.ExecuteNonQuery(pquery, ScreenParams);
                 return 1;
             }
             catch (Exception ex)
             {
-                BusinessObjects.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessObjects.ExceptionsWriter.ExceptionsWriter();
+                BusinessCommon.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessCommon.ExceptionsWriter.ExceptionsWriter();
                 exceptionsWriter.SaveExceptionToLogFile(ex);
                 return 0;
             }

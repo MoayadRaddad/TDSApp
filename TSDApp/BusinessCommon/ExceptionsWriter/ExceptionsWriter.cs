@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace BusinessObjects.ExceptionsWriter
+namespace BusinessCommon.ExceptionsWriter
 {
     public class ExceptionsWriter
     {
@@ -18,7 +18,7 @@ namespace BusinessObjects.ExceptionsWriter
             {
                 while (ex != null)
                 {
-                    TSDApp.Models.ApplicationException applicationException = new TSDApp.Models.ApplicationException();
+                    BusinessObjects.Models.ApplicationException applicationException = new BusinessObjects.Models.ApplicationException();
                     applicationException.Date = DateTime.Now;
                     applicationException.Type = ex.GetType().FullName;
                     applicationException.Message = ex.Message;

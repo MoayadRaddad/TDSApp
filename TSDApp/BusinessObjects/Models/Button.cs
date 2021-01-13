@@ -9,7 +9,7 @@ namespace BusinessObjects.Models
         ShowMessage,
         IssueTicket
     }
-    public class Button
+    public class Button : EventArgs
     {
         public int id { get; set; }
         public string enName { get; set; }
