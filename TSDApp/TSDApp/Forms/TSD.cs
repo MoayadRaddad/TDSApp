@@ -97,6 +97,10 @@ namespace TSDApp
                         FillScreens();
                         BankNamePanel.Visible = false;
                         MainPanel.Visible = true;
+                        Timer timer1 = new Timer();
+                        timer1.Tick += new EventHandler(RefreshScreens);
+                        timer1.Interval = 10000;
+                        timer1.Start();
                     }
                     else
                     {
@@ -125,34 +129,33 @@ namespace TSDApp
             {
                 if (gvScreens.SelectedRows.Count > 0)
                 {
-                    DialogResult dialogResult = MessageBox.Show(@"Are you sure you want to delete selected screen\s ?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                    if (dialogResult == DialogResult.Yes)
+                    DialogResult DeleteCheck = MessageBox.Show(@"Are you sure you want to delete selected screen\s ?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    if (DeleteCheck == DialogResult.Yes)
                     {
+                        BusinessAccessLayer.BALButton.BALButton button = new BusinessAccessLayer.BALButton.BALButton();
+                        BusinessAccessLayer.BALScreen.BALScreen screen = new BusinessAccessLayer.BALScreen.BALScreen();
                         foreach (DataGridViewRow screenRow in gvScreens.SelectedRows)
                         {
                             int pScreenId = (int)screenRow.Cells["id"].Value;
-                            //Delete buttons for the deleted screen
-                            BusinessAccessLayer.BALButton.BALButton button = new BusinessAccessLayer.BALButton.BALButton();
-                            CheckDataBase = button.DeleteAllButtonByScreenId(pScreenId);
-                            if (CheckDataBase == 1)
+                            string pScreenName = screenRow.Cells["name"].Value.ToString();
+                            DialogResult EditCheck = DialogResult.Yes;
+                            if (screen.CheckIfScreenIsBusy(pScreenId))
                             {
-                                BusinessAccessLayer.BALScreen.BALScreen screen = new BusinessAccessLayer.BALScreen.BALScreen();
-                                CheckDataBase = screen.DeleteScreenById(pScreenId);
+                                EditCheck = MessageBox.Show(@"Someone already is use (" + pScreenName + ") screen, Are you sure you want to delete it ?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                            }
+                            if (DeleteCheck == DialogResult.Yes && EditCheck == DialogResult.Yes)
+                            {
+                                CheckDataBase = button.DeleteScreenAndButtonByScreenId(pScreenId);
                                 if (CheckDataBase == 0)
                                 {
                                     MessageBox.Show("Please check your connection to databse", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
                                 }
                             }
-                            else
-                            {
-                                MessageBox.Show("Please check your connection to databse", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                            }
-                            //Delete screen whitch is selected
                         }
                         FillScreens();
-                        MessageBox.Show(@"Screen\s have been deleted successfully", "Done", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
-                    else if (dialogResult == DialogResult.No)
+                    else if (DeleteCheck == DialogResult.No)
                     {
                         MessageBox.Show(@"No screen\s have been deleted", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
@@ -340,6 +343,10 @@ namespace TSDApp
                 Models.SharingMethods sharingMethods = new Models.SharingMethods();
                 sharingMethods.SaveExceptionToLogFile(ex);
             }
+        }
+        private void RefreshScreens(object sender, EventArgs e)
+        {
+            FillScreens();
         }
         #endregion
     }

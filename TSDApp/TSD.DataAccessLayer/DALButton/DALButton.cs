@@ -8,29 +8,28 @@ namespace DataAccessLayer.DALButton
 {
     public class DALButton
     {
-        DALDBHelper.DALDBHelper dBHelper;
         public List<T> SelectButtonsbyScreenId<T>(int pScreenId, BusinessObjects.Models.btnType btnType)
         {
             try
             {
                 List<T> lstButtons = new List<T>();
-                string pquery = "SELECT * FROM tbl" + btnType.ToString() + "Button where ScreenId = @ScreenId";
+                string pquery = "SELECT * FROM tbl" + btnType.ToString() + "Button where screenId = @screenId";
                 List<SqlParameter> ScreenParams = new List<SqlParameter>();
-                ScreenParams.Add(new SqlParameter("@ScreenId", pScreenId));
-                dBHelper = new DALDBHelper.DALDBHelper();
+                ScreenParams.Add(new SqlParameter("@screenId", pScreenId));
+                DALDBHelper.DALDBHelper dBHelper = new DALDBHelper.DALDBHelper();
                 DataSet dataSet = dBHelper.ExecuteAdapter(pquery, ScreenParams);
                 foreach (DataRow dataRow in dataSet.Tables[0].Rows)
                 {
                     if (btnType == BusinessObjects.Models.btnType.ShowMessage)
                     {
-                        var btn = new BusinessObjects.Models.ShowMessageButton(Convert.ToInt32(dataRow["id"]), dataRow["ENName"].ToString(), dataRow["ARName"].ToString(),
-                            dataRow["MessageAR"].ToString(), dataRow["MessageEN"].ToString(), Convert.ToInt32(dataRow["ScreenId"]));
+                        var btn = new BusinessObjects.Models.ShowMessageButton(Convert.ToInt32(dataRow["id"]), dataRow["enName"].ToString(), dataRow["arName"].ToString(),
+                            dataRow["messageAR"].ToString(), dataRow["messageEN"].ToString(), Convert.ToInt32(dataRow["screenId"]));
                         lstButtons.Add((T)(object)btn);
                     }
                     else
                     {
-                        var btn = new BusinessObjects.Models.IssueTicketButton(Convert.ToInt32(dataRow["id"]), dataRow["ENName"].ToString(), dataRow["ARName"].ToString(),
-                            Convert.ToInt32(dataRow["ServiceId"]), Convert.ToInt32(dataRow["ScreenId"]));
+                        var btn = new BusinessObjects.Models.IssueTicketButton(Convert.ToInt32(dataRow["id"]), dataRow["enName"].ToString(), dataRow["arName"].ToString(),
+                            Convert.ToInt32(dataRow["serviceId"]), Convert.ToInt32(dataRow["screenId"]));
                         lstButtons.Add((T)(object)btn);
                     }
                 }
@@ -47,15 +46,14 @@ namespace DataAccessLayer.DALButton
         {
             try
             {
-                string pquery = "insert into tblShowMessageButton OUTPUT INSERTED.IDENTITYCOL  values (@ENName,@ARName,@MessageEN,@MessageAR,@ScreenId)";
+                string pquery = "insert into tblShowMessageButton OUTPUT INSERTED.IDENTITYCOL  values (@enName,@arName,@messageEN,@messageAR,@screenId,0)";
                 List<SqlParameter> ScreenParams = new List<SqlParameter>();
-                ScreenParams.Add(new SqlParameter("@ENName", pButton.enName));
-                ScreenParams.Add(new SqlParameter("@ARName", pButton.arName));
-                ScreenParams.Add(new SqlParameter("@Type", pButton.type));
-                ScreenParams.Add(new SqlParameter("@MessageEN", pButton.messageEN));
-                ScreenParams.Add(new SqlParameter("@MessageAR", pButton.messageAR));
-                ScreenParams.Add(new SqlParameter("@ScreenId", pButton.screenId));
-                dBHelper = new DALDBHelper.DALDBHelper();
+                ScreenParams.Add(new SqlParameter("@enName", pButton.enName));
+                ScreenParams.Add(new SqlParameter("@arName", pButton.arName));
+                ScreenParams.Add(new SqlParameter("@messageEN", pButton.messageEN));
+                ScreenParams.Add(new SqlParameter("@messageAR", pButton.messageAR));
+                ScreenParams.Add(new SqlParameter("@screenId", pButton.screenId));
+                DALDBHelper.DALDBHelper dBHelper = new DALDBHelper.DALDBHelper();
                 pButton.id = Convert.ToInt32(dBHelper.ExecuteScalar(pquery, ScreenParams));
                 return pButton;
             }
@@ -70,15 +68,15 @@ namespace DataAccessLayer.DALButton
         {
             try
             {
-                string pquery = "update tblShowMessageButton set ENName = @ENName,ARName = @ARName,Type = @Type,MessageAR = @MessageAR,MessageEN = @MessageEN,issueTicketType = @issueTicketType where id = @id";
+                string pquery = "update tblShowMessageButton set enName = @enName,arName = @arName,type = @type,messageAR = @messageAR,messageEN = @messageEN where id = @id";
                 List<SqlParameter> ScreenParams = new List<SqlParameter>();
                 ScreenParams.Add(new SqlParameter("@id", pButton.id));
-                ScreenParams.Add(new SqlParameter("@ENName", pButton.enName));
-                ScreenParams.Add(new SqlParameter("@ARName", pButton.arName));
-                ScreenParams.Add(new SqlParameter("@Type", pButton.type));
-                ScreenParams.Add(new SqlParameter("@MessageEN", pButton.messageEN));
-                ScreenParams.Add(new SqlParameter("@MessageAR", pButton.messageAR));
-                dBHelper = new DALDBHelper.DALDBHelper();
+                ScreenParams.Add(new SqlParameter("@enName", pButton.enName));
+                ScreenParams.Add(new SqlParameter("@arName", pButton.arName));
+                ScreenParams.Add(new SqlParameter("@type", pButton.type));
+                ScreenParams.Add(new SqlParameter("@messageEN", pButton.messageEN));
+                ScreenParams.Add(new SqlParameter("@messageAR", pButton.messageAR));
+                DALDBHelper.DALDBHelper dBHelper = new DALDBHelper.DALDBHelper();
                 dBHelper.ExecuteNonQuery(pquery, ScreenParams);
                 return pButton;
             }
@@ -93,13 +91,13 @@ namespace DataAccessLayer.DALButton
         {
             try
             {
-                string pquery = "insert into tblIssueTicketButton OUTPUT INSERTED.IDENTITYCOL  values (@ENName,@ARName,@ServiceId,@ScreenId)";
+                string pquery = "insert into tblIssueTicketButton OUTPUT INSERTED.IDENTITYCOL  values (@enName,@arName,@serviceId,@screenId,0)";
                 List<SqlParameter> ScreenParams = new List<SqlParameter>();
-                ScreenParams.Add(new SqlParameter("@ENName", pButton.enName));
-                ScreenParams.Add(new SqlParameter("@ARName", pButton.arName));
-                ScreenParams.Add(new SqlParameter("@ServiceId", pButton.serviceId));
-                ScreenParams.Add(new SqlParameter("@ScreenId", pButton.screenId));
-                dBHelper = new DALDBHelper.DALDBHelper();
+                ScreenParams.Add(new SqlParameter("@enName", pButton.enName));
+                ScreenParams.Add(new SqlParameter("@arName", pButton.arName));
+                ScreenParams.Add(new SqlParameter("@serviceId", pButton.serviceId));
+                ScreenParams.Add(new SqlParameter("@screenId", pButton.screenId));
+                DALDBHelper.DALDBHelper dBHelper = new DALDBHelper.DALDBHelper();
                 pButton.id = Convert.ToInt32(dBHelper.ExecuteScalar(pquery, ScreenParams));
                 return pButton;
             }
@@ -114,13 +112,13 @@ namespace DataAccessLayer.DALButton
         {
             try
             {
-                string pquery = "update tblIssueTicketButton set ENName = @ENName,ARName = @ARName,ServiceId = @ServiceId where id = @id";
+                string pquery = "update tblIssueTicketButton set enName = @enName,ARName = @arName,serviceId = @serviceId where id = @id";
                 List<SqlParameter> ScreenParams = new List<SqlParameter>();
                 ScreenParams.Add(new SqlParameter("@id", pButton.id));
-                ScreenParams.Add(new SqlParameter("@ENName", pButton.enName));
-                ScreenParams.Add(new SqlParameter("@ARName", pButton.arName));
-                ScreenParams.Add(new SqlParameter("@ServiceId", pButton.serviceId));
-                dBHelper = new DALDBHelper.DALDBHelper();
+                ScreenParams.Add(new SqlParameter("@enName", pButton.enName));
+                ScreenParams.Add(new SqlParameter("@arName", pButton.arName));
+                ScreenParams.Add(new SqlParameter("@serviceId", pButton.serviceId));
+                DALDBHelper.DALDBHelper dBHelper = new DALDBHelper.DALDBHelper();
                 dBHelper.ExecuteNonQuery(pquery, ScreenParams);
                 return pButton;
             }
@@ -135,14 +133,17 @@ namespace DataAccessLayer.DALButton
         {
             try
             {
-                foreach (KeyValuePair<int, string> item in pButtonsIds)
+                foreach (var item in pButtonsIds)
                 {
-                    string pquery = string.Empty;
-                    pquery = "delete from tbl" + item.Value.ToString() + "Button where " + ConditionColumn + " = @id";
-                    List<SqlParameter> ScreenParams = new List<SqlParameter>();
-                    ScreenParams.Add(new SqlParameter("@id", item.Key));
-                    dBHelper = new DALDBHelper.DALDBHelper();
-                    dBHelper.ExecuteNonQuery(pquery, ScreenParams);
+                    if(Convert.ToInt32(item.Key) != 0)
+                    {
+                        string pquery = string.Empty;
+                        pquery = "delete from tbl" + item.Value.ToString() + "Button where " + ConditionColumn + " = @id";
+                        List<SqlParameter> ScreenParams = new List<SqlParameter>();
+                        ScreenParams.Add(new SqlParameter("@id", item.Key));
+                        DALDBHelper.DALDBHelper dBHelper = new DALDBHelper.DALDBHelper();
+                        dBHelper.ExecuteNonQuery(pquery, ScreenParams);
+                    }
                 }
                 return 1;
             }
@@ -157,14 +158,14 @@ namespace DataAccessLayer.DALButton
         {
             try
             {
-                string pquery = "delete from tblShowMessageButton where ScreenId = @ScreenId";
+                string pquery = "delete from tblShowMessageButton where screenId = @screenId";
                 List<SqlParameter> ScreenParams = new List<SqlParameter>();
-                ScreenParams.Add(new SqlParameter("@ScreenId", pScreenId));
-                dBHelper = new DALDBHelper.DALDBHelper();
+                ScreenParams.Add(new SqlParameter("@screenId", pScreenId));
+                DALDBHelper.DALDBHelper dBHelper = new DALDBHelper.DALDBHelper();
                 dBHelper.ExecuteNonQuery(pquery, ScreenParams);
-                pquery = "delete from tblIssueTicketButton where ScreenId = @ScreenId";
+                pquery = "delete from tblIssueTicketButton where screenId = @screenId";
                 ScreenParams = new List<SqlParameter>();
-                ScreenParams.Add(new SqlParameter("@ScreenId", pScreenId));
+                ScreenParams.Add(new SqlParameter("@screenId", pScreenId));
                 dBHelper = new DALDBHelper.DALDBHelper();
                 dBHelper.ExecuteNonQuery(pquery, ScreenParams);
                 return 1;
@@ -175,6 +176,15 @@ namespace DataAccessLayer.DALButton
                 exceptionsWriter.SaveExceptionToLogFile(ex);
                 return 0;
             }
+        }
+        public bool CheckIfButtonIsDeleted(int pButtonId, BusinessObjects.Models.btnType btnType)
+        {
+            string pquery = "select * from tbl" + btnType.ToString() + "Button where id = @id";
+            List<SqlParameter> ScreenParams = new List<SqlParameter>();
+            ScreenParams.Add(new SqlParameter("@id", pButtonId));
+            DALDBHelper.DALDBHelper dBHelper = new DALDBHelper.DALDBHelper();
+            var rowEffected = dBHelper.ExecuteScalar(pquery, ScreenParams);
+            return rowEffected == null ? true : false;
         }
     }
 }

@@ -2,18 +2,18 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
+using System.Transactions;
 
 namespace BusinessAccessLayer.BALBank
 {
     public class BALBank
     {
-        DataAccessLayer.DALBank.DALBank bank;
         public BusinessObjects.Models.Bank CheckBankExist(BusinessObjects.Models.Bank pBank)
         {
             try
             {
-                bank = new DataAccessLayer.DALBank.DALBank();
-                return bank.CheckBankExist(pBank);
+                DataAccessLayer.DALBank.DALBank DALBank = new DataAccessLayer.DALBank.DALBank();
+                return DALBank.CheckBankExist(pBank);
             }
             catch (Exception ex)
             {
@@ -26,8 +26,8 @@ namespace BusinessAccessLayer.BALBank
         {
             try
             {
-                bank = new DataAccessLayer.DALBank.DALBank();
-                return bank.InsertBank(pBank);
+                DataAccessLayer.DALBank.DALBank DALbank = new DataAccessLayer.DALBank.DALBank();
+                return DALbank.InsertBank(pBank);
             }
             catch (Exception ex)
             {

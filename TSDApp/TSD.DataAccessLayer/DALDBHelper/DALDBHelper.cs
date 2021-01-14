@@ -12,7 +12,6 @@ namespace DataAccessLayer.DALDBHelper
 {
     public class DALDBHelper
     {
-
         public int ExecuteNonQuery(string query, List<SqlParameter> parametros)
         {
             try
@@ -24,7 +23,6 @@ namespace DataAccessLayer.DALDBHelper
                 throw ex;
             }
         }
-
         public object ExecuteScalar(string query, List<SqlParameter> parametros)
         {
             try
@@ -59,7 +57,6 @@ namespace DataAccessLayer.DALDBHelper
             }
         }
         #region Private Methods
-
         private int NonQuery(string query, List<SqlParameter> parametros)
         {
             try
@@ -88,7 +85,6 @@ namespace DataAccessLayer.DALDBHelper
                 throw ex;
             }
         }
-
         private object Scalar(string query, List<SqlParameter> parametros)
         {
             try
@@ -117,7 +113,6 @@ namespace DataAccessLayer.DALDBHelper
                 throw ex;
             }
         }
-
         #endregion
     }
 

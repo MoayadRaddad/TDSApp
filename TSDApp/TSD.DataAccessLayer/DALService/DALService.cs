@@ -18,7 +18,7 @@ namespace DataAccessLayer.DALService
                 DataSet dataSet = dBHelper.ExecuteAdapter(pquery, new List<SqlParameter>());
                 foreach (DataRow dataRow in dataSet.Tables[0].Rows)
                 {
-                    lstIssueTicketTypes.Add(new BusinessObjects.Models.Service(Convert.ToInt32(dataRow["id"]), dataRow["Name"].ToString()));
+                    lstIssueTicketTypes.Add(new BusinessObjects.Models.Service(Convert.ToInt32(dataRow["id"]), dataRow["name"].ToString()));
                 }
                 return lstIssueTicketTypes;
             }
