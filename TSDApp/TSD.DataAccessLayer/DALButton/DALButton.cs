@@ -68,12 +68,11 @@ namespace DataAccessLayer.DALButton
         {
             try
             {
-                string pquery = "update tblShowMessageButton set enName = @enName,arName = @arName,type = @type,messageAR = @messageAR,messageEN = @messageEN where id = @id";
+                string pquery = "update tblShowMessageButton set enName = @enName,arName = @arName,messageAR = @messageAR,messageEN = @messageEN where id = @id";
                 List<SqlParameter> ScreenParams = new List<SqlParameter>();
                 ScreenParams.Add(new SqlParameter("@id", pButton.id));
                 ScreenParams.Add(new SqlParameter("@enName", pButton.enName));
                 ScreenParams.Add(new SqlParameter("@arName", pButton.arName));
-                ScreenParams.Add(new SqlParameter("@type", pButton.type));
                 ScreenParams.Add(new SqlParameter("@messageEN", pButton.messageEN));
                 ScreenParams.Add(new SqlParameter("@messageAR", pButton.messageAR));
                 DALDBHelper.DALDBHelper dBHelper = new DALDBHelper.DALDBHelper();

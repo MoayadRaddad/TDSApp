@@ -197,7 +197,7 @@ namespace TSDApp.Forms
                             {
                                 IssueTicketButton = new BusinessObjects.Models.IssueTicketButton(IssueTicketButton.id, txtENName.Text, txtARName.Text, Convert.ToInt32(ddlIssueTicket.SelectedValue), IssueTicketButton.screenId, true, IssueTicketButton.indexUpdated);
                                 BusinessAccessLayer.BALButton.BALButton bALButton = new BusinessAccessLayer.BALButton.BALButton();
-                                if (bALButton.CheckIfButtonIsDeleted(IssueTicketButton.id,BusinessObjects.Models.btnType.IssueTicket))
+                                if (IssueTicketButton.id != 0 && bALButton.CheckIfButtonIsDeleted(IssueTicketButton.id,BusinessObjects.Models.btnType.IssueTicket))
                                 {
                                     IssueTicketButton.indexUpdated = -2;
                                     MessageBox.Show("Button cant be save to database because someone already delete it", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -223,7 +223,7 @@ namespace TSDApp.Forms
                                     {
                                         ShowMessageButton = new BusinessObjects.Models.ShowMessageButton(ShowMessageButton.id, txtENName.Text, txtARName.Text, txtMessageAR.Text, txtMessageEN.Text, ShowMessageButton.id, true, ShowMessageButton.indexUpdated);
                                         BusinessAccessLayer.BALButton.BALButton bALButton = new BusinessAccessLayer.BALButton.BALButton();
-                                        if (bALButton.CheckIfButtonIsDeleted(ShowMessageButton.id, BusinessObjects.Models.btnType.ShowMessage))
+                                        if (ShowMessageButton.id != 0 && bALButton.CheckIfButtonIsDeleted(ShowMessageButton.id, BusinessObjects.Models.btnType.ShowMessage))
                                         {
                                             ShowMessageButton.indexUpdated = -2;
                                             MessageBox.Show("Button cant be save to database because someone already delete it", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);

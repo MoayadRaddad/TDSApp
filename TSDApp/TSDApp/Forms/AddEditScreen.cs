@@ -6,6 +6,7 @@ using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TSDApp.Forms;
@@ -22,6 +23,8 @@ namespace TSDApp.Fomrs
         public List<BusinessObjects.Models.Button> LstButtons;
         public IEnumerable<BusinessObjects.Models.Button> IEnumrableLstButtons;
         public event EventHandler<int> CanelButtonEvent;
+        Thread RefreshThread;
+        private bool userNotEdit = true;
         #endregion
 
         #region constructors
@@ -66,7 +69,8 @@ namespace TSDApp.Fomrs
                 LstIssueTicketButtons = new List<BusinessObjects.Models.IssueTicketButton>();
                 LstButtons = new List<BusinessObjects.Models.Button>();
                 FillScreens(CurrentScreen);
-                FillButtons();
+                RefreshThread = new Thread(delegate () { FillButtons(); });
+                RefreshThread.Start();
             }
             catch (Exception ex)
             {
@@ -86,10 +90,6 @@ namespace TSDApp.Fomrs
             {
                 IEnumrableLstButtons = new List<BusinessObjects.Models.Button>().ToList();
                 LoadToolTips();
-                Timer timer1 = new Timer();
-                timer1.Tick += new EventHandler(RefreshButtons);
-                timer1.Interval = 10000;
-                timer1.Start();
             }
             catch (Exception ex)
             {
@@ -110,8 +110,9 @@ namespace TSDApp.Fomrs
                     {
                         if (gvButtons.RowCount > 0)
                         {
+                            userNotEdit = false;
                             BusinessAccessLayer.BALScreen.BALScreen screen = new BusinessAccessLayer.BALScreen.BALScreen();
-                            if ((screen.CheckIfScreenIsDeleted(CurrentScreen.id)))
+                            if (CurrentScreen.id != 0 && (screen.CheckIfScreenIsDeleted(CurrentScreen.id)))
                             {
                                 MessageBox.Show("Screen cant be save to database because someone already delete it", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                 CloseForm();
@@ -207,26 +208,32 @@ namespace TSDApp.Fomrs
                     DialogResult dialogResult = MessageBox.Show(@"Are you sure you want to delete selected button\s ?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                     if (dialogResult == DialogResult.Yes)
                     {
+                        List<BusinessObjects.Models.Button> lstdelete = new List<BusinessObjects.Models.Button>();
                         IDictionary<int, string> pButtonsDetailsIds = new Dictionary<int, string>();
                         foreach (DataGridViewRow buttonRow in gvButtons.SelectedRows)
                         {
                             var btnId = (int)buttonRow.Cells["id"].Value;
-                            var btnType = (string)buttonRow.Cells["Type"].Value;
+                            var btnType = (string)buttonRow.Cells["type"].Value;
+                            var btnENName = (string)buttonRow.Cells["enName"].Value;
+                            var btnARName = (string)buttonRow.Cells["arName"].Value;
+                            lstdelete.Add(new BusinessObjects.Models.Button(btnId,btnENName,btnARName,CurrentScreen.id,btnType));
                             pButtonsDetailsIds.Add(btnId, btnType);
                         }
                         BusinessAccessLayer.BALButton.BALButton button = new BusinessAccessLayer.BALButton.BALButton();
                         int CheckDelete = button.DeleteButtonWhere(pButtonsDetailsIds, "id");
                         if (CheckDelete == 1)
                         {
-                            foreach (var btn in pButtonsDetailsIds)
+                            foreach (var btn in lstdelete)
                             {
-                                if (btn.Value == BusinessObjects.Models.btnType.ShowMessage.ToString())
+                                if (btn.type == BusinessObjects.Models.btnType.ShowMessage.ToString())
                                 {
-                                    LstShowMessageButtons.Remove((LstShowMessageButtons.Where(x => x.id == Convert.ToInt32(btn.Key)).FirstOrDefault()));
+                                    LstShowMessageButtons.Remove((LstShowMessageButtons.Where(x => x.id == Convert.ToInt32(btn.id) && x.enName == btn.enName
+                                     && x.arName == btn.arName).FirstOrDefault()));
                                 }
                                 else
                                 {
-                                    LstIssueTicketButtons.Remove((LstIssueTicketButtons.Where(x => x.id == Convert.ToInt32(btn.Key)).FirstOrDefault()));
+                                    LstIssueTicketButtons.Remove((LstIssueTicketButtons.Where(x => x.id == Convert.ToInt32(btn.id) && x.enName == btn.enName
+                                     && x.arName == btn.arName).FirstOrDefault()));
                                 }
                             }
                             RefreshGrid();
@@ -260,6 +267,7 @@ namespace TSDApp.Fomrs
         {
             try
             {
+                userNotEdit = false;
                 AddEditButton addEditButton = new AddEditButton();
                 addEditButton.SaveShowMessageButton += AddShowMessageButton;
                 addEditButton.SaveIssueTicketButton += AddIssueTicketButton;
@@ -282,6 +290,7 @@ namespace TSDApp.Fomrs
                 {
                     if (gvButtons.SelectedRows.Count == 1)
                     {
+                        userNotEdit = false;
                         DataGridViewRow buttonRow = gvButtons.SelectedRows[0];
                         BusinessObjects.Models.Button btn = new BusinessObjects.Models.Button((int)buttonRow.Cells["id"].Value, (string)buttonRow.Cells["enName"].Value,
                             (string)buttonRow.Cells["arName"].Value, (int)buttonRow.Cells["screenId"].Value, (string)buttonRow.Cells["type"].Value);
@@ -329,6 +338,7 @@ namespace TSDApp.Fomrs
         #region Methods
         private void OnCancelButton(int issueTicketButton)
         {
+            userNotEdit = false;
             var handler = CanelButtonEvent;
             if (CanelButtonEvent != null)
             {
@@ -340,7 +350,7 @@ namespace TSDApp.Fomrs
             try
             {
                 BusinessAccessLayer.BALScreen.BALScreen bALScreen = new BusinessAccessLayer.BALScreen.BALScreen();
-                if ((bALScreen.CheckIfScreenIsDeleted(CurrentScreen.id)))
+                if (CurrentScreen.id != 0 && (bALScreen.CheckIfScreenIsDeleted(CurrentScreen.id)))
                 {
                     MessageBox.Show("Screen cant be save to database because someone already delete it", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     CloseForm();
@@ -373,7 +383,7 @@ namespace TSDApp.Fomrs
             try
             {
                 BusinessAccessLayer.BALScreen.BALScreen bALScreen = new BusinessAccessLayer.BALScreen.BALScreen();
-                if ((bALScreen.CheckIfScreenIsDeleted(CurrentScreen.id)))
+                if ((CurrentScreen.id != 0 && bALScreen.CheckIfScreenIsDeleted(CurrentScreen.id)))
                 {
                     MessageBox.Show("Screen cant be save to database because someone already delete it", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     CloseForm();
@@ -405,6 +415,7 @@ namespace TSDApp.Fomrs
         {
             try
             {
+                userNotEdit = false;
                 CurrentScreen = null;
                 LstShowMessageButtons = null;
                 LstIssueTicketButtons = null;
@@ -455,14 +466,24 @@ namespace TSDApp.Fomrs
         {
             try
             {
-                LstButtons = new List<BusinessObjects.Models.Button>();
-                if ((LstShowMessageButtons == null || LstIssueTicketButtons == null) || (LstShowMessageButtons.Count == 0 && LstIssueTicketButtons.Count == 0))
+                while (userNotEdit)
                 {
-                    BusinessAccessLayer.BALButton.BALButton button = new BusinessAccessLayer.BALButton.BALButton();
-                    LstShowMessageButtons = button.SelectButtonsbyScreenId<BusinessObjects.Models.ShowMessageButton>(CurrentScreen.id, BusinessObjects.Models.btnType.ShowMessage);
-                    LstIssueTicketButtons = button.SelectButtonsbyScreenId<BusinessObjects.Models.IssueTicketButton>(CurrentScreen.id, BusinessObjects.Models.btnType.IssueTicket);
+                    if (InvokeRequired)
+                    {
+                        Invoke((MethodInvoker)delegate
+                    {
+                        LstButtons = new List<BusinessObjects.Models.Button>();
+                        if (CurrentScreen.id != 0)
+                        {
+                            BusinessAccessLayer.BALButton.BALButton button = new BusinessAccessLayer.BALButton.BALButton();
+                            LstShowMessageButtons = button.SelectButtonsbyScreenId<BusinessObjects.Models.ShowMessageButton>(CurrentScreen.id, BusinessObjects.Models.btnType.ShowMessage);
+                            LstIssueTicketButtons = button.SelectButtonsbyScreenId<BusinessObjects.Models.IssueTicketButton>(CurrentScreen.id, BusinessObjects.Models.btnType.IssueTicket);
+                        }
+                        RefreshGrid();
+                    });
+                        Thread.Sleep(10000);
+                    }
                 }
-                RefreshGrid();
             }
             catch (Exception ex)
             {
@@ -526,17 +547,6 @@ namespace TSDApp.Fomrs
             this.gvButtons.AllowUserToAddRows = false;
             this.gvButtons.AllowUserToResizeColumns = false;
             this.gvButtons.AllowUserToResizeRows = false;
-        }
-        private void RefreshButtons(object sender, EventArgs e)
-        {
-            try
-            {
-            }
-            catch (Exception ex)
-            {
-                Models.SharingMethods sharingMethods = new Models.SharingMethods();
-                sharingMethods.SaveExceptionToLogFile(ex);
-            }
         }
         #endregion
     }

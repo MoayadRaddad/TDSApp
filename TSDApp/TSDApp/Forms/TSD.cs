@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TSDApp.Fomrs;
@@ -20,6 +21,8 @@ namespace TSDApp
         #region Variables
         private int CheckDataBase = 0;
         private BusinessObjects.Models.Bank CurrentBank;
+        Thread RefreshThread;
+        private bool userNotEdit = true;
         #endregion
 
         #region constructors
@@ -94,13 +97,10 @@ namespace TSDApp
                                 MessageBox.Show("Please check your connection to databse", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                             }
                         }
-                        FillScreens();
                         BankNamePanel.Visible = false;
                         MainPanel.Visible = true;
-                        Timer timer1 = new Timer();
-                        timer1.Tick += new EventHandler(RefreshScreens);
-                        timer1.Interval = 10000;
-                        timer1.Start();
+                        RefreshThread = new Thread(delegate () { FillScreens(); });
+                        RefreshThread.Start();
                     }
                     else
                     {
@@ -180,6 +180,7 @@ namespace TSDApp
             try
             {
                 //Send current bank id to use it in add/edit screen form
+                userNotEdit = false;
                 AddEditScreen addEditScreen = new AddEditScreen(CurrentBank.id);
                 addEditScreen.FormClosed += new FormClosedEventHandler(AddEditScreen_Closed);
                 addEditScreen.CanelButtonEvent += CanelButtonEventFunc;
@@ -195,7 +196,7 @@ namespace TSDApp
         {
             try
             {
-                FillScreens();
+                userNotEdit = true;
             }
             catch (Exception ex)
             {
@@ -207,7 +208,7 @@ namespace TSDApp
         {
             try
             {
-                FillScreens();
+                userNotEdit = true;
             }
             catch (Exception ex)
             {
@@ -227,6 +228,7 @@ namespace TSDApp
                 {
                     if (gvScreens.SelectedRows.Count == 1)
                     {
+                        userNotEdit = false;
                         BusinessObjects.Models.Screen pScreen = new BusinessObjects.Models.Screen();
                         pScreen.id = (int)gvScreens.SelectedRows[0].Cells[0].Value;
                         pScreen.name = (string)gvScreens.SelectedRows[0].Cells[1].Value;
@@ -295,26 +297,36 @@ namespace TSDApp
         {
             try
             {
-                lblTitle.Text = "Main Form - " + CurrentBank.name;
-                lblGVTitle.Text = "Bank " + CurrentBank.name + " screens";
-                BusinessAccessLayer.BALScreen.BALScreen screen = new BusinessAccessLayer.BALScreen.BALScreen();
-                Models.SharingMethods sharingMethods = new Models.SharingMethods();
-                List<BusinessObjects.Models.Screen> screens = sharingMethods.GetIEnumrable(screen.SelectScreensByBankId(CurrentBank)).ToList();
-                if (screens != null)
+                while (userNotEdit)
                 {
-                    gvScreens.DataSource = screens;
-                    sharingMethods.ChangeColumnWidth(gvScreens, 2);
-                    this.gvScreens.Columns[0].Visible = false;
-                    this.gvScreens.Columns[3].Visible = false;
-                    this.gvScreens.AllowUserToAddRows = false;
-                    this.gvScreens.AllowUserToResizeColumns = false;
-                    this.gvScreens.AllowUserToResizeRows = false;
-                    this.gvScreens.ReadOnly = true;
-                    LoadToolTips();
-                }
-                else
-                {
-                    MessageBox.Show("Please check your connection to databse", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    if (InvokeRequired)
+                    {
+                        Invoke((MethodInvoker)delegate
+                    {
+                        lblTitle.Text = "Main Form - " + CurrentBank.name;
+                        lblGVTitle.Text = "Bank " + CurrentBank.name + " screens";
+                        BusinessAccessLayer.BALScreen.BALScreen screen = new BusinessAccessLayer.BALScreen.BALScreen();
+                        Models.SharingMethods sharingMethods = new Models.SharingMethods();
+                        List<BusinessObjects.Models.Screen> screens = sharingMethods.GetIEnumrable(screen.SelectScreensByBankId(CurrentBank)).ToList();
+                        if (screens != null)
+                        {
+                            gvScreens.DataSource = screens;
+                            sharingMethods.ChangeColumnWidth(gvScreens, 2);
+                            this.gvScreens.Columns[0].Visible = false;
+                            this.gvScreens.Columns[3].Visible = false;
+                            this.gvScreens.AllowUserToAddRows = false;
+                            this.gvScreens.AllowUserToResizeColumns = false;
+                            this.gvScreens.AllowUserToResizeRows = false;
+                            this.gvScreens.ReadOnly = true;
+                            LoadToolTips();
+                        }
+                        else
+                        {
+                            MessageBox.Show("Please check your connection to databse", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        }
+                    });
+                        Thread.Sleep(10000);
+                    }
                 }
             }
             catch (Exception ex)
@@ -343,10 +355,6 @@ namespace TSDApp
                 Models.SharingMethods sharingMethods = new Models.SharingMethods();
                 sharingMethods.SaveExceptionToLogFile(ex);
             }
-        }
-        private void RefreshScreens(object sender, EventArgs e)
-        {
-            FillScreens();
         }
         #endregion
     }
