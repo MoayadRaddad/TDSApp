@@ -95,6 +95,8 @@ namespace TSDApp
                             if (CurrentBank == null)
                             {
                                 MessageBox.Show("Please check your connection to databse", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                this.Dispose();
+                                System.Environment.Exit(1);
                             }
                         }
                         BankNamePanel.Visible = false;
@@ -105,6 +107,8 @@ namespace TSDApp
                     else
                     {
                         MessageBox.Show("Please check your connection to databse", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        this.Dispose();
+                        System.Environment.Exit(1);
                     }
                 }
                 else
@@ -323,6 +327,8 @@ namespace TSDApp
                         else
                         {
                             MessageBox.Show("Please check your connection to databse", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            this.Dispose();
+                            System.Environment.Exit(1);
                         }
                     });
                         Thread.Sleep(10000);

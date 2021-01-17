@@ -242,6 +242,8 @@ namespace TSDApp.Fomrs
                         else
                         {
                             MessageBox.Show("Please check your connection to databse", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            this.Dispose();
+                            System.Environment.Exit(1);
                         }
                     }
                     else if (dialogResult == DialogResult.No)
