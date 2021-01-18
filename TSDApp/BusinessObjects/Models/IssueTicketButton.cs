@@ -17,6 +17,7 @@ namespace BusinessObjects.Models
             type = "IssueTicket";
             updated = false;
             indexUpdated = -1;
+            isDeleted = false;
         }
         public IssueTicketButton(int pid, string penName, string parName, int pserviceId, int pscreenId, bool pupdated = false, int pindexUpdated = -1)
         {
@@ -28,6 +29,7 @@ namespace BusinessObjects.Models
             type = "IssueTicket";
             updated = pupdated;
             indexUpdated = pindexUpdated;
+            isDeleted = false;
         }
     }
 }

@@ -18,6 +18,7 @@ namespace BusinessObjects.Models
         public string type { get; set; }
         public bool updated { get; set; }
         public int indexUpdated { get; set; }
+        public bool isDeleted { get; set; }
         public Button(){}
         public Button(int pid, string penName, string parName, int pscreenId, string ptype)
         {

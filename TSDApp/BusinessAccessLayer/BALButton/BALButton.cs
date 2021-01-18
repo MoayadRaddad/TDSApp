@@ -22,20 +22,6 @@ namespace BusinessAccessLayer.BALButton
                 return null;
             }
         }
-        public int DeleteButtonWhere(IDictionary<int, string> pButtonsIds, string ConditionColumn)
-        {
-            try
-            {
-                DataAccessLayer.DALButton.DALButton button = new DataAccessLayer.DALButton.DALButton();
-                return button.DeleteButtonWhere(pButtonsIds, ConditionColumn);
-            }
-            catch (Exception ex)
-            {
-                BusinessCommon.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessCommon.ExceptionsWriter.ExceptionsWriter();
-                exceptionsWriter.SaveExceptionToLogFile(ex);
-                return 0;
-            }
-        }
         public int DeleteScreenAndButtonByScreenId(int pScreenId)
         {
             try

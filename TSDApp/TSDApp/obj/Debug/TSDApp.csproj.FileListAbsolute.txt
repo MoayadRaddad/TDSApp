@@ -34,3 +34,8 @@ C:\Users\Moayad\Documents\GitHub\TDSApp\TSDApp\TSDApp\bin\Debug\TSD.DataAccessLa
 C:\Users\Moayad\Documents\GitHub\TDSApp\TSDApp\TSDApp\obj\Debug\TSDApp.csproj.CopyComplete
 C:\Users\Moayad\Documents\GitHub\TDSApp\TSDApp\TSDApp\obj\Debug\TSDApp.exe
 C:\Users\Moayad\Documents\GitHub\TDSApp\TSDApp\TSDApp\obj\Debug\TSDApp.pdb
+C:\Users\Moayad\Documents\GitHub\TDSApp\TSDApp\TSDApp\bin\Debug\TSDApp.exe.manifest
+C:\Users\Moayad\Documents\GitHub\TDSApp\TSDApp\TSDApp\bin\Debug\TSDApp.application
+C:\Users\Moayad\Documents\GitHub\TDSApp\TSDApp\TSDApp\obj\Debug\TSDApp.exe.manifest
+C:\Users\Moayad\Documents\GitHub\TDSApp\TSDApp\TSDApp\obj\Debug\TSDApp.application
+C:\Users\Moayad\Documents\GitHub\TDSApp\TSDApp\TSDApp\bin\Debug\ConnectionString.txt

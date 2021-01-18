@@ -107,6 +107,7 @@ namespace BusinessAccessLayer.BALScreen
                     DataAccessLayer.DALScreen.DALScreen screenDAL = new DataAccessLayer.DALScreen.DALScreen();
                     BusinessObjects.Models.Screen screen = screenDAL.UpdateScreen(pScreen);
                     DataAccessLayer.DALButton.DALButton button = new DataAccessLayer.DALButton.DALButton();
+                    IDictionary<int, string> pButtonsDetailsIds = new Dictionary<int, string>();
                     foreach (BusinessObjects.Models.IssueTicketButton pbutton in LstIssueTicketButtons)
                     {
                         if (pbutton.id == 0)
@@ -118,7 +119,11 @@ namespace BusinessAccessLayer.BALScreen
                                 return null;
                             }
                         }
-                        else if (pbutton.updated == true)
+                        else if (pbutton.isDeleted)
+                        {
+                            pButtonsDetailsIds.Add(pbutton.id, BusinessObjects.Models.btnType.IssueTicket.ToString());
+                        }
+                        else if (pbutton.updated)
                         {
                             BusinessObjects.Models.IssueTicketButton btnUpdateCheck = button.UpdateIssueTicketButton(pbutton);
                             if (btnUpdateCheck == null)
@@ -138,6 +143,10 @@ namespace BusinessAccessLayer.BALScreen
                                 return null;
                             }
                         }
+                        else if (pbutton.isDeleted)
+                        {
+                            pButtonsDetailsIds.Add(pbutton.id, BusinessObjects.Models.btnType.ShowMessage.ToString());
+                        }
                         else if (pbutton.updated == true)
                         {
                             BusinessObjects.Models.ShowMessageButton btnUpdateCheck = button.UpdateShowMessageButton(pbutton);
@@ -146,6 +155,11 @@ namespace BusinessAccessLayer.BALScreen
                                 return null;
                             }
                         }
+                    }
+                    int DeleteCheck = button.DeleteButtonWhere(pButtonsDetailsIds, "id");
+                    if (DeleteCheck != 1)
+                    {
+                        return null;
                     }
                     scope.Complete();
                     return screen;

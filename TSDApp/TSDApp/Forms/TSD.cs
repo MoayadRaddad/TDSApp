@@ -22,7 +22,7 @@ namespace TSDApp
         private int CheckDataBase = 0;
         private BusinessObjects.Models.Bank CurrentBank;
         Thread RefreshThread;
-        private bool userNotEdit = true;
+        private bool DeleteRow = false;
         #endregion
 
         #region constructors
@@ -101,7 +101,7 @@ namespace TSDApp
                         }
                         BankNamePanel.Visible = false;
                         MainPanel.Visible = true;
-                        RefreshThread = new Thread(delegate () { FillScreens(); });
+                        RefreshThread = new Thread(delegate () { FillScreensSave(); });
                         RefreshThread.Start();
                     }
                     else
@@ -153,10 +153,10 @@ namespace TSDApp
                                 if (CheckDataBase == 0)
                                 {
                                     MessageBox.Show("Please check your connection to databse", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-
                                 }
                             }
                         }
+                        DeleteRow = true;
                         FillScreens();
                     }
                     else if (DeleteCheck == DialogResult.No)
@@ -184,7 +184,6 @@ namespace TSDApp
             try
             {
                 //Send current bank id to use it in add/edit screen form
-                userNotEdit = false;
                 AddEditScreen addEditScreen = new AddEditScreen(CurrentBank.id);
                 addEditScreen.FormClosed += new FormClosedEventHandler(AddEditScreen_Closed);
                 addEditScreen.CanelButtonEvent += CanelButtonEventFunc;
@@ -200,7 +199,7 @@ namespace TSDApp
         {
             try
             {
-                userNotEdit = true;
+                FillScreens();
             }
             catch (Exception ex)
             {
@@ -212,7 +211,7 @@ namespace TSDApp
         {
             try
             {
-                userNotEdit = true;
+                FillScreens();
             }
             catch (Exception ex)
             {
@@ -232,7 +231,6 @@ namespace TSDApp
                 {
                     if (gvScreens.SelectedRows.Count == 1)
                     {
-                        userNotEdit = false;
                         BusinessObjects.Models.Screen pScreen = new BusinessObjects.Models.Screen();
                         pScreen.id = (int)gvScreens.SelectedRows[0].Cells[0].Value;
                         pScreen.name = (string)gvScreens.SelectedRows[0].Cells[1].Value;
@@ -294,6 +292,20 @@ namespace TSDApp
         #endregion
 
         #region Methods
+        private void FillScreensSave()
+        {
+            while (true)
+            {
+                if (InvokeRequired)
+                {
+                    Invoke((MethodInvoker)delegate
+                {
+                    FillScreens();
+                });
+                }
+                Thread.Sleep(10000);
+            }
+        }
         /// <summary>
         /// Function to get screens for current bank, fill Title and rezise design
         /// </summary>
@@ -301,38 +313,32 @@ namespace TSDApp
         {
             try
             {
-                while (userNotEdit)
+                lblTitle.Text = "Main Form - " + CurrentBank.name;
+                lblGVTitle.Text = "Bank " + CurrentBank.name + " screens";
+                BusinessAccessLayer.BALScreen.BALScreen screen = new BusinessAccessLayer.BALScreen.BALScreen();
+                Models.SharingMethods sharingMethods = new Models.SharingMethods();
+                List<BusinessObjects.Models.Screen> screens = sharingMethods.GetIEnumrable(screen.SelectScreensByBankId(CurrentBank)).ToList();
+                if (screens != null)
                 {
-                    if (InvokeRequired)
+                    if (screens.Count() > 0 || DeleteRow == true)
                     {
-                        Invoke((MethodInvoker)delegate
-                    {
-                        lblTitle.Text = "Main Form - " + CurrentBank.name;
-                        lblGVTitle.Text = "Bank " + CurrentBank.name + " screens";
-                        BusinessAccessLayer.BALScreen.BALScreen screen = new BusinessAccessLayer.BALScreen.BALScreen();
-                        Models.SharingMethods sharingMethods = new Models.SharingMethods();
-                        List<BusinessObjects.Models.Screen> screens = sharingMethods.GetIEnumrable(screen.SelectScreensByBankId(CurrentBank)).ToList();
-                        if (screens != null)
-                        {
-                            gvScreens.DataSource = screens;
-                            sharingMethods.ChangeColumnWidth(gvScreens, 2);
-                            this.gvScreens.Columns[0].Visible = false;
-                            this.gvScreens.Columns[3].Visible = false;
-                            this.gvScreens.AllowUserToAddRows = false;
-                            this.gvScreens.AllowUserToResizeColumns = false;
-                            this.gvScreens.AllowUserToResizeRows = false;
-                            this.gvScreens.ReadOnly = true;
-                            LoadToolTips();
-                        }
-                        else
-                        {
-                            MessageBox.Show("Please check your connection to databse", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                            this.Dispose();
-                            System.Environment.Exit(1);
-                        }
-                    });
-                        Thread.Sleep(10000);
+                        DeleteRow = false;
+                        gvScreens.DataSource = screens;
+                        sharingMethods.ChangeColumnWidth(gvScreens, 2);
+                        this.gvScreens.Columns[0].Visible = false;
+                        this.gvScreens.Columns[3].Visible = false;
+                        this.gvScreens.AllowUserToAddRows = false;
+                        this.gvScreens.AllowUserToResizeColumns = false;
+                        this.gvScreens.AllowUserToResizeRows = false;
+                        this.gvScreens.ReadOnly = true;
+                        LoadToolTips();
                     }
+                }
+                else
+                {
+                    MessageBox.Show("Please check your connection to databse", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    this.Dispose();
+                    System.Environment.Exit(1);
                 }
             }
             catch (Exception ex)

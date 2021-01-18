@@ -27,10 +27,8 @@ namespace DataAccessLayer.DALBank
                 }
                 return pBank;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                BusinessCommon.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessCommon.ExceptionsWriter.ExceptionsWriter();
-                exceptionsWriter.SaveExceptionToLogFile(ex);
                 return null;
             }
         }
@@ -45,10 +43,8 @@ namespace DataAccessLayer.DALBank
                 pBank.id = Convert.ToInt32(dBHelper.ExecuteScalar(pquery, BankParams));
                 return pBank;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                BusinessCommon.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessCommon.ExceptionsWriter.ExceptionsWriter();
-                exceptionsWriter.SaveExceptionToLogFile(ex);
                 return null;
             }
         }

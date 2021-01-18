@@ -20,6 +20,7 @@ namespace BusinessObjects.Models
             type = "ShowMessage";
             updated = false;
             indexUpdated = -1;
+            isDeleted = false;
         }
         public ShowMessageButton(int pid, string penName, string parName, string pmessageAR, string pmessageEN, int pdcreenId, bool pupdated = false, int pindexUpdated = -1)
         {
@@ -32,6 +33,7 @@ namespace BusinessObjects.Models
             type = "ShowMessage";
             updated = pupdated;
             indexUpdated = pindexUpdated;
+            isDeleted = false;
         }
     }
 }

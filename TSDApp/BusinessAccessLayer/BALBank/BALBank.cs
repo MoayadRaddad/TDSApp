@@ -15,10 +15,8 @@ namespace BusinessAccessLayer.BALBank
                 DataAccessLayer.DALBank.DALBank DALBank = new DataAccessLayer.DALBank.DALBank();
                 return DALBank.CheckBankExist(pBank);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                BusinessCommon.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessCommon.ExceptionsWriter.ExceptionsWriter();
-                exceptionsWriter.SaveExceptionToLogFile(ex);
                 return null;
             }
         }
@@ -29,10 +27,8 @@ namespace BusinessAccessLayer.BALBank
                 DataAccessLayer.DALBank.DALBank DALbank = new DataAccessLayer.DALBank.DALBank();
                 return DALbank.InsertBank(pBank);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                BusinessCommon.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessCommon.ExceptionsWriter.ExceptionsWriter();
-                exceptionsWriter.SaveExceptionToLogFile(ex);
                 return null;
             }
         }

@@ -69,7 +69,8 @@ namespace TSDApp.Fomrs
                 LstIssueTicketButtons = new List<BusinessObjects.Models.IssueTicketButton>();
                 LstButtons = new List<BusinessObjects.Models.Button>();
                 FillScreens(CurrentScreen);
-                RefreshThread = new Thread(delegate () { FillButtons(); });
+                FillButtons();
+                RefreshThread = new Thread(delegate () { FillButtonsSave(); });
                 RefreshThread.Start();
             }
             catch (Exception ex)
@@ -208,47 +209,38 @@ namespace TSDApp.Fomrs
                     DialogResult dialogResult = MessageBox.Show(@"Are you sure you want to delete selected button\s ?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                     if (dialogResult == DialogResult.Yes)
                     {
-                        List<BusinessObjects.Models.Button> lstdelete = new List<BusinessObjects.Models.Button>();
-                        IDictionary<int, string> pButtonsDetailsIds = new Dictionary<int, string>();
                         foreach (DataGridViewRow buttonRow in gvButtons.SelectedRows)
                         {
                             var btnId = (int)buttonRow.Cells["id"].Value;
                             var btnType = (string)buttonRow.Cells["type"].Value;
-                            var btnENName = (string)buttonRow.Cells["enName"].Value;
-                            var btnARName = (string)buttonRow.Cells["arName"].Value;
-                            lstdelete.Add(new BusinessObjects.Models.Button(btnId,btnENName,btnARName,CurrentScreen.id,btnType));
-                            pButtonsDetailsIds.Add(btnId, btnType);
-                        }
-                        BusinessAccessLayer.BALButton.BALButton button = new BusinessAccessLayer.BALButton.BALButton();
-                        int CheckDelete = button.DeleteButtonWhere(pButtonsDetailsIds, "id");
-                        if (CheckDelete == 1)
-                        {
-                            foreach (var btn in lstdelete)
+                            if (btnType == BusinessObjects.Models.btnType.ShowMessage.ToString())
                             {
-                                if (btn.type == BusinessObjects.Models.btnType.ShowMessage.ToString())
+                                if (btnId == 0)
                                 {
-                                    LstShowMessageButtons.Remove((LstShowMessageButtons.Where(x => x.id == Convert.ToInt32(btn.id) && x.enName == btn.enName
-                                     && x.arName == btn.arName).FirstOrDefault()));
+                                    BusinessObjects.Models.Button btn = LstButtons[buttonRow.Index];
+                                    LstShowMessageButtons.Remove(LstShowMessageButtons.Where(x => x.id == btn.id &&
+                                    x.enName == btn.enName && x.arName == btn.arName).FirstOrDefault());
                                 }
                                 else
                                 {
-                                    LstIssueTicketButtons.Remove((LstIssueTicketButtons.Where(x => x.id == Convert.ToInt32(btn.id) && x.enName == btn.enName
-                                     && x.arName == btn.arName).FirstOrDefault()));
+                                    LstShowMessageButtons.Where(x => x.id == btnId).FirstOrDefault().isDeleted = true;
                                 }
                             }
-                            RefreshGrid();
-                            MessageBox.Show(@"Button\s have been deleted successfully", "Done", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            else
+                            {
+                                if (btnId == 0)
+                                {
+                                    BusinessObjects.Models.Button btn = LstButtons[buttonRow.Index];
+                                    LstIssueTicketButtons.Remove(LstIssueTicketButtons.Where(x => x.id == btn.id &&
+                                    x.enName == btn.enName && x.arName == btn.arName).FirstOrDefault());
+                                }
+                                else
+                                {
+                                    LstIssueTicketButtons.Where(x => x.id == btnId).FirstOrDefault().isDeleted = true;
+                                }
+                            }
                         }
-                        else
-                        {
-                            MessageBox.Show("Please check your connection to databse", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                            this.Dispose();
-                            System.Environment.Exit(1);
-                        }
-                    }
-                    else if (dialogResult == DialogResult.No)
-                    {
-                        MessageBox.Show(@"No button\s have been deleted", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        RefreshGrid();
                     }
                 }
                 else
@@ -461,6 +453,20 @@ namespace TSDApp.Fomrs
                 sharingMethods.SaveExceptionToLogFile(ex);
             }
         }
+        private void FillButtonsSave()
+        {
+            while (userNotEdit)
+            {
+                if (InvokeRequired)
+                {
+                    Invoke((MethodInvoker)delegate
+                    {
+                        FillButtons();
+                    });
+                }
+                Thread.Sleep(10000);
+            }
+        }
         /// <summary>
         /// Function to fill grid view with buttons for current screen
         /// </summary>
@@ -468,23 +474,13 @@ namespace TSDApp.Fomrs
         {
             try
             {
-                while (userNotEdit)
+                LstButtons = new List<BusinessObjects.Models.Button>();
+                if (CurrentScreen.id != 0)
                 {
-                    if (InvokeRequired)
-                    {
-                        Invoke((MethodInvoker)delegate
-                    {
-                        LstButtons = new List<BusinessObjects.Models.Button>();
-                        if (CurrentScreen.id != 0)
-                        {
-                            BusinessAccessLayer.BALButton.BALButton button = new BusinessAccessLayer.BALButton.BALButton();
-                            LstShowMessageButtons = button.SelectButtonsbyScreenId<BusinessObjects.Models.ShowMessageButton>(CurrentScreen.id, BusinessObjects.Models.btnType.ShowMessage);
-                            LstIssueTicketButtons = button.SelectButtonsbyScreenId<BusinessObjects.Models.IssueTicketButton>(CurrentScreen.id, BusinessObjects.Models.btnType.IssueTicket);
-                        }
-                        RefreshGrid();
-                    });
-                        Thread.Sleep(10000);
-                    }
+                    BusinessAccessLayer.BALButton.BALButton button = new BusinessAccessLayer.BALButton.BALButton();
+                    LstShowMessageButtons = button.SelectButtonsbyScreenId<BusinessObjects.Models.ShowMessageButton>(CurrentScreen.id, BusinessObjects.Models.btnType.ShowMessage);
+                    LstIssueTicketButtons = button.SelectButtonsbyScreenId<BusinessObjects.Models.IssueTicketButton>(CurrentScreen.id, BusinessObjects.Models.btnType.IssueTicket);
+                    RefreshGrid();
                 }
             }
             catch (Exception ex)
@@ -498,11 +494,17 @@ namespace TSDApp.Fomrs
             LstButtons.Clear();
             foreach (var item in LstShowMessageButtons)
             {
-                LstButtons.Add(new BusinessObjects.Models.Button(item.id, item.enName, item.arName, item.screenId, item.type));
+                if(!item.isDeleted)
+                {
+                    LstButtons.Add(new BusinessObjects.Models.Button(item.id, item.enName, item.arName, item.screenId, item.type));
+                }
             }
             foreach (var item in LstIssueTicketButtons)
             {
-                LstButtons.Add(new BusinessObjects.Models.Button(item.id, item.enName, item.arName, item.screenId, item.type));
+                if (!item.isDeleted)
+                {
+                    LstButtons.Add(new BusinessObjects.Models.Button(item.id, item.enName, item.arName, item.screenId, item.type));
+                }
             }
             if (LstButtons != null)
             {
@@ -546,6 +548,7 @@ namespace TSDApp.Fomrs
             this.gvButtons.Columns[3].Visible = false;
             this.gvButtons.Columns[5].Visible = false;
             this.gvButtons.Columns[6].Visible = false;
+            this.gvButtons.Columns[7].Visible = false;
             this.gvButtons.AllowUserToAddRows = false;
             this.gvButtons.AllowUserToResizeColumns = false;
             this.gvButtons.AllowUserToResizeRows = false;
