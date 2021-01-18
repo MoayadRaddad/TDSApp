@@ -19,10 +19,10 @@ namespace TSDApp.Models
         /// <summary>
         /// public method get exception,handle it and save it to log file with json type
         /// </summary>
-        public void SaveExceptionToLogFile(Exception ex)
+        public void saveExceptionToLogFile(Exception ex)
         {
             BusinessCommon.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessCommon.ExceptionsWriter.ExceptionsWriter();
-            exceptionsWriter.SaveExceptionToLogFile(ex);
+            exceptionsWriter.saveExceptionToLogFile(ex);
             MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
         /// <summary>
@@ -44,7 +44,7 @@ namespace TSDApp.Models
             catch (Exception ex)
             {
                 Models.SharingMethods sharingMethods = new Models.SharingMethods();
-                sharingMethods.SaveExceptionToLogFile(ex);
+                sharingMethods.saveExceptionToLogFile(ex);
             }
         }
         public IEnumerable<T> GetIEnumrable<T>(List<T> pList)

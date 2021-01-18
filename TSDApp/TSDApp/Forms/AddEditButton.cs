@@ -15,10 +15,10 @@ namespace TSDApp.Forms
     public partial class AddEditButton : Form
     {
         #region Variables
-        private BusinessObjects.Models.ShowMessageButton ShowMessageButton;
-        private BusinessObjects.Models.IssueTicketButton IssueTicketButton;
-        public event EventHandler<BusinessObjects.Models.ShowMessageButton> SaveShowMessageButton;
-        public event EventHandler<BusinessObjects.Models.IssueTicketButton> SaveIssueTicketButton;
+        private BusinessObjects.Models.ShowMessageButton showMessageButton;
+        private BusinessObjects.Models.IssueTicketButton issueTicketButton;
+        public event EventHandler<BusinessObjects.Models.ShowMessageButton> saveShowMessageButton;
+        public event EventHandler<BusinessObjects.Models.IssueTicketButton> saveIssueTicketButton;
         #endregion
 
         #region constructors
@@ -30,12 +30,12 @@ namespace TSDApp.Forms
             try
             {
                 InitializeComponent();
-                FillComboBox();
+                fillComboBox();
             }
             catch (Exception ex)
             {
                 Models.SharingMethods sharingMethods = new Models.SharingMethods();
-                sharingMethods.SaveExceptionToLogFile(ex);
+                sharingMethods.saveExceptionToLogFile(ex);
             }
         }
         /// <summary>
@@ -50,16 +50,16 @@ namespace TSDApp.Forms
             try
             {
                 InitializeComponent();
-                FillComboBox();
+                fillComboBox();
                 if (!(pShowMessageButton == null))
                 {
-                    ShowMessageButton = pShowMessageButton;
-                    FillShowMessageData();
+                    showMessageButton = pShowMessageButton;
+                    fillShowMessageData();
                 }
                 else
                 {
-                    IssueTicketButton = pIssueTicketButton;
-                    FillIssueTicketData();
+                    issueTicketButton = pIssueTicketButton;
+                    fillIssueTicketData();
                 }
                 lblTitle.Text = "Edit Button";
                 btnSave.Text = "Edit";
@@ -67,7 +67,7 @@ namespace TSDApp.Forms
             catch (Exception ex)
             {
                 Models.SharingMethods sharingMethods = new Models.SharingMethods();
-                sharingMethods.SaveExceptionToLogFile(ex);
+                sharingMethods.saveExceptionToLogFile(ex);
             }
         }
         #endregion
@@ -77,7 +77,7 @@ namespace TSDApp.Forms
         {
             try
             {
-                if (IssueTicketButton == null && ShowMessageButton == null)
+                if (issueTicketButton == null && showMessageButton == null)
                 {
                     rbIssueTicket.Checked = true;
                     ddlIssueTicket.SelectedIndex = 0;
@@ -86,7 +86,7 @@ namespace TSDApp.Forms
             catch (Exception ex)
             {
                 Models.SharingMethods sharingMethods = new Models.SharingMethods();
-                sharingMethods.SaveExceptionToLogFile(ex);
+                sharingMethods.saveExceptionToLogFile(ex);
             }
         }
         /// <summary>
@@ -110,7 +110,7 @@ namespace TSDApp.Forms
             catch (Exception ex)
             {
                 Models.SharingMethods sharingMethods = new Models.SharingMethods();
-                sharingMethods.SaveExceptionToLogFile(ex);
+                sharingMethods.saveExceptionToLogFile(ex);
             }
         }
         /// <summary>
@@ -134,7 +134,7 @@ namespace TSDApp.Forms
             catch (Exception ex)
             {
                 Models.SharingMethods sharingMethods = new Models.SharingMethods();
-                sharingMethods.SaveExceptionToLogFile(ex);
+                sharingMethods.saveExceptionToLogFile(ex);
             }
         }
         /// <summary>
@@ -144,14 +144,14 @@ namespace TSDApp.Forms
         {
             try
             {
-                ShowMessageButton = null;
-                IssueTicketButton = null;
+                showMessageButton = null;
+                issueTicketButton = null;
                 this.Dispose();
             }
             catch (Exception ex)
             {
                 Models.SharingMethods sharingMethods = new Models.SharingMethods();
-                sharingMethods.SaveExceptionToLogFile(ex);
+                sharingMethods.saveExceptionToLogFile(ex);
             }
         }
         /// <summary>
@@ -161,14 +161,14 @@ namespace TSDApp.Forms
         {
             try
             {
-                ShowMessageButton = null;
-                IssueTicketButton = null;
+                showMessageButton = null;
+                issueTicketButton = null;
                 this.Dispose();
             }
             catch (Exception ex)
             {
                 Models.SharingMethods sharingMethods = new Models.SharingMethods();
-                sharingMethods.SaveExceptionToLogFile(ex);
+                sharingMethods.saveExceptionToLogFile(ex);
             }
         }
         /// <summary>
@@ -188,21 +188,21 @@ namespace TSDApp.Forms
                         if (rbIssueTicket.Checked)
                         {
                             //Check if it is new button to insert or edit button to update
-                            if (IssueTicketButton == null)
+                            if (issueTicketButton == null)
                             {
-                                IssueTicketButton = new BusinessObjects.Models.IssueTicketButton(0, txtENName.Text, txtARName.Text, Convert.ToInt32(ddlIssueTicket.SelectedValue), 0);
-                                OnSaveIssueTicketButton(IssueTicketButton);
+                                issueTicketButton = new BusinessObjects.Models.IssueTicketButton(0, txtENName.Text, txtARName.Text, Convert.ToInt32(ddlIssueTicket.SelectedValue), 0);
+                                onSaveIssueTicketButton(issueTicketButton);
                             }
                             else
                             {
-                                IssueTicketButton = new BusinessObjects.Models.IssueTicketButton(IssueTicketButton.id, txtENName.Text, txtARName.Text, Convert.ToInt32(ddlIssueTicket.SelectedValue), IssueTicketButton.screenId, true, IssueTicketButton.indexUpdated);
+                                issueTicketButton = new BusinessObjects.Models.IssueTicketButton(issueTicketButton.id, txtENName.Text, txtARName.Text, Convert.ToInt32(ddlIssueTicket.SelectedValue), issueTicketButton.screenId, true, issueTicketButton.indexUpdated);
                                 BusinessAccessLayer.BALButton.BALButton bALButton = new BusinessAccessLayer.BALButton.BALButton();
-                                if (IssueTicketButton.id != 0 && bALButton.CheckIfButtonIsDeleted(IssueTicketButton.id,BusinessObjects.Models.btnType.IssueTicket))
+                                if (issueTicketButton.id != 0 && bALButton.checkIfButtonIsDeleted(issueTicketButton.id,BusinessObjects.Models.btnType.IssueTicket))
                                 {
-                                    IssueTicketButton.indexUpdated = -2;
+                                    issueTicketButton.indexUpdated = -2;
                                     MessageBox.Show("Button cant be save to database because someone already delete it", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                 }
-                                OnSaveIssueTicketButton(IssueTicketButton);
+                                onSaveIssueTicketButton(issueTicketButton);
                             }
                         }
                         else
@@ -214,21 +214,21 @@ namespace TSDApp.Forms
                                 if (txtMessageAR.Text != "")
                                 {
                                     //Check if it is new button to insert or edit button to update
-                                    if (ShowMessageButton == null)
+                                    if (showMessageButton == null)
                                     {
-                                        ShowMessageButton = new BusinessObjects.Models.ShowMessageButton(0, txtENName.Text, txtARName.Text, txtMessageAR.Text, txtMessageEN.Text, 0);
-                                        OnSaveShowMessageButton(ShowMessageButton);
+                                        showMessageButton = new BusinessObjects.Models.ShowMessageButton(0, txtENName.Text, txtARName.Text, txtMessageAR.Text, txtMessageEN.Text, 0);
+                                        onSaveShowMessageButton(showMessageButton);
                                     }
                                     else
                                     {
-                                        ShowMessageButton = new BusinessObjects.Models.ShowMessageButton(ShowMessageButton.id, txtENName.Text, txtARName.Text, txtMessageAR.Text, txtMessageEN.Text, ShowMessageButton.id, true, ShowMessageButton.indexUpdated);
+                                        showMessageButton = new BusinessObjects.Models.ShowMessageButton(showMessageButton.id, txtENName.Text, txtARName.Text, txtMessageAR.Text, txtMessageEN.Text, showMessageButton.id, true, showMessageButton.indexUpdated);
                                         BusinessAccessLayer.BALButton.BALButton bALButton = new BusinessAccessLayer.BALButton.BALButton();
-                                        if (ShowMessageButton.id != 0 && bALButton.CheckIfButtonIsDeleted(ShowMessageButton.id, BusinessObjects.Models.btnType.ShowMessage))
+                                        if (showMessageButton.id != 0 && bALButton.checkIfButtonIsDeleted(showMessageButton.id, BusinessObjects.Models.btnType.ShowMessage))
                                         {
-                                            ShowMessageButton.indexUpdated = -2;
+                                            showMessageButton.indexUpdated = -2;
                                             MessageBox.Show("Button cant be save to database because someone already delete it", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                         }
-                                        OnSaveShowMessageButton(ShowMessageButton);
+                                        onSaveShowMessageButton(showMessageButton);
                                     }
                                 }
                                 else
@@ -242,8 +242,8 @@ namespace TSDApp.Forms
                                 MessageBox.Show("Please fill EN Message", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                             }
                         }
-                        ShowMessageButton = null;
-                        IssueTicketButton = null;
+                        showMessageButton = null;
+                        issueTicketButton = null;
                         this.Dispose();
                     }
                     else
@@ -259,40 +259,40 @@ namespace TSDApp.Forms
             catch (Exception ex)
             {
                 Models.SharingMethods sharingMethods = new Models.SharingMethods();
-                sharingMethods.SaveExceptionToLogFile(ex);
+                sharingMethods.saveExceptionToLogFile(ex);
             }
         }
         #endregion
 
         #region Methods
-        private void OnSaveShowMessageButton(BusinessObjects.Models.ShowMessageButton showMessageButton)
+        private void onSaveShowMessageButton(BusinessObjects.Models.ShowMessageButton showMessageButton)
         {
-            var handler = SaveShowMessageButton;
-            if (SaveShowMessageButton != null)
+            var handler = saveShowMessageButton;
+            if (saveShowMessageButton != null)
             {
-                SaveShowMessageButton.Invoke(this, showMessageButton);
+                saveShowMessageButton.Invoke(this, showMessageButton);
             }
         }
-        private void OnSaveIssueTicketButton(BusinessObjects.Models.IssueTicketButton issueTicketButton)
+        private void onSaveIssueTicketButton(BusinessObjects.Models.IssueTicketButton issueTicketButton)
         {
-            var handler = SaveIssueTicketButton;
-            if (SaveIssueTicketButton != null)
+            var handler = saveIssueTicketButton;
+            if (saveIssueTicketButton != null)
             {
-                SaveIssueTicketButton.Invoke(this, issueTicketButton);
+                saveIssueTicketButton.Invoke(this, issueTicketButton);
             }
         }
         /// <summary>
         /// Function to fill Issue Ticket data for the current button
         /// </summary>
         /// <param name="pButtonId"></param>
-        private void FillShowMessageData()
+        private void fillShowMessageData()
         {
             try
             {
-                txtENName.Text = ShowMessageButton.enName;
-                txtARName.Text = ShowMessageButton.arName;
-                txtMessageEN.Text = ShowMessageButton.messageEN;
-                txtMessageAR.Text = ShowMessageButton.messageAR;
+                txtENName.Text = showMessageButton.enName;
+                txtARName.Text = showMessageButton.arName;
+                txtMessageEN.Text = showMessageButton.messageEN;
+                txtMessageAR.Text = showMessageButton.messageAR;
                 rbShowMessage.Checked = true;
                 lblIssueTicket.Visible = false;
                 ddlIssueTicket.Visible = false;
@@ -302,20 +302,20 @@ namespace TSDApp.Forms
             catch (Exception ex)
             {
                 Models.SharingMethods sharingMethods = new Models.SharingMethods();
-                sharingMethods.SaveExceptionToLogFile(ex);
+                sharingMethods.saveExceptionToLogFile(ex);
             }
         }
         /// <summary>
         /// Function to fill Show Message data for the current button
         /// </summary>
         /// <param name="pButtonId"></param>
-        private void FillIssueTicketData()
+        private void fillIssueTicketData()
         {
             try
             {
-                txtENName.Text = IssueTicketButton.enName;
-                txtARName.Text = IssueTicketButton.arName;
-                ddlIssueTicket.SelectedValue = IssueTicketButton.serviceId;
+                txtENName.Text = issueTicketButton.enName;
+                txtARName.Text = issueTicketButton.arName;
+                ddlIssueTicket.SelectedValue = issueTicketButton.serviceId;
                 rbIssueTicket.Checked = true;
                 lblMessageAR.Visible = false;
                 txtMessageAR.Visible = false;
@@ -326,19 +326,19 @@ namespace TSDApp.Forms
             catch (Exception ex)
             {
                 Models.SharingMethods sharingMethods = new Models.SharingMethods();
-                sharingMethods.SaveExceptionToLogFile(ex);
+                sharingMethods.saveExceptionToLogFile(ex);
             }
         }
 
-        private void FillComboBox()
+        private void fillComboBox()
         {
             ddlIssueTicket.DropDownStyle = ComboBoxStyle.DropDownList;
             ddlIssueTicket.Items.Clear();
             BusinessAccessLayer.BALService.BALService service = new BusinessAccessLayer.BALService.BALService();
-            List<BusinessObjects.Models.Service> ListIssueTicket = service.SelectIssueTicketType();
-            if (ListIssueTicket != null)
+            List<BusinessObjects.Models.Service> listIssueTicket = service.selectIssueTicketType();
+            if (listIssueTicket != null)
             {
-                ddlIssueTicket.DataSource = ListIssueTicket;
+                ddlIssueTicket.DataSource = listIssueTicket;
                 ddlIssueTicket.ValueMember = "id";
                 ddlIssueTicket.DisplayMember = "Name";
             }

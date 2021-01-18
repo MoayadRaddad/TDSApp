@@ -12,29 +12,29 @@ namespace DataAccessLayer.DALDBHelper
 {
     public class DALDBHelper
     {
-        public int ExecuteNonQuery(string query, List<SqlParameter> parametros)
+        public int executeNonQuery(string query, List<SqlParameter> parametros)
         {
             try
             {
-                return NonQuery(query, parametros);
+                return nonQuery(query, parametros);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                return -1;
             }
         }
-        public object ExecuteScalar(string query, List<SqlParameter> parametros)
+        public object executeScalar(string query, List<SqlParameter> parametros)
         {
             try
             {
-                return Scalar(query, parametros);
+                return scalar(query, parametros);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                return null;
             }
         }
-        public DataSet ExecuteAdapter( string commandText, List<SqlParameter> commandParameters)
+        public DataSet executeAdapter( string commandText, List<SqlParameter> commandParameters)
         {
             try
             {
@@ -51,13 +51,13 @@ namespace DataAccessLayer.DALDBHelper
                 adapter.Fill(dataSet);
                 return dataSet;
             }
-            catch(Exception ex)
+            catch(Exception)
             {
-                throw ex;
+                return null;
             }
         }
         #region Private Methods
-        private int NonQuery(string query, List<SqlParameter> parametros)
+        private int nonQuery(string query, List<SqlParameter> parametros)
         {
             try
             {
@@ -80,12 +80,12 @@ namespace DataAccessLayer.DALDBHelper
                 }
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                return -1;
             }
         }
-        private object Scalar(string query, List<SqlParameter> parametros)
+        private object scalar(string query, List<SqlParameter> parametros)
         {
             try
             {
@@ -108,9 +108,9 @@ namespace DataAccessLayer.DALDBHelper
                 }
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                return null;
             }
         }
         #endregion

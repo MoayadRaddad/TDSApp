@@ -8,15 +8,15 @@ namespace DataAccessLayer.DALBank
 {
     public class DALBank
     {
-        public BusinessObjects.Models.Bank CheckBankExist(BusinessObjects.Models.Bank pBank)
+        public BusinessObjects.Models.Bank checkBankExist(BusinessObjects.Models.Bank pBank)
         {
             try
             {
                 string pquery = "SELECT id,name FROM tblBanks WHERE name = @name";
-                List<SqlParameter> BankParams = new List<SqlParameter>();
-                BankParams.Add(new SqlParameter("@name", pBank.name));
+                List<SqlParameter> bankParams = new List<SqlParameter>();
+                bankParams.Add(new SqlParameter("@name", pBank.name));
                 DALDBHelper.DALDBHelper dBHelper = new DALDBHelper.DALDBHelper();
-                DataSet dataSet = dBHelper.ExecuteAdapter(pquery, BankParams);
+                DataSet dataSet = dBHelper.executeAdapter(pquery, bankParams);
                 if (dataSet != null && dataSet.Tables[0].Rows.Count > 0)
                 {
                     pBank.id = Convert.ToInt32(dataSet.Tables[0].Rows[0][0].ToString());
@@ -32,15 +32,15 @@ namespace DataAccessLayer.DALBank
                 return null;
             }
         }
-        public BusinessObjects.Models.Bank InsertBank(BusinessObjects.Models.Bank pBank)
+        public BusinessObjects.Models.Bank insertBank(BusinessObjects.Models.Bank pBank)
         {
             try
             {
                 string pquery = "insert into tblBanks OUTPUT INSERTED.IDENTITYCOL  values (@name)";
-                List<SqlParameter> BankParams = new List<SqlParameter>();
-                BankParams.Add(new SqlParameter("@name", pBank.name));
+                List<SqlParameter> bankParams = new List<SqlParameter>();
+                bankParams.Add(new SqlParameter("@name", pBank.name));
                 DALDBHelper.DALDBHelper dBHelper = new DALDBHelper.DALDBHelper();
-                pBank.id = Convert.ToInt32(dBHelper.ExecuteScalar(pquery, BankParams));
+                pBank.id = Convert.ToInt32(dBHelper.executeScalar(pquery, bankParams));
                 return pBank;
             }
             catch (Exception)

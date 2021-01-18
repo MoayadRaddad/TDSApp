@@ -11,7 +11,7 @@ namespace BusinessCommon.ExceptionsWriter
         /// <summary>
         /// public method get exception,handle it and save it to log file with json type
         /// </summary>
-        public void SaveExceptionToLogFile(Exception ex)
+        public void saveExceptionToLogFile(Exception ex)
         {
             string filePath = System.AppDomain.CurrentDomain.BaseDirectory + "Exceptions.json";
             using (StreamWriter writer = File.AppendText(filePath))

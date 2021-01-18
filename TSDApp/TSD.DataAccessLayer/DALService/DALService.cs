@@ -8,24 +8,22 @@ namespace DataAccessLayer.DALService
 {
     public class DALService
     {
-        public List<BusinessObjects.Models.Service> SelectIssueTicketType()
+        public List<BusinessObjects.Models.Service> selectIssueTicketType()
         {
             try
             {
                 List<BusinessObjects.Models.Service> lstIssueTicketTypes = new List<BusinessObjects.Models.Service>();
                 string pquery = "SELECT id,name FROM tblService";
                 DALDBHelper.DALDBHelper dBHelper = new DALDBHelper.DALDBHelper();
-                DataSet dataSet = dBHelper.ExecuteAdapter(pquery, new List<SqlParameter>());
+                DataSet dataSet = dBHelper.executeAdapter(pquery, new List<SqlParameter>());
                 foreach (DataRow dataRow in dataSet.Tables[0].Rows)
                 {
                     lstIssueTicketTypes.Add(new BusinessObjects.Models.Service(Convert.ToInt32(dataRow["id"]), dataRow["name"].ToString()));
                 }
                 return lstIssueTicketTypes;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                BusinessCommon.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessCommon.ExceptionsWriter.ExceptionsWriter();
-                exceptionsWriter.SaveExceptionToLogFile(ex);
                 return null;
             }
         }

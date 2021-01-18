@@ -12,15 +12,11 @@ namespace BusinessCommon.ConnectionString
         {
             try
             {
-                SetConnectionString();
+                setConnectionString();
             }
-            catch (Exception ex)
-            {
-                ExceptionsWriter.ExceptionsWriter exceptionsWriter = new ExceptionsWriter.ExceptionsWriter();
-                exceptionsWriter.SaveExceptionToLogFile(ex);
-            }
+            catch (Exception) { }
         }
-        public static void SetConnectionString()
+        public static void setConnectionString()
         {
             try
             {
@@ -40,21 +36,17 @@ namespace BusinessCommon.ConnectionString
                     connectionString = null;
                 }
             }
-            catch (Exception ex)
-            {
-                ExceptionsWriter.ExceptionsWriter exceptionsWriter = new ExceptionsWriter.ExceptionsWriter();
-                exceptionsWriter.SaveExceptionToLogFile(ex);
-            }
+            catch (Exception) { }
         }
-        public static int CheckConnectionStringStatus()
+        public static int checkConnectionStringStatus()
         {
             try
             {
-                if(connectionString == null)
+                if (connectionString == null)
                 {
                     return 0;
                 }
-                else if(connectionString == "")
+                else if (connectionString == "")
                 {
                     return 2;
                 }
@@ -65,8 +57,6 @@ namespace BusinessCommon.ConnectionString
             }
             catch (Exception ex)
             {
-                ExceptionsWriter.ExceptionsWriter exceptionsWriter = new ExceptionsWriter.ExceptionsWriter();
-                exceptionsWriter.SaveExceptionToLogFile(ex);
                 return 0;
             }
         }

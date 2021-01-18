@@ -8,21 +8,19 @@ namespace BusinessAccessLayer.BALButton
 {
     public class BALButton
     {
-        public List<T> SelectButtonsbyScreenId<T>(int pScreenId, BusinessObjects.Models.btnType btnType)
+        public List<T> selectButtonsbyScreenId<T>(int pScreenId, BusinessObjects.Models.btnType btnType)
         {
             try
             {
                 DataAccessLayer.DALButton.DALButton button = new DataAccessLayer.DALButton.DALButton();
-                return button.SelectButtonsbyScreenId<T>(pScreenId, btnType);
+                return button.selectButtonsbyScreenId<T>(pScreenId, btnType);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                BusinessCommon.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessCommon.ExceptionsWriter.ExceptionsWriter();
-                exceptionsWriter.SaveExceptionToLogFile(ex);
                 return null;
             }
         }
-        public int DeleteScreenAndButtonByScreenId(int pScreenId)
+        public int deleteScreenAndButtonByScreenId(int pScreenId)
         {
             try
             {
@@ -30,23 +28,28 @@ namespace BusinessAccessLayer.BALButton
                 {
                     DataAccessLayer.DALButton.DALButton button = new DataAccessLayer.DALButton.DALButton();
                     DataAccessLayer.DALScreen.DALScreen screen = new DataAccessLayer.DALScreen.DALScreen();
-                    button.DeleteAllButtonByScreenId(pScreenId);
-                    var check = screen.DeleteScreenById(pScreenId);
+                    button.deleteAllButtonByScreenId(pScreenId);
+                    var check = screen.deleteScreenById(pScreenId);
                     scope.Complete();
                     return check;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                BusinessCommon.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessCommon.ExceptionsWriter.ExceptionsWriter();
-                exceptionsWriter.SaveExceptionToLogFile(ex);
                 return 0;
             }
         }
-        public bool CheckIfButtonIsDeleted(int pButtonId, BusinessObjects.Models.btnType btnType)
+        public bool checkIfButtonIsDeleted(int pButtonId, BusinessObjects.Models.btnType btnType)
         {
-            DataAccessLayer.DALButton.DALButton dALButton = new DataAccessLayer.DALButton.DALButton();
-            return dALButton.CheckIfButtonIsDeleted(pButtonId, btnType);
+            try
+            {
+                DataAccessLayer.DALButton.DALButton dALButton = new DataAccessLayer.DALButton.DALButton();
+                return dALButton.checkIfButtonIsDeleted(pButtonId, btnType);
+            }
+            catch(Exception)
+            {
+                return false;
+            }
         }
     }
 }

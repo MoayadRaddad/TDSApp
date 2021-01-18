@@ -8,50 +8,46 @@ namespace BusinessAccessLayer.BALScreen
 {
     public class BALScreen
     {
-        public List<BusinessObjects.Models.Screen> SelectScreensByBankId(BusinessObjects.Models.Bank pBank)
+        public List<BusinessObjects.Models.Screen> selectScreensByBankId(BusinessObjects.Models.Bank pBank)
         {
             try
             {
                 DataAccessLayer.DALScreen.DALScreen screenDAL = new DataAccessLayer.DALScreen.DALScreen();
-                return screenDAL.SelectScreensByBankId(pBank);
+                return screenDAL.selectScreensByBankId(pBank);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                BusinessCommon.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessCommon.ExceptionsWriter.ExceptionsWriter();
-                exceptionsWriter.SaveExceptionToLogFile(ex);
                 return null;
             }
         }
-        public int DeleteScreenById(int pScreenId)
+        public int deleteScreenById(int pScreenId)
         {
             try
             {
                 DataAccessLayer.DALScreen.DALScreen screenDAL = new DataAccessLayer.DALScreen.DALScreen();
-                return screenDAL.DeleteScreenById(pScreenId);
+                return screenDAL.deleteScreenById(pScreenId);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                BusinessCommon.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessCommon.ExceptionsWriter.ExceptionsWriter();
-                exceptionsWriter.SaveExceptionToLogFile(ex);
                 return 0;
             }
         }
-        public BusinessObjects.Models.Screen InsertScreenAndEditButtons(BusinessObjects.Models.Screen pScreen
-            , List<BusinessObjects.Models.ShowMessageButton> LstShowMessageButtons, List<BusinessObjects.Models.IssueTicketButton> LstIssueTicketButtons)
+        public BusinessObjects.Models.Screen insertScreenAndEditButtons(BusinessObjects.Models.Screen pScreen
+            , List<BusinessObjects.Models.ShowMessageButton> lstShowMessageButtons, List<BusinessObjects.Models.IssueTicketButton> lstIssueTicketButtons)
         {
             try
             {
                 using (TransactionScope scope = new TransactionScope())
                 {
                     DataAccessLayer.DALScreen.DALScreen screenDAL = new DataAccessLayer.DALScreen.DALScreen();
-                    BusinessObjects.Models.Screen screen = screenDAL.InsertScreen(pScreen);
+                    BusinessObjects.Models.Screen screen = screenDAL.insertScreen(pScreen);
                     DataAccessLayer.DALButton.DALButton button = new DataAccessLayer.DALButton.DALButton();
-                    foreach (BusinessObjects.Models.IssueTicketButton pbutton in LstIssueTicketButtons)
+                    foreach (BusinessObjects.Models.IssueTicketButton pbutton in lstIssueTicketButtons)
                     {
                         if (pbutton.id == 0)
                         {
                             pbutton.screenId = screen.id;
-                            BusinessObjects.Models.IssueTicketButton btnInsertCheck = button.InsertIssueTicketButton(pbutton);
+                            BusinessObjects.Models.IssueTicketButton btnInsertCheck = button.insertIssueTicketButton(pbutton);
                             if (btnInsertCheck == null)
                             {
                                 return null;
@@ -59,19 +55,19 @@ namespace BusinessAccessLayer.BALScreen
                         }
                         else if (pbutton.updated == true)
                         {
-                            BusinessObjects.Models.IssueTicketButton btnUpdateCheck = button.UpdateIssueTicketButton(pbutton);
+                            BusinessObjects.Models.IssueTicketButton btnUpdateCheck = button.updateIssueTicketButton(pbutton);
                             if (btnUpdateCheck == null)
                             {
                                 return null;
                             }
                         }
                     }
-                    foreach (BusinessObjects.Models.ShowMessageButton pbutton in LstShowMessageButtons)
+                    foreach (BusinessObjects.Models.ShowMessageButton pbutton in lstShowMessageButtons)
                     {
                         if (pbutton.id == 0)
                         {
                             pbutton.screenId = screen.id;
-                            BusinessObjects.Models.ShowMessageButton btnInsertCheck = button.InsertShowMessageButton(pbutton);
+                            BusinessObjects.Models.ShowMessageButton btnInsertCheck = button.insertShowMessageButton(pbutton);
                             if (btnInsertCheck == null)
                             {
                                 return null;
@@ -79,7 +75,7 @@ namespace BusinessAccessLayer.BALScreen
                         }
                         else if (pbutton.updated == true)
                         {
-                            BusinessObjects.Models.ShowMessageButton btnUpdateCheck = button.UpdateShowMessageButton(pbutton);
+                            BusinessObjects.Models.ShowMessageButton btnUpdateCheck = button.updateShowMessageButton(pbutton);
                             if (btnUpdateCheck == null)
                             {
                                 return null;
@@ -90,30 +86,28 @@ namespace BusinessAccessLayer.BALScreen
                     return screen;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                BusinessCommon.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessCommon.ExceptionsWriter.ExceptionsWriter();
-                exceptionsWriter.SaveExceptionToLogFile(ex);
                 return null;
             }
         }
-        public BusinessObjects.Models.Screen UpdateScreenAndEditButtons(BusinessObjects.Models.Screen pScreen
-            , List<BusinessObjects.Models.ShowMessageButton> LstShowMessageButtons, List<BusinessObjects.Models.IssueTicketButton> LstIssueTicketButtons)
+        public BusinessObjects.Models.Screen updateScreenAndEditButtons(BusinessObjects.Models.Screen pScreen
+            , List<BusinessObjects.Models.ShowMessageButton> lstShowMessageButtons, List<BusinessObjects.Models.IssueTicketButton> lstIssueTicketButtons)
         {
             try
             {
                 using (TransactionScope scope = new TransactionScope())
                 {
                     DataAccessLayer.DALScreen.DALScreen screenDAL = new DataAccessLayer.DALScreen.DALScreen();
-                    BusinessObjects.Models.Screen screen = screenDAL.UpdateScreen(pScreen);
+                    BusinessObjects.Models.Screen screen = screenDAL.updateScreen(pScreen);
                     DataAccessLayer.DALButton.DALButton button = new DataAccessLayer.DALButton.DALButton();
                     IDictionary<int, string> pButtonsDetailsIds = new Dictionary<int, string>();
-                    foreach (BusinessObjects.Models.IssueTicketButton pbutton in LstIssueTicketButtons)
+                    foreach (BusinessObjects.Models.IssueTicketButton pbutton in lstIssueTicketButtons)
                     {
                         if (pbutton.id == 0)
                         {
                             pbutton.screenId = screen.id;
-                            BusinessObjects.Models.IssueTicketButton btnInsertCheck = button.InsertIssueTicketButton(pbutton);
+                            BusinessObjects.Models.IssueTicketButton btnInsertCheck = button.insertIssueTicketButton(pbutton);
                             if (btnInsertCheck == null)
                             {
                                 return null;
@@ -125,19 +119,19 @@ namespace BusinessAccessLayer.BALScreen
                         }
                         else if (pbutton.updated)
                         {
-                            BusinessObjects.Models.IssueTicketButton btnUpdateCheck = button.UpdateIssueTicketButton(pbutton);
+                            BusinessObjects.Models.IssueTicketButton btnUpdateCheck = button.updateIssueTicketButton(pbutton);
                             if (btnUpdateCheck == null)
                             {
                                 return null;
                             }
                         }
                     }
-                    foreach (BusinessObjects.Models.ShowMessageButton pbutton in LstShowMessageButtons)
+                    foreach (BusinessObjects.Models.ShowMessageButton pbutton in lstShowMessageButtons)
                     {
                         if (pbutton.id == 0)
                         {
                             pbutton.screenId = screen.id;
-                            BusinessObjects.Models.ShowMessageButton btnInsertCheck = button.InsertShowMessageButton(pbutton);
+                            BusinessObjects.Models.ShowMessageButton btnInsertCheck = button.insertShowMessageButton(pbutton);
                             if (btnInsertCheck == null)
                             {
                                 return null;
@@ -149,14 +143,14 @@ namespace BusinessAccessLayer.BALScreen
                         }
                         else if (pbutton.updated == true)
                         {
-                            BusinessObjects.Models.ShowMessageButton btnUpdateCheck = button.UpdateShowMessageButton(pbutton);
+                            BusinessObjects.Models.ShowMessageButton btnUpdateCheck = button.updateShowMessageButton(pbutton);
                             if (btnUpdateCheck == null)
                             {
                                 return null;
                             }
                         }
                     }
-                    int DeleteCheck = button.DeleteButtonWhere(pButtonsDetailsIds, "id");
+                    int DeleteCheck = button.deleteButtonWhere(pButtonsDetailsIds, "id");
                     if (DeleteCheck != 1)
                     {
                         return null;
@@ -165,22 +159,34 @@ namespace BusinessAccessLayer.BALScreen
                     return screen;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                BusinessCommon.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessCommon.ExceptionsWriter.ExceptionsWriter();
-                exceptionsWriter.SaveExceptionToLogFile(ex);
                 return null;
             }
         }
-        public bool CheckIfScreenIsBusy(int pScreenId)
+        public bool checkIfScreenIsBusy(int pScreenId)
         {
-            DataAccessLayer.DALScreen.DALScreen screenDAL = new DataAccessLayer.DALScreen.DALScreen();
-            return screenDAL.CheckIfScreenIsBusy(pScreenId);
+            try
+            {
+                DataAccessLayer.DALScreen.DALScreen screenDAL = new DataAccessLayer.DALScreen.DALScreen();
+                return screenDAL.checkIfScreenIsBusy(pScreenId);
+            }
+            catch(Exception)
+            {
+                return false;
+            }
         }
-        public bool CheckIfScreenIsDeleted(int pScreenId)
+        public bool checkIfScreenIsDeleted(int pScreenId)
         {
-            DataAccessLayer.DALScreen.DALScreen screenDAL = new DataAccessLayer.DALScreen.DALScreen();
-            return screenDAL.CheckIfScreenIsDeleted(pScreenId);
+            try
+            {
+                DataAccessLayer.DALScreen.DALScreen screenDAL = new DataAccessLayer.DALScreen.DALScreen();
+                return screenDAL.checkIfScreenIsDeleted(pScreenId);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
     }
 }

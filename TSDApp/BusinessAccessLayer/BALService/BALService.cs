@@ -6,17 +6,15 @@ namespace BusinessAccessLayer.BALService
 {
     public class BALService
     {
-        public List<BusinessObjects.Models.Service> SelectIssueTicketType()
+        public List<BusinessObjects.Models.Service> selectIssueTicketType()
         {
             try
             {
                 DataAccessLayer.DALService.DALService service = new DataAccessLayer.DALService.DALService();
-                return service.SelectIssueTicketType();
+                return service.selectIssueTicketType();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                BusinessCommon.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessCommon.ExceptionsWriter.ExceptionsWriter();
-                exceptionsWriter.SaveExceptionToLogFile(ex);
                 return null;
             }
         }
