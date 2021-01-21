@@ -4,8 +4,8 @@
 *.user
 *.userosscache
 *.sln.docstates
-bin
-obj
+BusinessAccessLayer/bin
+BusinessAccessLayer/obj
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
