@@ -337,10 +337,6 @@ namespace TSDApp.Fomrs
                 sharingMethods.saveExceptionToLogFile(ex);
             }
         }
-        private void txtName_TextChanged(object sender, EventArgs e)
-        {
-            userNotEdit = false;
-        }
         #endregion
 
         #region Methods
