@@ -186,6 +186,7 @@ namespace TSDApp
                 addEditScreen.FormClosed += new FormClosedEventHandler(addEditScreen_Closed);
                 addEditScreen.canelButtonEvent += canelButtonEventFunc;
                 addEditScreen.Show();
+                formDisabledAndEnabled(true);
             }
             catch (Exception ex)
             {
@@ -198,6 +199,7 @@ namespace TSDApp
             try
             {
                 fillScreens();
+                formDisabledAndEnabled(false);
             }
             catch (Exception ex)
             {
@@ -238,6 +240,7 @@ namespace TSDApp
                         addEditScreen.FormClosed += new FormClosedEventHandler(addEditScreen_Closed);
                         addEditScreen.canelButtonEvent += canelButtonEventFunc;
                         addEditScreen.Show();
+                        formDisabledAndEnabled(true);
                     }
                     else
                     {
@@ -364,6 +367,21 @@ namespace TSDApp
             {
                 Models.SharingMethods sharingMethods = new Models.SharingMethods();
                 sharingMethods.saveExceptionToLogFile(ex);
+            }
+        }
+        private void formDisabledAndEnabled(bool isEnabled)
+        {
+            if(isEnabled)
+            {
+                btnAddScreen.Enabled = false;
+                btnEditScreen.Enabled = false;
+                btnDeleteScreen.Enabled = false;
+            }
+            else
+            {
+                btnAddScreen.Enabled = true;
+                btnEditScreen.Enabled = true;
+                btnDeleteScreen.Enabled = true;
             }
         }
         #endregion

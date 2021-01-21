@@ -110,24 +110,25 @@ namespace TSDApp.Fomrs
                 {
                     if (ddlActive.SelectedIndex != 0)
                     {
-                        if (gvButtons.RowCount > 0)
+                        BusinessAccessLayer.BALScreen.BALScreen screen = new BusinessAccessLayer.BALScreen.BALScreen();
+                        if (currentScreen.id != 0 && (screen.checkIfScreenIsDeleted(currentScreen.id)))
                         {
-                            if (lstIssueTicketButtons.Where(x => x.DeletedFromAnotherUsers).Count() > 0 || lstShowMessageButtons.Where(x => x.DeletedFromAnotherUsers).Count() > 0)
+                            MessageBox.Show("Screen cant be save to database because someone already delete it", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            closeForm();
+                        }
+                        else
+                        {
+                            if (gvButtons.RowCount > 0)
                             {
-                                MessageBox.Show("Screen cant be save to database because someone already modified it", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                                fillButtons();
-                            }
-                            else
-                            {
-                                userNotEdit = false;
-                                BusinessAccessLayer.BALScreen.BALScreen screen = new BusinessAccessLayer.BALScreen.BALScreen();
-                                if (currentScreen.id != 0 && (screen.checkIfScreenIsDeleted(currentScreen.id)))
+                                if (lstIssueTicketButtons.Where(x => x.DeletedFromAnotherUsers).Count() > 0 || lstShowMessageButtons.Where(x => x.DeletedFromAnotherUsers).Count() > 0)
                                 {
-                                    MessageBox.Show("Screen cant be save to database because someone already delete it", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                                    closeForm();
+                                    MessageBox.Show("Screen cant be save to database because someone already modified it", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                    fillButtons();
+                                    userNotEdit = true;
                                 }
                                 else
                                 {
+                                    userNotEdit = false;
                                     if (currentScreen.id == 0)
                                     {
                                         currentScreen.name = txtName.Text;
@@ -154,10 +155,10 @@ namespace TSDApp.Fomrs
                                     }
                                 }
                             }
-                        }
-                        else
-                        {
-                            MessageBox.Show("Screen cannot be saved because there is no buttons added to this screen", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            else
+                            {
+                                MessageBox.Show("Screen cannot be saved because there is no buttons added to this screen", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            }
                         }
                     }
                     else
@@ -275,7 +276,9 @@ namespace TSDApp.Fomrs
                 AddEditButton addEditButton = new AddEditButton();
                 addEditButton.saveShowMessageButton += addShowMessageButton;
                 addEditButton.saveIssueTicketButton += addIssueTicketButton;
+                addEditButton.canelButtonEvent += canelButtonEventFunc;
                 addEditButton.Show();
+                formDisabledAndEnabled(true);
             }
             catch (Exception ex)
             {
@@ -294,6 +297,7 @@ namespace TSDApp.Fomrs
                 {
                     if (gvButtons.SelectedRows.Count == 1)
                     {
+                        formDisabledAndEnabled(true);
                         userNotEdit = false;
                         DataGridViewRow buttonRow = gvButtons.SelectedRows[0];
                         BusinessObjects.Models.Button btn = new BusinessObjects.Models.Button((int)buttonRow.Cells["id"].Value, (string)buttonRow.Cells["enName"].Value,
@@ -307,6 +311,7 @@ namespace TSDApp.Fomrs
                             //addEditButton.FormClosed += new FormClosedEventHandler(FunctionClosed);
                             addEditButton.saveShowMessageButton += addShowMessageButton;
                             addEditButton.saveIssueTicketButton += addIssueTicketButton;
+                            addEditButton.canelButtonEvent += canelButtonEventFunc;
                             addEditButton.Show();
                         }
                         else
@@ -318,6 +323,7 @@ namespace TSDApp.Fomrs
                             //addEditButton.FormClosed += new FormClosedEventHandler(FunctionClosed);
                             addEditButton.saveShowMessageButton += addShowMessageButton;
                             addEditButton.saveIssueTicketButton += addIssueTicketButton;
+                            addEditButton.canelButtonEvent += canelButtonEventFunc;
                             addEditButton.Show();
                         }
                     }
@@ -330,6 +336,18 @@ namespace TSDApp.Fomrs
                 {
                     MessageBox.Show("Please select item to edit", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
+            }
+            catch (Exception ex)
+            {
+                Models.SharingMethods sharingMethods = new Models.SharingMethods();
+                sharingMethods.saveExceptionToLogFile(ex);
+            }
+        }
+        private void canelButtonEventFunc(object sender, int issueTicketButton)
+        {
+            try
+            {
+                formDisabledAndEnabled(false);
             }
             catch (Exception ex)
             {
@@ -363,6 +381,7 @@ namespace TSDApp.Fomrs
                     lstShowMessageButtons[lstShowMessageButtons.FindIndex(x => x.indexUpdated == showMessageButton.indexUpdated)] = showMessageButton;
                 }
                 refreshGrid();
+                formDisabledAndEnabled(false);
             }
             catch (Exception ex)
             {
@@ -383,6 +402,7 @@ namespace TSDApp.Fomrs
                     lstIssueTicketButtons[lstIssueTicketButtons.FindIndex(x => x.indexUpdated == issueTicketButton.indexUpdated)] = issueTicketButton;
                 }
                 refreshGrid();
+                formDisabledAndEnabled(false);
             }
             catch (Exception ex)
             {
@@ -541,6 +561,21 @@ namespace TSDApp.Fomrs
             if (lstButtons.Count() > 0)
             {
                 gvButtons.Rows[0].Selected = true;
+            }
+        }
+        private void formDisabledAndEnabled(bool isEnabled)
+        {
+            if (isEnabled)
+            {
+                btnAddButton.Enabled = false;
+                btnEditButton.Enabled = false;
+                btnDeleteButton.Enabled = false;
+            }
+            else
+            {
+                btnAddButton.Enabled = true;
+                btnEditButton.Enabled = true;
+                btnDeleteButton.Enabled = true;
             }
         }
         #endregion

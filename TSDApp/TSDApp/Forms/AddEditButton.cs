@@ -19,6 +19,7 @@ namespace TSDApp.Forms
         private BusinessObjects.Models.IssueTicketButton issueTicketButton;
         public event EventHandler<BusinessObjects.Models.ShowMessageButton> saveShowMessageButton;
         public event EventHandler<BusinessObjects.Models.IssueTicketButton> saveIssueTicketButton;
+        public event EventHandler<int> canelButtonEvent;
         #endregion
 
         #region constructors
@@ -147,6 +148,7 @@ namespace TSDApp.Forms
                 showMessageButton = null;
                 issueTicketButton = null;
                 this.Dispose();
+                onCancelButton(1);
             }
             catch (Exception ex)
             {
@@ -164,6 +166,7 @@ namespace TSDApp.Forms
                 showMessageButton = null;
                 issueTicketButton = null;
                 this.Dispose();
+                onCancelButton(1);
             }
             catch (Exception ex)
             {
@@ -263,6 +266,14 @@ namespace TSDApp.Forms
         #endregion
 
         #region Methods
+        private void onCancelButton(int enable)
+        {
+            var handler = canelButtonEvent;
+            if (canelButtonEvent != null)
+            {
+                canelButtonEvent.Invoke(this, enable);
+            }
+        }
         private void onSaveShowMessageButton(BusinessObjects.Models.ShowMessageButton showMessageButton)
         {
             var handler = saveShowMessageButton;
