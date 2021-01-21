@@ -1,1 +1,0 @@
-Data Source=MOAYAD;Initial Catalog=TSDApp;User ID=sa;Password=P@ssw0rd;
