@@ -552,6 +552,10 @@ namespace TSDApp.Fomrs
             this.gvButtons.AllowUserToAddRows = false;
             this.gvButtons.AllowUserToResizeColumns = false;
             this.gvButtons.AllowUserToResizeRows = false;
+            if (lstButtons.Count() > 0)
+            {
+                gvButtons.Rows[0].Selected = true;
+            }
         }
         #endregion
     }

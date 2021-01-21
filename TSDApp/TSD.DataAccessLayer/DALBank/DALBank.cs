@@ -17,13 +17,20 @@ namespace DataAccessLayer.DALBank
                 bankParams.Add(new SqlParameter("@name", pBank.name));
                 DALDBHelper.DALDBHelper dBHelper = new DALDBHelper.DALDBHelper();
                 DataSet dataSet = dBHelper.executeAdapter(pquery, bankParams);
-                if (dataSet != null && dataSet.Tables[0].Rows.Count > 0)
+                if (dataSet != null)
                 {
-                    pBank.id = Convert.ToInt32(dataSet.Tables[0].Rows[0][0].ToString());
+                    if(dataSet.Tables[0].Rows.Count > 0)
+                    {
+                        pBank.id = Convert.ToInt32(dataSet.Tables[0].Rows[0][0].ToString());
+                    }
+                    else
+                    {
+                        pBank.id = 0;
+                    }
                 }
                 else
                 {
-                    pBank.id = 0;
+                    return null;
                 }
                 return pBank;
             }

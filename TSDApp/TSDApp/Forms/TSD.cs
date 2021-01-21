@@ -320,18 +320,19 @@ namespace TSDApp
                 List<BusinessObjects.Models.Screen> screens = sharingMethods.GetIEnumrable(screen.selectScreensByBankId(currentBank)).ToList();
                 if (screens != null)
                 {
-                    if (screens.Count() > 0 || deleteRow == true)
+                    deleteRow = false;
+                    gvScreens.DataSource = screens;
+                    sharingMethods.ChangeColumnWidth(gvScreens, 2);
+                    this.gvScreens.Columns[0].Visible = false;
+                    this.gvScreens.Columns[3].Visible = false;
+                    this.gvScreens.AllowUserToAddRows = false;
+                    this.gvScreens.AllowUserToResizeColumns = false;
+                    this.gvScreens.AllowUserToResizeRows = false;
+                    this.gvScreens.ReadOnly = true;
+                    loadToolTips();
+                    if (screens.Count() > 0)
                     {
-                        deleteRow = false;
-                        gvScreens.DataSource = screens;
-                        sharingMethods.ChangeColumnWidth(gvScreens, 2);
-                        this.gvScreens.Columns[0].Visible = false;
-                        this.gvScreens.Columns[3].Visible = false;
-                        this.gvScreens.AllowUserToAddRows = false;
-                        this.gvScreens.AllowUserToResizeColumns = false;
-                        this.gvScreens.AllowUserToResizeRows = false;
-                        this.gvScreens.ReadOnly = true;
-                        loadToolTips();
+                        gvScreens.Rows[0].Selected = true;
                     }
                 }
                 else
