@@ -4,9 +4,11 @@
 *.user
 *.userosscache
 *.sln.docstates
+TSDApp/obj
 BusinessAccessLayer/obj
 BusinessObjects/obj
 TSD.DataAccessLayer/obj
+.vs
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
