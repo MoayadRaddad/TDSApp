@@ -22,7 +22,6 @@ namespace TSDApp
         private int checkDataBase = 0;
         private BusinessObjects.Models.Bank currentBank;
         Thread refreshThread;
-        private bool deleteRow = false;
         #endregion
 
         #region constructors
@@ -156,7 +155,6 @@ namespace TSDApp
                                 }
                             }
                         }
-                        deleteRow = true;
                         fillScreens();
                     }
                     else if (deleteCheck == DialogResult.No)
@@ -320,7 +318,6 @@ namespace TSDApp
                 List<BusinessObjects.Models.Screen> screens = sharingMethods.GetIEnumrable(screen.selectScreensByBankId(currentBank)).ToList();
                 if (screens != null)
                 {
-                    deleteRow = false;
                     gvScreens.DataSource = screens;
                     sharingMethods.ChangeColumnWidth(gvScreens, 2);
                     this.gvScreens.Columns[0].Visible = false;
