@@ -87,6 +87,7 @@ namespace TSDApp.Fomrs
             this.txtName.Name = "txtName";
             this.txtName.Size = new System.Drawing.Size(191, 23);
             this.txtName.TabIndex = 3;
+            this.txtName.TextChanged += new System.EventHandler(this.txtName_TextChanged);
             // 
             // ddlActive
             // 

@@ -199,8 +199,7 @@ namespace TSDApp.Forms
                                 BusinessAccessLayer.BALButton.BALButton bALButton = new BusinessAccessLayer.BALButton.BALButton();
                                 if (issueTicketButton.id != 0 && bALButton.checkIfButtonIsDeleted(issueTicketButton.id,BusinessObjects.Models.btnType.IssueTicket))
                                 {
-                                    issueTicketButton.indexUpdated = -2;
-                                    MessageBox.Show("Button cant be save to database because someone already delete it", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                    issueTicketButton.DeletedFromAnotherUsers = true;
                                 }
                                 onSaveIssueTicketButton(issueTicketButton);
                             }
@@ -225,8 +224,7 @@ namespace TSDApp.Forms
                                         BusinessAccessLayer.BALButton.BALButton bALButton = new BusinessAccessLayer.BALButton.BALButton();
                                         if (showMessageButton.id != 0 && bALButton.checkIfButtonIsDeleted(showMessageButton.id, BusinessObjects.Models.btnType.ShowMessage))
                                         {
-                                            showMessageButton.indexUpdated = -2;
-                                            MessageBox.Show("Button cant be save to database because someone already delete it", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                            showMessageButton.DeletedFromAnotherUsers = true;
                                         }
                                         onSaveShowMessageButton(showMessageButton);
                                     }

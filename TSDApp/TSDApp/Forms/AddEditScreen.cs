@@ -24,7 +24,7 @@ namespace TSDApp.Fomrs
         public IEnumerable<BusinessObjects.Models.Button> iEnumrablelstButtons;
         public event EventHandler<int> canelButtonEvent;
         Thread refreshThread;
-        private bool userNotEdit = true;
+        private bool userNotEdit = false;
         #endregion
 
         #region constructors
@@ -70,6 +70,7 @@ namespace TSDApp.Fomrs
                 lstButtons = new List<BusinessObjects.Models.Button>();
                 fillScreens(currentScreen);
                 fillButtons();
+                userNotEdit = true;
                 refreshThread = new Thread(delegate () { fillButtonsSave(); });
                 refreshThread.Start();
             }
@@ -111,38 +112,46 @@ namespace TSDApp.Fomrs
                     {
                         if (gvButtons.RowCount > 0)
                         {
-                            userNotEdit = false;
-                            BusinessAccessLayer.BALScreen.BALScreen screen = new BusinessAccessLayer.BALScreen.BALScreen();
-                            if (currentScreen.id != 0 && (screen.checkIfScreenIsDeleted(currentScreen.id)))
+                            if (lstIssueTicketButtons.Where(x => x.DeletedFromAnotherUsers).Count() > 0 || lstShowMessageButtons.Where(x => x.DeletedFromAnotherUsers).Count() > 0)
                             {
-                                MessageBox.Show("Screen cant be save to database because someone already delete it", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                                closeForm();
+                                MessageBox.Show("Screen cant be save to database because someone already modified it", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                fillButtons();
                             }
                             else
                             {
-                                if (currentScreen.id == 0)
+                                userNotEdit = false;
+                                BusinessAccessLayer.BALScreen.BALScreen screen = new BusinessAccessLayer.BALScreen.BALScreen();
+                                if (currentScreen.id != 0 && (screen.checkIfScreenIsDeleted(currentScreen.id)))
                                 {
-                                    currentScreen.name = txtName.Text;
-                                    currentScreen.isActive = Convert.ToBoolean(ddlActive.SelectedItem);
-                                    currentScreen.bankId = BankId;
-                                    currentScreen = screen.insertScreenAndEditButtons(currentScreen, lstShowMessageButtons, lstIssueTicketButtons);
-                                    if (currentScreen == null)
-                                    {
-                                        MessageBox.Show("Screen and button not save to database, please check your connection", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                                    }
+                                    MessageBox.Show("Screen cant be save to database because someone already delete it", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                     closeForm();
                                 }
                                 else
                                 {
-                                    currentScreen.name = txtName.Text;
-                                    currentScreen.isActive = Convert.ToBoolean(ddlActive.SelectedItem);
-                                    currentScreen = screen.updateScreenAndEditButtons(currentScreen, lstShowMessageButtons, lstIssueTicketButtons);
-                                    if (currentScreen == null)
+                                    if (currentScreen.id == 0)
                                     {
-                                        MessageBox.Show("Screen and button not save to database, please check your connection", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                        currentScreen.name = txtName.Text;
+                                        currentScreen.isActive = Convert.ToBoolean(ddlActive.SelectedItem);
+                                        currentScreen.bankId = BankId;
+                                        currentScreen = screen.insertScreenAndEditButtons(currentScreen, lstShowMessageButtons, lstIssueTicketButtons);
+                                        if (currentScreen == null)
+                                        {
+                                            MessageBox.Show("Screen and button not save to database, please check your connection", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                        }
+                                        closeForm();
                                     }
-                                    lblGVTitle.Text = currentScreen.name;
-                                    closeForm();
+                                    else
+                                    {
+                                        currentScreen.name = txtName.Text;
+                                        currentScreen.isActive = Convert.ToBoolean(ddlActive.SelectedItem);
+                                        currentScreen = screen.updateScreenAndEditButtons(currentScreen, lstShowMessageButtons, lstIssueTicketButtons);
+                                        if (currentScreen == null)
+                                        {
+                                            MessageBox.Show("Screen and button not save to database, please check your connection", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                        }
+                                        lblGVTitle.Text = currentScreen.name;
+                                        closeForm();
+                                    }
                                 }
                             }
                         }
@@ -206,6 +215,7 @@ namespace TSDApp.Fomrs
             {
                 if (gvButtons.SelectedRows.Count > 0)
                 {
+                    userNotEdit = false;
                     DialogResult dialogResult = MessageBox.Show(@"Are you sure you want to delete selected button\s ?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                     if (dialogResult == DialogResult.Yes)
                     {
@@ -327,6 +337,10 @@ namespace TSDApp.Fomrs
                 sharingMethods.saveExceptionToLogFile(ex);
             }
         }
+        private void txtName_TextChanged(object sender, EventArgs e)
+        {
+            userNotEdit = false;
+        }
         #endregion
 
         #region Methods
@@ -344,27 +358,15 @@ namespace TSDApp.Fomrs
             try
             {
                 BusinessAccessLayer.BALScreen.BALScreen bALScreen = new BusinessAccessLayer.BALScreen.BALScreen();
-                if (currentScreen.id != 0 && (bALScreen.checkIfScreenIsDeleted(currentScreen.id)))
+                if (showMessageButton.indexUpdated == -1)
                 {
-                    MessageBox.Show("Screen cant be save to database because someone already delete it", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    closeForm();
+                    lstShowMessageButtons.Add(showMessageButton);
                 }
                 else
                 {
-                    if (showMessageButton.indexUpdated == -1)
-                    {
-                        lstShowMessageButtons.Add(showMessageButton);
-                    }
-                    else if (showMessageButton.indexUpdated == -2)
-                    {
-                        lstShowMessageButtons.Remove(lstShowMessageButtons.Where(x => x.id == showMessageButton.id).FirstOrDefault());
-                    }
-                    else
-                    {
-                        lstShowMessageButtons[lstShowMessageButtons.FindIndex(x => x.indexUpdated == showMessageButton.indexUpdated)] = showMessageButton;
-                    }
-                    refreshGrid();
+                    lstShowMessageButtons[lstShowMessageButtons.FindIndex(x => x.indexUpdated == showMessageButton.indexUpdated)] = showMessageButton;
                 }
+                refreshGrid();
             }
             catch (Exception ex)
             {
@@ -376,28 +378,15 @@ namespace TSDApp.Fomrs
         {
             try
             {
-                BusinessAccessLayer.BALScreen.BALScreen bALScreen = new BusinessAccessLayer.BALScreen.BALScreen();
-                if ((currentScreen.id != 0 && bALScreen.checkIfScreenIsDeleted(currentScreen.id)))
+                if (issueTicketButton.indexUpdated == -1)
                 {
-                    MessageBox.Show("Screen cant be save to database because someone already delete it", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    closeForm();
+                    lstIssueTicketButtons.Add(issueTicketButton);
                 }
                 else
                 {
-                    if (issueTicketButton.indexUpdated == -1)
-                    {
-                        lstIssueTicketButtons.Add(issueTicketButton);
-                    }
-                    else if (issueTicketButton.indexUpdated == -2)
-                    {
-                        lstIssueTicketButtons.Remove(lstIssueTicketButtons.Where(x => x.id == issueTicketButton.id).FirstOrDefault());
-                    }
-                    else
-                    {
-                        lstIssueTicketButtons[lstIssueTicketButtons.FindIndex(x => x.indexUpdated == issueTicketButton.indexUpdated)] = issueTicketButton;
-                    }
-                    refreshGrid();
+                    lstIssueTicketButtons[lstIssueTicketButtons.FindIndex(x => x.indexUpdated == issueTicketButton.indexUpdated)] = issueTicketButton;
                 }
+                refreshGrid();
             }
             catch (Exception ex)
             {
@@ -494,7 +483,7 @@ namespace TSDApp.Fomrs
             lstButtons.Clear();
             foreach (var item in lstShowMessageButtons)
             {
-                if(!item.isDeleted)
+                if (!item.isDeleted)
                 {
                     lstButtons.Add(new BusinessObjects.Models.Button(item.id, item.enName, item.arName, item.screenId, item.type));
                 }
@@ -549,6 +538,7 @@ namespace TSDApp.Fomrs
             this.gvButtons.Columns[5].Visible = false;
             this.gvButtons.Columns[6].Visible = false;
             this.gvButtons.Columns[7].Visible = false;
+            this.gvButtons.Columns[8].Visible = false;
             this.gvButtons.AllowUserToAddRows = false;
             this.gvButtons.AllowUserToResizeColumns = false;
             this.gvButtons.AllowUserToResizeRows = false;
@@ -558,5 +548,6 @@ namespace TSDApp.Fomrs
             }
         }
         #endregion
+
     }
 }
