@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using System.Windows.Forms;
 
 namespace BusinessCommon.ExceptionsWriter
 {
@@ -35,7 +34,7 @@ namespace BusinessCommon.ExceptionsWriter
             catch (Exception exception)
             {
                 saveExceptionToLogFile(exception);
-                throw;
+                throw exception;
             }
         }
     }

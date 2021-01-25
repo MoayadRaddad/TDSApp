@@ -1,1 +1,1 @@
-Data Source=localhost;Initial Catalog=TSDApp;User ID=sa;Password=P@ssw0rd;
+Data Source=ServerAddress;Initial Catalog=TSDApp;Integrated Security=SSPI;User ID=Username;Password=Password;
