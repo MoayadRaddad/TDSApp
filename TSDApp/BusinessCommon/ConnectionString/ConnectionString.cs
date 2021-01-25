@@ -14,7 +14,10 @@ namespace BusinessCommon.ConnectionString
             {
                 setConnectionString();
             }
-            catch (Exception) { }
+            catch (Exception ex)
+            {
+                ExceptionsWriter.ExceptionsWriter.saveExceptionToLogFile(ex);
+            }
         }
         public static void setConnectionString()
         {
@@ -36,7 +39,10 @@ namespace BusinessCommon.ConnectionString
                     connectionString = null;
                 }
             }
-            catch (Exception) { }
+            catch (Exception ex)
+            {
+                ExceptionsWriter.ExceptionsWriter.saveExceptionToLogFile(ex);
+            }
         }
         public static int checkConnectionStringStatus()
         {
@@ -57,6 +63,7 @@ namespace BusinessCommon.ConnectionString
             }
             catch (Exception ex)
             {
+                ExceptionsWriter.ExceptionsWriter.saveExceptionToLogFile(ex);
                 return 0;
             }
         }

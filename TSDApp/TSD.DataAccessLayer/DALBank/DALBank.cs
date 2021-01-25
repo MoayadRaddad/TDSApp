@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BusinessCommon.ExceptionsWriter;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -34,8 +35,9 @@ namespace DataAccessLayer.DALBank
                 }
                 return pBank;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                ExceptionsWriter.saveExceptionToLogFile(ex);
                 return null;
             }
         }
@@ -50,8 +52,9 @@ namespace DataAccessLayer.DALBank
                 pBank.id = Convert.ToInt32(dBHelper.executeScalar(pquery, bankParams));
                 return pBank;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                ExceptionsWriter.saveExceptionToLogFile(ex);
                 return null;
             }
         }

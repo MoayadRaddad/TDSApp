@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BusinessCommon.ExceptionsWriter;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -13,8 +14,9 @@ namespace BusinessAccessLayer.BALService
                 DataAccessLayer.DALService.DALService service = new DataAccessLayer.DALService.DALService();
                 return service.selectIssueTicketType();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                ExceptionsWriter.saveExceptionToLogFile(ex);
                 return null;
             }
         }

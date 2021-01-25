@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BusinessCommon.ExceptionsWriter;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
@@ -15,8 +16,9 @@ namespace BusinessAccessLayer.BALBank
                 DataAccessLayer.DALBank.DALBank dALBank = new DataAccessLayer.DALBank.DALBank();
                 return dALBank.checkBankExist(pBank);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                ExceptionsWriter.saveExceptionToLogFile(ex);
                 return null;
             }
         }
@@ -27,8 +29,9 @@ namespace BusinessAccessLayer.BALBank
                 DataAccessLayer.DALBank.DALBank dALbank = new DataAccessLayer.DALBank.DALBank();
                 return dALbank.insertBank(pBank);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                ExceptionsWriter.saveExceptionToLogFile(ex);
                 return null;
             }
         }

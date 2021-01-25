@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BusinessCommon.ExceptionsWriter;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -9,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TSDApp.Fomrs;
+using TSDApp.Models;
 
 namespace TSDApp.Forms
 {
@@ -35,8 +37,8 @@ namespace TSDApp.Forms
             }
             catch (Exception ex)
             {
-                Models.SharingMethods sharingMethods = new Models.SharingMethods();
-                sharingMethods.saveExceptionToLogFile(ex);
+                
+                SharingMethods.saveExceptionToLogFile(ex);
             }
         }
         /// <summary>
@@ -67,8 +69,8 @@ namespace TSDApp.Forms
             }
             catch (Exception ex)
             {
-                Models.SharingMethods sharingMethods = new Models.SharingMethods();
-                sharingMethods.saveExceptionToLogFile(ex);
+                
+                SharingMethods.saveExceptionToLogFile(ex);
             }
         }
         #endregion
@@ -86,8 +88,8 @@ namespace TSDApp.Forms
             }
             catch (Exception ex)
             {
-                Models.SharingMethods sharingMethods = new Models.SharingMethods();
-                sharingMethods.saveExceptionToLogFile(ex);
+                
+                SharingMethods.saveExceptionToLogFile(ex);
             }
         }
         /// <summary>
@@ -110,8 +112,8 @@ namespace TSDApp.Forms
             }
             catch (Exception ex)
             {
-                Models.SharingMethods sharingMethods = new Models.SharingMethods();
-                sharingMethods.saveExceptionToLogFile(ex);
+                
+                SharingMethods.saveExceptionToLogFile(ex);
             }
         }
         /// <summary>
@@ -134,8 +136,8 @@ namespace TSDApp.Forms
             }
             catch (Exception ex)
             {
-                Models.SharingMethods sharingMethods = new Models.SharingMethods();
-                sharingMethods.saveExceptionToLogFile(ex);
+                
+                SharingMethods.saveExceptionToLogFile(ex);
             }
         }
         /// <summary>
@@ -152,8 +154,8 @@ namespace TSDApp.Forms
             }
             catch (Exception ex)
             {
-                Models.SharingMethods sharingMethods = new Models.SharingMethods();
-                sharingMethods.saveExceptionToLogFile(ex);
+                
+                SharingMethods.saveExceptionToLogFile(ex);
             }
         }
         /// <summary>
@@ -170,8 +172,8 @@ namespace TSDApp.Forms
             }
             catch (Exception ex)
             {
-                Models.SharingMethods sharingMethods = new Models.SharingMethods();
-                sharingMethods.saveExceptionToLogFile(ex);
+                
+                SharingMethods.saveExceptionToLogFile(ex);
             }
         }
         /// <summary>
@@ -200,7 +202,7 @@ namespace TSDApp.Forms
                             {
                                 issueTicketButton = new BusinessObjects.Models.IssueTicketButton(issueTicketButton.id, txtENName.Text, txtARName.Text, Convert.ToInt32(ddlIssueTicket.SelectedValue), issueTicketButton.screenId, true, issueTicketButton.indexUpdated);
                                 BusinessAccessLayer.BALButton.BALButton bALButton = new BusinessAccessLayer.BALButton.BALButton();
-                                if (issueTicketButton.id != 0 && bALButton.checkIfButtonIsDeleted(issueTicketButton.id,BusinessObjects.Models.btnType.IssueTicket))
+                                if (issueTicketButton.id != 0 && !bALButton.checkIfButtonIsDeleted(issueTicketButton.id, BusinessObjects.Models.btnType.IssueTicket))
                                 {
                                     issueTicketButton.DeletedFromAnotherUsers = true;
                                 }
@@ -225,7 +227,7 @@ namespace TSDApp.Forms
                                     {
                                         showMessageButton = new BusinessObjects.Models.ShowMessageButton(showMessageButton.id, txtENName.Text, txtARName.Text, txtMessageAR.Text, txtMessageEN.Text, showMessageButton.id, true, showMessageButton.indexUpdated);
                                         BusinessAccessLayer.BALButton.BALButton bALButton = new BusinessAccessLayer.BALButton.BALButton();
-                                        if (showMessageButton.id != 0 && bALButton.checkIfButtonIsDeleted(showMessageButton.id, BusinessObjects.Models.btnType.ShowMessage))
+                                        if (showMessageButton.id != 0 && !bALButton.checkIfButtonIsDeleted(showMessageButton.id, BusinessObjects.Models.btnType.ShowMessage))
                                         {
                                             showMessageButton.DeletedFromAnotherUsers = true;
                                         }
@@ -259,8 +261,8 @@ namespace TSDApp.Forms
             }
             catch (Exception ex)
             {
-                Models.SharingMethods sharingMethods = new Models.SharingMethods();
-                sharingMethods.saveExceptionToLogFile(ex);
+                
+                SharingMethods.saveExceptionToLogFile(ex);
             }
         }
         #endregion
@@ -268,26 +270,50 @@ namespace TSDApp.Forms
         #region Methods
         private void onCancelButton(int enable)
         {
-            var handler = canelButtonEvent;
-            if (canelButtonEvent != null)
+            try
             {
-                canelButtonEvent.Invoke(this, enable);
+                var handler = canelButtonEvent;
+                if (canelButtonEvent != null)
+                {
+                    canelButtonEvent.Invoke(this, enable);
+                }
+            }
+            catch (Exception ex)
+            {
+                
+                SharingMethods.saveExceptionToLogFile(ex);
             }
         }
         private void onSaveShowMessageButton(BusinessObjects.Models.ShowMessageButton showMessageButton)
         {
-            var handler = saveShowMessageButton;
-            if (saveShowMessageButton != null)
+            try
             {
-                saveShowMessageButton.Invoke(this, showMessageButton);
+                var handler = saveShowMessageButton;
+                if (saveShowMessageButton != null)
+                {
+                    saveShowMessageButton.Invoke(this, showMessageButton);
+                }
+            }
+            catch (Exception ex)
+            {
+                
+                SharingMethods.saveExceptionToLogFile(ex);
             }
         }
         private void onSaveIssueTicketButton(BusinessObjects.Models.IssueTicketButton issueTicketButton)
         {
-            var handler = saveIssueTicketButton;
-            if (saveIssueTicketButton != null)
+            try
             {
-                saveIssueTicketButton.Invoke(this, issueTicketButton);
+                var handler = saveIssueTicketButton;
+                if (saveIssueTicketButton != null)
+                {
+                    saveIssueTicketButton.Invoke(this, issueTicketButton);
+                }
+            }
+            catch (Exception ex)
+            {
+                
+                SharingMethods.saveExceptionToLogFile(ex);
             }
         }
         /// <summary>
@@ -310,8 +336,8 @@ namespace TSDApp.Forms
             }
             catch (Exception ex)
             {
-                Models.SharingMethods sharingMethods = new Models.SharingMethods();
-                sharingMethods.saveExceptionToLogFile(ex);
+                
+                SharingMethods.saveExceptionToLogFile(ex);
             }
         }
         /// <summary>
@@ -334,28 +360,36 @@ namespace TSDApp.Forms
             }
             catch (Exception ex)
             {
-                Models.SharingMethods sharingMethods = new Models.SharingMethods();
-                sharingMethods.saveExceptionToLogFile(ex);
+                
+                SharingMethods.saveExceptionToLogFile(ex);
             }
         }
 
         private void fillComboBox()
         {
-            ddlIssueTicket.DropDownStyle = ComboBoxStyle.DropDownList;
-            ddlIssueTicket.Items.Clear();
-            BusinessAccessLayer.BALService.BALService service = new BusinessAccessLayer.BALService.BALService();
-            List<BusinessObjects.Models.Service> listIssueTicket = service.selectIssueTicketType();
-            if (listIssueTicket != null)
+            try
             {
-                ddlIssueTicket.DataSource = listIssueTicket;
-                ddlIssueTicket.ValueMember = "id";
-                ddlIssueTicket.DisplayMember = "Name";
+                ddlIssueTicket.DropDownStyle = ComboBoxStyle.DropDownList;
+                ddlIssueTicket.Items.Clear();
+                BusinessAccessLayer.BALService.BALService service = new BusinessAccessLayer.BALService.BALService();
+                List<BusinessObjects.Models.Service> listIssueTicket = service.selectIssueTicketType();
+                if (listIssueTicket != null)
+                {
+                    ddlIssueTicket.DataSource = listIssueTicket;
+                    ddlIssueTicket.ValueMember = "id";
+                    ddlIssueTicket.DisplayMember = "Name";
+                }
+                else
+                {
+                    MessageBox.Show("Please check your connection to databse", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    this.Dispose();
+                    System.Environment.Exit(1);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("Please check your connection to databse", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                this.Dispose();
-                System.Environment.Exit(1);
+                
+                SharingMethods.saveExceptionToLogFile(ex);
             }
         }
         #endregion

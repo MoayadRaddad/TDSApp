@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BusinessCommon.ExceptionsWriter;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -35,8 +36,9 @@ namespace DataAccessLayer.DALButton
                 }
                 return lstButtons;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                ExceptionsWriter.saveExceptionToLogFile(ex);
                 return null;
             }
         }
@@ -55,8 +57,9 @@ namespace DataAccessLayer.DALButton
                 pButton.id = Convert.ToInt32(dBHelper.executeScalar(pquery, screenParams));
                 return pButton;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                ExceptionsWriter.saveExceptionToLogFile(ex);
                 return null;
             }
         }
@@ -75,8 +78,9 @@ namespace DataAccessLayer.DALButton
                 dBHelper.executeNonQuery(pquery, screenParams);
                 return pButton;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                ExceptionsWriter.saveExceptionToLogFile(ex);
                 return null;
             }
         }
@@ -94,8 +98,9 @@ namespace DataAccessLayer.DALButton
                 pButton.id = Convert.ToInt32(dBHelper.executeScalar(pquery, screenParams));
                 return pButton;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                ExceptionsWriter.saveExceptionToLogFile(ex);
                 return null;
             }
         }
@@ -113,12 +118,13 @@ namespace DataAccessLayer.DALButton
                 dBHelper.executeNonQuery(pquery, screenParams);
                 return pButton;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                ExceptionsWriter.saveExceptionToLogFile(ex);
                 return null;
             }
         }
-        public int deleteButtonWhere(IDictionary<int, string> pButtonsIds, string ConditionColumn)
+        public int deleteButtonsConditional(IDictionary<int, string> pButtonsIds, string ConditionColumn)
         {
             try
             {
@@ -136,11 +142,17 @@ namespace DataAccessLayer.DALButton
                 }
                 return 1;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                ExceptionsWriter.saveExceptionToLogFile(ex);
                 return 0;
             }
         }
+        /// <summary>
+        /// This function delete all button from the two tables for the screen by Id
+        /// </summary>
+        /// <param name="pScreenId"></param>
+        /// <returns></returns>
         public int deleteAllButtonByScreenId(int pScreenId)
         {
             try
@@ -157,8 +169,9 @@ namespace DataAccessLayer.DALButton
                 dBHelper.executeNonQuery(pquery, screenParams);
                 return 1;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                ExceptionsWriter.saveExceptionToLogFile(ex);
                 return 0;
             }
         }
@@ -166,16 +179,17 @@ namespace DataAccessLayer.DALButton
         {
             try
             {
-                string pquery = "select * from tbl" + btnType.ToString() + "Button where id = @id";
+                string pquery = String.Format("select * from tbl{0}Button where id = @id", btnType.ToString());
                 List<SqlParameter> screenParams = new List<SqlParameter>();
                 screenParams.Add(new SqlParameter("@id", pButtonId));
                 DALDBHelper.DALDBHelper dBHelper = new DALDBHelper.DALDBHelper();
                 var rowEffected = dBHelper.executeScalar(pquery, screenParams);
-                return rowEffected == null ? true : false;
+                return rowEffected != null ? true : false;
             }
-            catch(Exception)
+            catch (Exception ex)
             {
-                return true;
+                ExceptionsWriter.saveExceptionToLogFile(ex);
+                return false;
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BusinessCommon.ExceptionsWriter;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
@@ -15,8 +16,9 @@ namespace BusinessAccessLayer.BALScreen
                 DataAccessLayer.DALScreen.DALScreen screenDAL = new DataAccessLayer.DALScreen.DALScreen();
                 return screenDAL.selectScreensByBankId(pBank);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                ExceptionsWriter.saveExceptionToLogFile(ex);
                 return null;
             }
         }
@@ -27,8 +29,9 @@ namespace BusinessAccessLayer.BALScreen
                 DataAccessLayer.DALScreen.DALScreen screenDAL = new DataAccessLayer.DALScreen.DALScreen();
                 return screenDAL.deleteScreenById(pScreenId);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                ExceptionsWriter.saveExceptionToLogFile(ex);
                 return 0;
             }
         }
@@ -37,10 +40,11 @@ namespace BusinessAccessLayer.BALScreen
         {
             try
             {
+                DataAccessLayer.DALScreen.DALScreen screenDAL = new DataAccessLayer.DALScreen.DALScreen();
+                BusinessObjects.Models.Screen screen;
                 using (TransactionScope scope = new TransactionScope())
                 {
-                    DataAccessLayer.DALScreen.DALScreen screenDAL = new DataAccessLayer.DALScreen.DALScreen();
-                    BusinessObjects.Models.Screen screen = screenDAL.insertScreen(pScreen);
+                    screen = screenDAL.insertScreen(pScreen);
                     DataAccessLayer.DALButton.DALButton button = new DataAccessLayer.DALButton.DALButton();
                     foreach (BusinessObjects.Models.IssueTicketButton pbutton in lstIssueTicketButtons)
                     {
@@ -83,11 +87,12 @@ namespace BusinessAccessLayer.BALScreen
                         }
                     }
                     scope.Complete();
-                    return screen;
                 }
+                return screen;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                ExceptionsWriter.saveExceptionToLogFile(ex);
                 return null;
             }
         }
@@ -96,10 +101,11 @@ namespace BusinessAccessLayer.BALScreen
         {
             try
             {
+                DataAccessLayer.DALScreen.DALScreen screenDAL = new DataAccessLayer.DALScreen.DALScreen();
+                BusinessObjects.Models.Screen screen;
                 using (TransactionScope scope = new TransactionScope())
                 {
-                    DataAccessLayer.DALScreen.DALScreen screenDAL = new DataAccessLayer.DALScreen.DALScreen();
-                    BusinessObjects.Models.Screen screen = screenDAL.updateScreen(pScreen);
+                    screen = screenDAL.updateScreen(pScreen);
                     DataAccessLayer.DALButton.DALButton button = new DataAccessLayer.DALButton.DALButton();
                     IDictionary<int, string> pButtonsDetailsIds = new Dictionary<int, string>();
                     foreach (BusinessObjects.Models.IssueTicketButton pbutton in lstIssueTicketButtons)
@@ -150,17 +156,18 @@ namespace BusinessAccessLayer.BALScreen
                             }
                         }
                     }
-                    int DeleteCheck = button.deleteButtonWhere(pButtonsDetailsIds, "id");
+                    int DeleteCheck = button.deleteButtonsConditional(pButtonsDetailsIds, "id");
                     if (DeleteCheck != 1)
                     {
                         return null;
                     }
                     scope.Complete();
-                    return screen;
                 }
+                return screen;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                ExceptionsWriter.saveExceptionToLogFile(ex);
                 return null;
             }
         }
@@ -171,8 +178,9 @@ namespace BusinessAccessLayer.BALScreen
                 DataAccessLayer.DALScreen.DALScreen screenDAL = new DataAccessLayer.DALScreen.DALScreen();
                 return screenDAL.checkIfScreenIsBusy(pScreenId);
             }
-            catch(Exception)
+            catch (Exception ex)
             {
+                ExceptionsWriter.saveExceptionToLogFile(ex);
                 return false;
             }
         }
@@ -183,8 +191,9 @@ namespace BusinessAccessLayer.BALScreen
                 DataAccessLayer.DALScreen.DALScreen screenDAL = new DataAccessLayer.DALScreen.DALScreen();
                 return screenDAL.checkIfScreenIsDeleted(pScreenId);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                ExceptionsWriter.saveExceptionToLogFile(ex);
                 return false;
             }
         }

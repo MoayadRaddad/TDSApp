@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BusinessCommon.ExceptionsWriter;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -10,6 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TSDApp.Forms;
+using TSDApp.Models;
 
 namespace TSDApp.Fomrs
 {
@@ -21,7 +23,6 @@ namespace TSDApp.Fomrs
         public List<BusinessObjects.Models.ShowMessageButton> lstShowMessageButtons;
         public List<BusinessObjects.Models.IssueTicketButton> lstIssueTicketButtons;
         public List<BusinessObjects.Models.Button> lstButtons;
-        public IEnumerable<BusinessObjects.Models.Button> iEnumrablelstButtons;
         public event EventHandler<int> canelButtonEvent;
         Thread refreshThread;
         private bool userNotEdit = false;
@@ -47,8 +48,8 @@ namespace TSDApp.Fomrs
             }
             catch (Exception ex)
             {
-                Models.SharingMethods sharingMethods = new Models.SharingMethods();
-                sharingMethods.saveExceptionToLogFile(ex);
+                
+                SharingMethods.saveExceptionToLogFile(ex);
             }
         }
         /// <summary>
@@ -76,8 +77,8 @@ namespace TSDApp.Fomrs
             }
             catch (Exception ex)
             {
-                Models.SharingMethods sharingMethods = new Models.SharingMethods();
-                sharingMethods.saveExceptionToLogFile(ex);
+                
+                SharingMethods.saveExceptionToLogFile(ex);
             }
         }
         #endregion
@@ -90,13 +91,12 @@ namespace TSDApp.Fomrs
         {
             try
             {
-                iEnumrablelstButtons = new List<BusinessObjects.Models.Button>().ToList();
                 loadToolTips();
             }
             catch (Exception ex)
             {
-                Models.SharingMethods sharingMethods = new Models.SharingMethods();
-                sharingMethods.saveExceptionToLogFile(ex);
+                
+                SharingMethods.saveExceptionToLogFile(ex);
             }
         }
         /// <summary>
@@ -173,8 +173,8 @@ namespace TSDApp.Fomrs
             }
             catch (Exception ex)
             {
-                Models.SharingMethods sharingMethods = new Models.SharingMethods();
-                sharingMethods.saveExceptionToLogFile(ex);
+                
+                SharingMethods.saveExceptionToLogFile(ex);
             }
         }
         /// <summary>
@@ -188,8 +188,8 @@ namespace TSDApp.Fomrs
             }
             catch (Exception ex)
             {
-                Models.SharingMethods sharingMethods = new Models.SharingMethods();
-                sharingMethods.saveExceptionToLogFile(ex);
+                
+                SharingMethods.saveExceptionToLogFile(ex);
             }
         }
         /// <summary>
@@ -203,8 +203,8 @@ namespace TSDApp.Fomrs
             }
             catch (Exception ex)
             {
-                Models.SharingMethods sharingMethods = new Models.SharingMethods();
-                sharingMethods.saveExceptionToLogFile(ex);
+                
+                SharingMethods.saveExceptionToLogFile(ex);
             }
         }
         /// <summary>
@@ -261,8 +261,8 @@ namespace TSDApp.Fomrs
             }
             catch (Exception ex)
             {
-                Models.SharingMethods sharingMethods = new Models.SharingMethods();
-                sharingMethods.saveExceptionToLogFile(ex);
+                
+                SharingMethods.saveExceptionToLogFile(ex);
             }
         }
         /// <summary>
@@ -282,8 +282,8 @@ namespace TSDApp.Fomrs
             }
             catch (Exception ex)
             {
-                Models.SharingMethods sharingMethods = new Models.SharingMethods();
-                sharingMethods.saveExceptionToLogFile(ex);
+                
+                SharingMethods.saveExceptionToLogFile(ex);
             }
         }
         /// <summary>
@@ -339,8 +339,8 @@ namespace TSDApp.Fomrs
             }
             catch (Exception ex)
             {
-                Models.SharingMethods sharingMethods = new Models.SharingMethods();
-                sharingMethods.saveExceptionToLogFile(ex);
+                
+                SharingMethods.saveExceptionToLogFile(ex);
             }
         }
         private void canelButtonEventFunc(object sender, int issueTicketButton)
@@ -351,8 +351,8 @@ namespace TSDApp.Fomrs
             }
             catch (Exception ex)
             {
-                Models.SharingMethods sharingMethods = new Models.SharingMethods();
-                sharingMethods.saveExceptionToLogFile(ex);
+                
+                SharingMethods.saveExceptionToLogFile(ex);
             }
         }
         #endregion
@@ -360,11 +360,19 @@ namespace TSDApp.Fomrs
         #region Methods
         private void onCancelButton(int issueTicketButton)
         {
-            userNotEdit = false;
-            var handler = canelButtonEvent;
-            if (canelButtonEvent != null)
+            try
             {
-                canelButtonEvent.Invoke(this, issueTicketButton);
+                userNotEdit = false;
+                var handler = canelButtonEvent;
+                if (canelButtonEvent != null)
+                {
+                    canelButtonEvent.Invoke(this, issueTicketButton);
+                }
+            }
+            catch (Exception ex)
+            {
+                
+                SharingMethods.saveExceptionToLogFile(ex);
             }
         }
         private void addShowMessageButton(object sender, BusinessObjects.Models.ShowMessageButton showMessageButton)
@@ -385,8 +393,8 @@ namespace TSDApp.Fomrs
             }
             catch (Exception ex)
             {
-                Models.SharingMethods sharingMethods = new Models.SharingMethods();
-                sharingMethods.saveExceptionToLogFile(ex);
+                
+                SharingMethods.saveExceptionToLogFile(ex);
             }
         }
         private void addIssueTicketButton(object sender, BusinessObjects.Models.IssueTicketButton issueTicketButton)
@@ -406,8 +414,8 @@ namespace TSDApp.Fomrs
             }
             catch (Exception ex)
             {
-                Models.SharingMethods sharingMethods = new Models.SharingMethods();
-                sharingMethods.saveExceptionToLogFile(ex);
+                
+                SharingMethods.saveExceptionToLogFile(ex);
             }
         }
         private void closeForm()
@@ -419,14 +427,13 @@ namespace TSDApp.Fomrs
                 lstShowMessageButtons = null;
                 lstIssueTicketButtons = null;
                 lstButtons = null;
-                iEnumrablelstButtons = null;
                 this.Dispose();
                 onCancelButton(1);
             }
             catch (Exception ex)
             {
-                Models.SharingMethods sharingMethods = new Models.SharingMethods();
-                sharingMethods.saveExceptionToLogFile(ex);
+                
+                SharingMethods.saveExceptionToLogFile(ex);
             }
         }
         /// <summary>
@@ -454,22 +461,30 @@ namespace TSDApp.Fomrs
             }
             catch (Exception ex)
             {
-                Models.SharingMethods sharingMethods = new Models.SharingMethods();
-                sharingMethods.saveExceptionToLogFile(ex);
+                
+                SharingMethods.saveExceptionToLogFile(ex);
             }
         }
         private void fillButtonsSave()
         {
-            while (userNotEdit)
+            try
             {
-                if (InvokeRequired)
+                while (userNotEdit)
                 {
-                    Invoke((MethodInvoker)delegate
+                    if (InvokeRequired)
                     {
-                        fillButtons();
-                    });
+                        Invoke((MethodInvoker)delegate
+                        {
+                            fillButtons();
+                        });
+                    }
+                    Thread.Sleep(10000);
                 }
-                Thread.Sleep(10000);
+            }
+            catch (Exception ex)
+            {
+                
+                SharingMethods.saveExceptionToLogFile(ex);
             }
         }
         /// <summary>
@@ -490,37 +505,43 @@ namespace TSDApp.Fomrs
             }
             catch (Exception ex)
             {
-                Models.SharingMethods sharingMethods = new Models.SharingMethods();
-                sharingMethods.saveExceptionToLogFile(ex);
+                
+                SharingMethods.saveExceptionToLogFile(ex);
             }
         }
         private void refreshGrid()
         {
-            lstButtons.Clear();
-            foreach (var item in lstShowMessageButtons)
+            try
             {
-                if (!item.isDeleted)
+                lstButtons.Clear();
+                foreach (var item in lstShowMessageButtons)
                 {
-                    lstButtons.Add(new BusinessObjects.Models.Button(item.id, item.enName, item.arName, item.screenId, item.type));
+                    if (!item.isDeleted)
+                    {
+                        lstButtons.Add(new BusinessObjects.Models.Button(item.id, item.enName, item.arName, item.screenId, item.type));
+                    }
+                }
+                foreach (var item in lstIssueTicketButtons)
+                {
+                    if (!item.isDeleted)
+                    {
+                        lstButtons.Add(new BusinessObjects.Models.Button(item.id, item.enName, item.arName, item.screenId, item.type));
+                    }
+                }
+                if (lstButtons != null)
+                {
+                    gvButtons.DataSource = new List<BusinessObjects.Models.Button>(lstButtons);
+                    setdataGridViewDisplay();
+                }
+                else
+                {
+                    MessageBox.Show("Please check your connection to databse", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
-            foreach (var item in lstIssueTicketButtons)
+            catch (Exception ex)
             {
-                if (!item.isDeleted)
-                {
-                    lstButtons.Add(new BusinessObjects.Models.Button(item.id, item.enName, item.arName, item.screenId, item.type));
-                }
-            }
-            if (lstButtons != null)
-            {
-                Models.SharingMethods sharingMethods = new Models.SharingMethods();
-                iEnumrablelstButtons = sharingMethods.GetIEnumrable(lstButtons).ToList();
-                gvButtons.DataSource = iEnumrablelstButtons.ToList();
-                setdataGridViewDisplay();
-            }
-            else
-            {
-                MessageBox.Show("Please check your connection to databse", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                
+                SharingMethods.saveExceptionToLogFile(ex);
             }
         }
         /// <summary>
@@ -541,41 +562,56 @@ namespace TSDApp.Fomrs
             }
             catch (Exception ex)
             {
-                Models.SharingMethods sharingMethods = new Models.SharingMethods();
-                sharingMethods.saveExceptionToLogFile(ex);
+                
+                SharingMethods.saveExceptionToLogFile(ex);
             }
         }
         private void setdataGridViewDisplay()
         {
-            Models.SharingMethods sharingMethods = new Models.SharingMethods();
-            sharingMethods.ChangeColumnWidth(gvButtons, 3);
-            this.gvButtons.Columns[0].Visible = false;
-            this.gvButtons.Columns[3].Visible = false;
-            this.gvButtons.Columns[5].Visible = false;
-            this.gvButtons.Columns[6].Visible = false;
-            this.gvButtons.Columns[7].Visible = false;
-            this.gvButtons.Columns[8].Visible = false;
-            this.gvButtons.AllowUserToAddRows = false;
-            this.gvButtons.AllowUserToResizeColumns = false;
-            this.gvButtons.AllowUserToResizeRows = false;
-            if (lstButtons.Count() > 0)
+            try
             {
-                gvButtons.Rows[0].Selected = true;
+                SharingMethods.ChangeColumnWidth(gvButtons, 3);
+                this.gvButtons.Columns[0].Visible = false;
+                this.gvButtons.Columns[3].Visible = false;
+                this.gvButtons.Columns[5].Visible = false;
+                this.gvButtons.Columns[6].Visible = false;
+                this.gvButtons.Columns[7].Visible = false;
+                this.gvButtons.Columns[8].Visible = false;
+                this.gvButtons.AllowUserToAddRows = false;
+                this.gvButtons.AllowUserToResizeColumns = false;
+                this.gvButtons.AllowUserToResizeRows = false;
+                if (lstButtons.Count() > 0)
+                {
+                    gvButtons.Rows[0].Selected = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                
+                SharingMethods.saveExceptionToLogFile(ex);
             }
         }
         private void formDisabledAndEnabled(bool isEnabled)
         {
-            if (isEnabled)
+            try
             {
-                btnAddButton.Enabled = false;
-                btnEditButton.Enabled = false;
-                btnDeleteButton.Enabled = false;
+                if (isEnabled)
+                {
+                    btnAddButton.Enabled = false;
+                    btnEditButton.Enabled = false;
+                    btnDeleteButton.Enabled = false;
+                }
+                else
+                {
+                    btnAddButton.Enabled = true;
+                    btnEditButton.Enabled = true;
+                    btnDeleteButton.Enabled = true;
+                }
             }
-            else
+            catch (Exception ex)
             {
-                btnAddButton.Enabled = true;
-                btnEditButton.Enabled = true;
-                btnDeleteButton.Enabled = true;
+                
+                SharingMethods.saveExceptionToLogFile(ex);
             }
         }
         #endregion

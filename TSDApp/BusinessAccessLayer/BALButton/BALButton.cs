@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BusinessCommon.ExceptionsWriter;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
@@ -15,8 +16,9 @@ namespace BusinessAccessLayer.BALButton
                 DataAccessLayer.DALButton.DALButton button = new DataAccessLayer.DALButton.DALButton();
                 return button.selectButtonsbyScreenId<T>(pScreenId, btnType);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                ExceptionsWriter.saveExceptionToLogFile(ex);
                 return null;
             }
         }
@@ -24,18 +26,20 @@ namespace BusinessAccessLayer.BALButton
         {
             try
             {
+                int check;
                 using (TransactionScope scope = new TransactionScope())
                 {
                     DataAccessLayer.DALButton.DALButton button = new DataAccessLayer.DALButton.DALButton();
                     DataAccessLayer.DALScreen.DALScreen screen = new DataAccessLayer.DALScreen.DALScreen();
                     button.deleteAllButtonByScreenId(pScreenId);
-                    var check = screen.deleteScreenById(pScreenId);
+                    check = screen.deleteScreenById(pScreenId);
                     scope.Complete();
-                    return check;
                 }
+                return check;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                ExceptionsWriter.saveExceptionToLogFile(ex);
                 return 0;
             }
         }
@@ -46,8 +50,9 @@ namespace BusinessAccessLayer.BALButton
                 DataAccessLayer.DALButton.DALButton dALButton = new DataAccessLayer.DALButton.DALButton();
                 return dALButton.checkIfButtonIsDeleted(pButtonId, btnType);
             }
-            catch(Exception)
+            catch (Exception ex)
             {
+                ExceptionsWriter.saveExceptionToLogFile(ex);
                 return false;
             }
         }

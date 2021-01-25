@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using BusinessCommon.ExceptionsWriter;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -13,24 +14,30 @@ namespace TSDApp.Models
     /// <summary>
     /// public class to share some usefull methods across forms
     /// </summary>
-    public class SharingMethods
+    public static class SharingMethods
     {
         #region Usefull methods
         /// <summary>
         /// public method get exception,handle it and save it to log file with json type
         /// </summary>
-        public void saveExceptionToLogFile(Exception ex)
+        public static void saveExceptionToLogFile(Exception ex)
         {
-            BusinessCommon.ExceptionsWriter.ExceptionsWriter exceptionsWriter = new BusinessCommon.ExceptionsWriter.ExceptionsWriter();
-            exceptionsWriter.saveExceptionToLogFile(ex);
-            MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            try
+            {
+                ExceptionsWriter.saveExceptionToLogFile(ex);
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch(Exception exception)
+            {
+                ExceptionsWriter.saveExceptionToLogFile(exception);
+            }
         }
         /// <summary>
         /// Set column width
         /// </summary>
         /// <param name="pGridView"></param>
         /// <param name="pColumnNumber"></param>
-        public void ChangeColumnWidth(DataGridView pGridView, int pColumnNumber)
+        public static void ChangeColumnWidth(DataGridView pGridView, int pColumnNumber)
         {
             try
             {
@@ -43,14 +50,8 @@ namespace TSDApp.Models
             }
             catch (Exception ex)
             {
-                Models.SharingMethods sharingMethods = new Models.SharingMethods();
-                sharingMethods.saveExceptionToLogFile(ex);
+                ExceptionsWriter.saveExceptionToLogFile(ex);
             }
-        }
-        public IEnumerable<T> GetIEnumrable<T>(List<T> pList)
-        {
-            List<T> ListT = pList;
-            return ListT;
         }
         #endregion
     }

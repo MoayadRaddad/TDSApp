@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BusinessCommon.ExceptionsWriter;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,6 +13,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TSDApp.Fomrs;
+using TSDApp.Models;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace TSDApp
@@ -19,7 +21,7 @@ namespace TSDApp
     public partial class TSD : Form
     {
         #region Variables
-        private int checkDataBase = 0;
+        private int checkDataBase = 1;
         private BusinessObjects.Models.Bank currentBank;
         Thread refreshThread;
         #endregion
@@ -36,8 +38,7 @@ namespace TSDApp
             }
             catch (Exception ex)
             {
-                Models.SharingMethods sharingMethods = new Models.SharingMethods();
-                sharingMethods.saveExceptionToLogFile(ex);
+                SharingMethods.saveExceptionToLogFile(ex);
             }
         }
         #endregion
@@ -67,8 +68,8 @@ namespace TSDApp
             }
             catch (Exception ex)
             {
-                Models.SharingMethods sharingMethods = new Models.SharingMethods();
-                sharingMethods.saveExceptionToLogFile(ex);
+                
+                SharingMethods.saveExceptionToLogFile(ex);
             }
         }
         /// <summary>
@@ -117,8 +118,8 @@ namespace TSDApp
             }
             catch (Exception ex)
             {
-                Models.SharingMethods sharingMethods = new Models.SharingMethods();
-                sharingMethods.saveExceptionToLogFile(ex);
+                
+                SharingMethods.saveExceptionToLogFile(ex);
             }
         }
         /// <summary>
@@ -155,7 +156,10 @@ namespace TSDApp
                                 }
                             }
                         }
-                        fillScreens();
+                        if(checkDataBase != 0)
+                        {
+                            fillScreens();
+                        }
                     }
                     else if (deleteCheck == DialogResult.No)
                     {
@@ -169,8 +173,8 @@ namespace TSDApp
             }
             catch (Exception ex)
             {
-                Models.SharingMethods sharingMethods = new Models.SharingMethods();
-                sharingMethods.saveExceptionToLogFile(ex);
+                
+                SharingMethods.saveExceptionToLogFile(ex);
             }
         }
 
@@ -190,8 +194,8 @@ namespace TSDApp
             }
             catch (Exception ex)
             {
-                Models.SharingMethods sharingMethods = new Models.SharingMethods();
-                sharingMethods.saveExceptionToLogFile(ex);
+                
+                SharingMethods.saveExceptionToLogFile(ex);
             }
         }
         private void canelButtonEventFunc(object sender, int issueTicketButton)
@@ -203,8 +207,8 @@ namespace TSDApp
             }
             catch (Exception ex)
             {
-                Models.SharingMethods sharingMethods = new Models.SharingMethods();
-                sharingMethods.saveExceptionToLogFile(ex);
+                
+                SharingMethods.saveExceptionToLogFile(ex);
             }
         }
         void addEditScreen_Closed(object sender, FormClosedEventArgs e)
@@ -215,8 +219,8 @@ namespace TSDApp
             }
             catch (Exception ex)
             {
-                Models.SharingMethods sharingMethods = new Models.SharingMethods();
-                sharingMethods.saveExceptionToLogFile(ex);
+                
+                SharingMethods.saveExceptionToLogFile(ex);
             }
         }
 
@@ -254,8 +258,8 @@ namespace TSDApp
             }
             catch (Exception ex)
             {
-                Models.SharingMethods sharingMethods = new Models.SharingMethods();
-                sharingMethods.saveExceptionToLogFile(ex);
+                
+                SharingMethods.saveExceptionToLogFile(ex);
             }
         }
         /// <summary>
@@ -270,8 +274,8 @@ namespace TSDApp
             }
             catch (Exception ex)
             {
-                Models.SharingMethods sharingMethods = new Models.SharingMethods();
-                sharingMethods.saveExceptionToLogFile(ex);
+                
+                SharingMethods.saveExceptionToLogFile(ex);
             }
         }
         /// <summary>
@@ -286,8 +290,8 @@ namespace TSDApp
             }
             catch (Exception ex)
             {
-                Models.SharingMethods sharingMethods = new Models.SharingMethods();
-                sharingMethods.saveExceptionToLogFile(ex);
+                
+                SharingMethods.saveExceptionToLogFile(ex);
             }
         }
         #endregion
@@ -295,16 +299,24 @@ namespace TSDApp
         #region Methods
         private void fillScreensSave()
         {
-            while (true)
+            try
             {
-                if (InvokeRequired)
+                while (true && checkDataBase == 1)
                 {
-                    Invoke((MethodInvoker)delegate
-                {
-                    fillScreens();
-                });
+                    if (InvokeRequired)
+                    {
+                        Invoke((MethodInvoker)delegate
+                        {
+                            fillScreens();
+                        });
+                    }
+                    Thread.Sleep(10000);
                 }
-                Thread.Sleep(10000);
+            }
+            catch (Exception ex)
+            {
+                
+                SharingMethods.saveExceptionToLogFile(ex);
             }
         }
         /// <summary>
@@ -317,12 +329,12 @@ namespace TSDApp
                 lblTitle.Text = "Main Form - " + currentBank.name;
                 lblGVTitle.Text = "Bank " + currentBank.name + " screens";
                 BusinessAccessLayer.BALScreen.BALScreen screen = new BusinessAccessLayer.BALScreen.BALScreen();
-                Models.SharingMethods sharingMethods = new Models.SharingMethods();
-                List<BusinessObjects.Models.Screen> screens = sharingMethods.GetIEnumrable(screen.selectScreensByBankId(currentBank)).ToList();
+                
+                List<BusinessObjects.Models.Screen> screens = screen.selectScreensByBankId(currentBank);
                 if (screens != null)
                 {
                     gvScreens.DataSource = screens;
-                    sharingMethods.ChangeColumnWidth(gvScreens, 2);
+                    SharingMethods.ChangeColumnWidth(gvScreens, 2);
                     this.gvScreens.Columns[0].Visible = false;
                     this.gvScreens.Columns[3].Visible = false;
                     this.gvScreens.AllowUserToAddRows = false;
@@ -344,8 +356,8 @@ namespace TSDApp
             }
             catch (Exception ex)
             {
-                Models.SharingMethods sharingMethods = new Models.SharingMethods();
-                sharingMethods.saveExceptionToLogFile(ex);
+                
+                SharingMethods.saveExceptionToLogFile(ex);
             }
         }
         /// <summary>
@@ -365,23 +377,31 @@ namespace TSDApp
             }
             catch (Exception ex)
             {
-                Models.SharingMethods sharingMethods = new Models.SharingMethods();
-                sharingMethods.saveExceptionToLogFile(ex);
+                
+                SharingMethods.saveExceptionToLogFile(ex);
             }
         }
         private void formDisabledAndEnabled(bool isEnabled)
         {
-            if(isEnabled)
+            try
             {
-                btnAddScreen.Enabled = false;
-                btnEditScreen.Enabled = false;
-                btnDeleteScreen.Enabled = false;
+                if (isEnabled)
+                {
+                    btnAddScreen.Enabled = false;
+                    btnEditScreen.Enabled = false;
+                    btnDeleteScreen.Enabled = false;
+                }
+                else
+                {
+                    btnAddScreen.Enabled = true;
+                    btnEditScreen.Enabled = true;
+                    btnDeleteScreen.Enabled = true;
+                }
             }
-            else
+            catch (Exception ex)
             {
-                btnAddScreen.Enabled = true;
-                btnEditScreen.Enabled = true;
-                btnDeleteScreen.Enabled = true;
+                
+                SharingMethods.saveExceptionToLogFile(ex);
             }
         }
         #endregion

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BusinessCommon.ExceptionsWriter;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -18,15 +19,23 @@ namespace DataAccessLayer.DALScreen
                 screenParams.Add(new SqlParameter("@bankId", pBank.id));
                 DALDBHelper.DALDBHelper dBHelper = new DALDBHelper.DALDBHelper();
                 DataSet dataSet = dBHelper.executeAdapter(pquery, screenParams);
-                foreach (DataRow dataRow in dataSet.Tables[0].Rows)
+                if(dataSet != null)
                 {
-                    lstScreens.Add(new BusinessObjects.Models.Screen(Convert.ToInt32(dataRow["id"]), Convert.ToString(dataRow["name"]),
-                        Convert.ToBoolean(dataRow["isActive"]), Convert.ToInt32(dataRow["bankId"])));
+                    foreach (DataRow dataRow in dataSet.Tables[0].Rows)
+                    {
+                        lstScreens.Add(new BusinessObjects.Models.Screen(Convert.ToInt32(dataRow["id"]), Convert.ToString(dataRow["name"]),
+                            Convert.ToBoolean(dataRow["isActive"]), Convert.ToInt32(dataRow["bankId"])));
+                    }
+                    return lstScreens;
                 }
-                return lstScreens;
+                else
+                {
+                    return null;
+                }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                ExceptionsWriter.saveExceptionToLogFile(ex);
                 return null;
             }
         }
@@ -41,8 +50,9 @@ namespace DataAccessLayer.DALScreen
                 dBHelper.executeNonQuery(pquery, screenParams);
                 return 1;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                ExceptionsWriter.saveExceptionToLogFile(ex);
                 return 0;
             }
         }
@@ -63,8 +73,9 @@ namespace DataAccessLayer.DALScreen
                 }
                 return pScreen;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                ExceptionsWriter.saveExceptionToLogFile(ex);
                 return null;
             }
         }
@@ -85,8 +96,9 @@ namespace DataAccessLayer.DALScreen
                 }
                 return pScreen;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                ExceptionsWriter.saveExceptionToLogFile(ex);
                 return null;
             }
         }
@@ -100,7 +112,10 @@ namespace DataAccessLayer.DALScreen
                 DALDBHelper.DALDBHelper dBHelper = new DALDBHelper.DALDBHelper();
                 dBHelper.executeScalar(pquery, screenParams);
             }
-            catch (Exception) { }
+            catch (Exception ex)
+            {
+                ExceptionsWriter.saveExceptionToLogFile(ex);
+            }
         }
         public bool checkIfScreenIsBusy(int pScreenId)
         {
@@ -113,8 +128,9 @@ namespace DataAccessLayer.DALScreen
                 var rowEffected = dBHelper.executeScalar(pquery, screenParams);
                 return rowEffected == null ? false : true;
             }
-            catch (Exception) 
+            catch (Exception ex)
             {
+                ExceptionsWriter.saveExceptionToLogFile(ex);
                 return false;
             }
         }
@@ -129,8 +145,9 @@ namespace DataAccessLayer.DALScreen
                 var rowEffected = dBHelper.executeScalar(pquery, screenParams);
                 return rowEffected == null ? true : false;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                ExceptionsWriter.saveExceptionToLogFile(ex);
                 return false;
             }
         }

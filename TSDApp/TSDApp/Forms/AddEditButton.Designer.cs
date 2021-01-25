@@ -92,7 +92,7 @@ namespace TSDApp.Forms
             this.lblENName.Name = "lblENName";
             this.lblENName.Size = new System.Drawing.Size(105, 23);
             this.lblENName.TabIndex = 5;
-            this.lblENName.Text = "EN Name *";
+            this.lblENName.Text = "English Name *";
             // 
             // txtARName
             // 
@@ -110,7 +110,7 @@ namespace TSDApp.Forms
             this.lblARName.Name = "lblARName";
             this.lblARName.Size = new System.Drawing.Size(104, 23);
             this.lblARName.TabIndex = 9;
-            this.lblARName.Text = "AR Name *";
+            this.lblARName.Text = "Arabic Name *";
             // 
             // txtMessageAR
             // 
@@ -128,7 +128,7 @@ namespace TSDApp.Forms
             this.lblMessageAR.Name = "lblMessageAR";
             this.lblMessageAR.Size = new System.Drawing.Size(127, 23);
             this.lblMessageAR.TabIndex = 13;
-            this.lblMessageAR.Text = "Message AR *";
+            this.lblMessageAR.Text = "Message Arabic *";
             // 
             // lblButtonType
             // 
@@ -156,7 +156,7 @@ namespace TSDApp.Forms
             this.lblMessageEN.Name = "lblMessageEN";
             this.lblMessageEN.Size = new System.Drawing.Size(128, 23);
             this.lblMessageEN.TabIndex = 16;
-            this.lblMessageEN.Text = "Message EN *";
+            this.lblMessageEN.Text = "Message English *";
             // 
             // rbIssueTicket
             // 

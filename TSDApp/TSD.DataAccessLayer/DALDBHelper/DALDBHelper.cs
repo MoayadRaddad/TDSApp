@@ -7,6 +7,7 @@ using System.Data.SqlClient;
 using System.Collections.Specialized;
 using System.Reflection;
 using System.IO;
+using BusinessCommon.ExceptionsWriter;
 
 namespace DataAccessLayer.DALDBHelper
 {
@@ -18,8 +19,9 @@ namespace DataAccessLayer.DALDBHelper
             {
                 return nonQuery(query, parametros);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                ExceptionsWriter.saveExceptionToLogFile(ex);
                 return -1;
             }
         }
@@ -29,8 +31,9 @@ namespace DataAccessLayer.DALDBHelper
             {
                 return scalar(query, parametros);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                ExceptionsWriter.saveExceptionToLogFile(ex);
                 return null;
             }
         }
@@ -51,8 +54,9 @@ namespace DataAccessLayer.DALDBHelper
                 adapter.Fill(dataSet);
                 return dataSet;
             }
-            catch(Exception)
+            catch (Exception ex)
             {
+                ExceptionsWriter.saveExceptionToLogFile(ex);
                 return null;
             }
         }
@@ -80,8 +84,9 @@ namespace DataAccessLayer.DALDBHelper
                 }
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                ExceptionsWriter.saveExceptionToLogFile(ex);
                 return -1;
             }
         }
@@ -108,8 +113,9 @@ namespace DataAccessLayer.DALDBHelper
                 }
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                ExceptionsWriter.saveExceptionToLogFile(ex);
                 return null;
             }
         }
