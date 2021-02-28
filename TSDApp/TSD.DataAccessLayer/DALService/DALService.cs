@@ -14,12 +14,12 @@ namespace DataAccessLayer.DALService
             try
             {
                 List<BusinessObjects.Models.Service> lstIssueTicketTypes = new List<BusinessObjects.Models.Service>();
-                string pquery = "SELECT id,name FROM tblService";
+                string pquery = "SELECT id,enName FROM tblService";
                 DALDBHelper.DALDBHelper dBHelper = new DALDBHelper.DALDBHelper();
                 DataSet dataSet = dBHelper.executeAdapter(pquery, new List<SqlParameter>());
                 foreach (DataRow dataRow in dataSet.Tables[0].Rows)
                 {
-                    lstIssueTicketTypes.Add(new BusinessObjects.Models.Service(Convert.ToInt32(dataRow["id"]), dataRow["name"].ToString()));
+                    lstIssueTicketTypes.Add(new BusinessObjects.Models.Service(Convert.ToInt32(dataRow["id"]), dataRow["enName"].ToString()));
                 }
                 return lstIssueTicketTypes;
             }
