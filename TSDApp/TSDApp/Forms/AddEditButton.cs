@@ -17,6 +17,7 @@ namespace TSDApp.Forms
     public partial class AddEditButton : Form
     {
         #region Variables
+        public int BankId;
         private BusinessObjects.Models.ShowMessageButton showMessageButton;
         private BusinessObjects.Models.IssueTicketButton issueTicketButton;
         public event EventHandler<BusinessObjects.Models.ShowMessageButton> saveShowMessageButton;
@@ -28,12 +29,13 @@ namespace TSDApp.Forms
         /// <summary>
         /// Parametarize constructor get screen object
         /// </summary>
-        public AddEditButton()
+        public AddEditButton(int bankId)
         {
             try
             {
                 InitializeComponent();
-                fillComboBox();
+                BankId = bankId;
+                fillComboBox(BankId);
             }
             catch (Exception ex)
             {
@@ -53,7 +55,7 @@ namespace TSDApp.Forms
             try
             {
                 InitializeComponent();
-                fillComboBox();
+                fillComboBox(BankId);
                 if (!(pShowMessageButton == null))
                 {
                     showMessageButton = pShowMessageButton;
@@ -365,14 +367,14 @@ namespace TSDApp.Forms
             }
         }
 
-        private void fillComboBox()
+        private void fillComboBox(int bankId)
         {
             try
             {
                 ddlIssueTicket.DropDownStyle = ComboBoxStyle.DropDownList;
                 ddlIssueTicket.Items.Clear();
                 BusinessAccessLayer.BALService.BALService service = new BusinessAccessLayer.BALService.BALService();
-                List<BusinessObjects.Models.Service> listIssueTicket = service.selectIssueTicketType();
+                List<BusinessObjects.Models.Service> listIssueTicket = service.selectIssueTicketType(bankId);
                 if (listIssueTicket != null)
                 {
                     ddlIssueTicket.DataSource = listIssueTicket;

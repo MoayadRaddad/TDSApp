@@ -273,7 +273,7 @@ namespace TSDApp.Fomrs
             try
             {
                 userNotEdit = false;
-                AddEditButton addEditButton = new AddEditButton();
+                AddEditButton addEditButton = new AddEditButton(BankId);
                 addEditButton.saveShowMessageButton += addShowMessageButton;
                 addEditButton.saveIssueTicketButton += addIssueTicketButton;
                 addEditButton.canelButtonEvent += canelButtonEventFunc;
