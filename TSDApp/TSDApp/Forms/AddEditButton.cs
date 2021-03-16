@@ -50,11 +50,12 @@ namespace TSDApp.Forms
         /// </summary>
         /// <param name="pShowMessageButton"></param>
         /// <param name="pIssueTicketButton"></param>
-        public AddEditButton(BusinessObjects.Models.ShowMessageButton pShowMessageButton, BusinessObjects.Models.IssueTicketButton pIssueTicketButton)
+        public AddEditButton(BusinessObjects.Models.ShowMessageButton pShowMessageButton, BusinessObjects.Models.IssueTicketButton pIssueTicketButton, int bankId)
         {
             try
             {
                 InitializeComponent();
+                BankId = bankId;
                 fillComboBox(BankId);
                 if (!(pShowMessageButton == null))
                 {

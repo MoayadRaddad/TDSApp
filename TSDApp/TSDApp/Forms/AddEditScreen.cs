@@ -307,7 +307,7 @@ namespace TSDApp.Fomrs
                             BusinessObjects.Models.ShowMessageButton currentButton = lstShowMessageButtons.Where(x => x.id == btn.id
                             && x.enName == btn.enName && x.arName == btn.arName && x.screenId == btn.screenId && x.type == btn.type).FirstOrDefault();
                             currentButton.indexUpdated = lstShowMessageButtons.IndexOf(currentButton);
-                            AddEditButton addEditButton = new AddEditButton(currentButton, null);
+                            AddEditButton addEditButton = new AddEditButton(currentButton, null, BankId);
                             //addEditButton.FormClosed += new FormClosedEventHandler(FunctionClosed);
                             addEditButton.saveShowMessageButton += addShowMessageButton;
                             addEditButton.saveIssueTicketButton += addIssueTicketButton;
@@ -319,7 +319,7 @@ namespace TSDApp.Fomrs
                             BusinessObjects.Models.IssueTicketButton currentButton = lstIssueTicketButtons.Where(x => x.id == btn.id
                             && x.enName == btn.enName && x.arName == btn.arName && x.screenId == btn.screenId && x.type == btn.type).FirstOrDefault();
                             currentButton.indexUpdated = lstIssueTicketButtons.IndexOf(currentButton);
-                            AddEditButton addEditButton = new AddEditButton(null, currentButton);
+                            AddEditButton addEditButton = new AddEditButton(null, currentButton, BankId);
                             //addEditButton.FormClosed += new FormClosedEventHandler(FunctionClosed);
                             addEditButton.saveShowMessageButton += addShowMessageButton;
                             addEditButton.saveIssueTicketButton += addIssueTicketButton;

@@ -69,7 +69,7 @@ namespace DataAccessLayer.DALScreen
                 pScreen.id = Convert.ToInt32(dBHelper.executeScalar(pquery, screenParams));
                 if (pScreen.isActive)
                 {
-                    updateActiveScreen(pScreen.id);
+                    updateActiveScreen(pScreen.id, pScreen.bankId);
                 }
                 return pScreen;
             }
@@ -92,7 +92,7 @@ namespace DataAccessLayer.DALScreen
                 dBHelper.executeNonQuery(pquery, screenParams);
                 if (pScreen.isActive)
                 {
-                    updateActiveScreen(pScreen.id);
+                    updateActiveScreen(pScreen.id, pScreen.bankId);
                 }
                 return pScreen;
             }
@@ -102,13 +102,14 @@ namespace DataAccessLayer.DALScreen
                 return null;
             }
         }
-        public void updateActiveScreen(int pScreenId)
+        public void updateActiveScreen(int pScreenId, int pBankId)
         {
             try
             {
-                string pquery = "update tblScreens set isActive = 0 where id != @id";
+                string pquery = "update tblScreens set isActive = 0 where id != @id and bankId = @bankId";
                 List<SqlParameter> screenParams = new List<SqlParameter>();
                 screenParams.Add(new SqlParameter("@id", pScreenId));
+                screenParams.Add(new SqlParameter("@bankId", pBankId));
                 DALDBHelper.DALDBHelper dBHelper = new DALDBHelper.DALDBHelper();
                 dBHelper.executeScalar(pquery, screenParams);
             }
